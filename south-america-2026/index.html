@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0284c7" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>2026 南美 15 日四语随身伴侣 | 2026 South America 15-Day Expedition Companion</title>
+  
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230284c7'/%3E%3Cpath d='M32 11c-9.4 0-17 7.6-17 17 0 12.8 17 25 17 25s17-12.2 17-25c0-9.4-7.6-17-17-17zm0 23.5a6.5 6.5 0 1 1 0-13 6.5 6.5 0 0 1 0 13z' fill='%23fff'/%3E%3C/svg%3E" />
+  
+  <!-- Fonts & CDN Fallbacks -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Noto+Sans+SC:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+  <style>
+    :root {
+      color-scheme: light dark;
+      --font-sans: 'Plus Jakarta Sans', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --background: #f8fafc;
+      --foreground: #0f172a;
+      --card: #ffffff;
+      --card-foreground: #0f172a;
+      --content: #f1f5f9;
+      --border: #e2e8f0;
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-foreground: #ffffff;
+      --muted: #f1f5f9;
+      --muted-foreground: #475569;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --background: #090d16;
+        --foreground: #f8fafc;
+        --card: #111827;
+        --card-foreground: #f8fafc;
+        --content: #1e293b;
+        --border: #283548;
+        --primary: #0ea5e9;
+        --primary-dark: #0284c7;
+        --primary-foreground: #ffffff;
+        --muted: #1e293b;
+        --muted-foreground: #94a3b8;
+      }
+    }
+    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--background);
+      color: var(--foreground);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .custom-pin {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      border-radius: 9999px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+      border: 2px solid #fff;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .custom-pin.active {
+      transform: scale(1.35);
+      z-index: 9999 !important;
+      border-color: #fef08a;
+      outline: 4px solid rgba(254, 240, 138, 0.5);
+    }
+    .leaflet-container {
+      background: var(--background);
+      font-family: inherit;
+    }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="flex flex-col h-screen antialiased select-none md:select-text">
+
+  <!-- Offline Status Toast -->
+  <div id="offlineBanner" class="hidden fixed top-0 inset-x-0 z-50 bg-amber-500 text-stone-900 text-xs md:text-sm font-bold text-center py-1.5 px-4 shadow-md transition-all flex items-center justify-center gap-2">
+    <span>📡 离线模式已激活 · 无网状态下所有坐标、路线与应急卡均可离线使用</span>
+  </div>
+
+  <!-- Main Top Bar -->
+  <header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur border-b border-slate-200 dark:border-slate-800 px-4 py-2.5 flex items-center justify-between z-40 shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl flex items-center justify-center text-white font-black shadow-md" style="background-color: var(--primary)">
+        ✈️
+      </div>
+      <div>
+        <h1 class="text-sm md:text-base font-extrabold tracking-tight line-clamp-1">
+          2026 南美 15 日四语随身伴侣
+        </h1>
+        <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium line-clamp-1">
+          2026-10-01 ~ 2026-10-15 · 15 日高定随行
+        </p>
+      </div>
+    </div>
+    
+    <div class="flex items-center gap-2">
+      <!-- Search Trigger -->
+      <div class="relative">
+        <input id="searchInput" type="text" placeholder="搜索景点/酒店/餐厅..." 
+               class="text-xs bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1.5 w-32 md:w-56 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-slate-800 dark:text-slate-100" />
+      </div>
+
+      <!-- Emergency Card CTA -->
+      <button onclick="toggleModal('emergencyModal')" class="px-2.5 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-bold flex items-center gap-1 border border-rose-500/30 transition">
+        <span>🆘</span>
+        <span class="hidden sm:inline">救援急救</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Stage Navigation Bar (Horizontal Scroll) -->
+  <nav class="bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 px-3 py-2 flex items-center gap-1.5 overflow-x-auto hide-scrollbar shrink-0 z-30">
+    <button onclick="filterLayer('all')" class="layer-pill active whitespace-nowrap px-3 py-1 rounded-full text-xs font-bold transition bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm" data-layer="all">
+      全程总览 (39)
+    </button>
+    
+      
+    
+      
+      <button onclick="filterLayer('ba')" class="layer-pill whitespace-nowrap px-3 py-1 rounded-full text-xs font-semibold transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700" data-layer="ba">
+        🇦🇷 布宜诺斯艾利斯 (D1–D3)
+      </button>
+      
+    
+      
+      <button onclick="filterLayer('calafate')" class="layer-pill whitespace-nowrap px-3 py-1 rounded-full text-xs font-semibold transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700" data-layer="calafate">
+        🧊 埃尔卡拉法特·冰川 (D3–D5)
+      </button>
+      
+    
+      
+      <button onclick="filterLayer('iguazu')" class="layer-pill whitespace-nowrap px-3 py-1 rounded-full text-xs font-semibold transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700" data-layer="iguazu">
+        🌊 伊瓜苏大瀑布 (D5–D8)
+      </button>
+      
+    
+      
+      <button onclick="filterLayer('amazon')" class="layer-pill whitespace-nowrap px-3 py-1 rounded-full text-xs font-semibold transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700" data-layer="amazon">
+        🌴 亚马逊雨林 (D8–D11)
+      </button>
+      
+    
+      
+      <button onclick="filterLayer('rio')" class="layer-pill whitespace-nowrap px-3 py-1 rounded-full text-xs font-semibold transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700" data-layer="rio">
+        🇧🇷 里约热内卢 (D11–D15)
+      </button>
+      
+    
+  </nav>
+
+  <!-- Workspace Container: Responsive Split Pane -->
+  <div class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+    
+    <!-- Left Pane: Spatial Map Canvas -->
+    <div id="mapContainer" class="flex-1 relative h-64 md:h-full w-full">
+      <div id="map" class="absolute inset-0 z-0"></div>
+
+      <!-- Floating Map Layer Selector -->
+      <div class="absolute top-3 left-3 z-10 bg-white/95 dark:bg-slate-900/95 backdrop-blur rounded-xl shadow-lg border border-slate-200 dark:border-slate-800 p-1 flex gap-1 text-[11px] font-bold">
+        
+        <button onclick="switchTileLayer('carto_voyager')" id="tileBtn-carto_voyager" class="tile-btn px-2.5 py-1 rounded-lg transition bg-slate-900 text-white dark:bg-white dark:text-slate-900">
+          Carto 精选
+        </button>
+        
+        <button onclick="switchTileLayer('osm')" id="tileBtn-osm" class="tile-btn px-2.5 py-1 rounded-lg transition text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          OpenStreetMap
+        </button>
+        
+        <button onclick="switchTileLayer('carto_dark')" id="tileBtn-carto_dark" class="tile-btn px-2.5 py-1 rounded-lg transition text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          夜间模式
+        </button>
+        
+      </div>
+
+      <!-- Quick Reset View Button -->
+      <button onclick="fitAllBounds()" class="absolute bottom-4 right-4 z-10 w-9 h-9 rounded-xl bg-white/95 dark:bg-slate-900/95 backdrop-blur shadow-lg border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:scale-105 active:scale-95 transition" title="重置视角">
+        🎯
+      </button>
+    </div>
+
+    <!-- Right Pane: Tabs & Content Sheets -->
+    <div id="rightDrawer" class="w-full md:w-[480px] lg:w-[540px] flex flex-col bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 shadow-xl z-20 overflow-hidden h-1/2 md:h-full">
+      
+      <!-- Right Pane Sub-header / Tab Bar -->
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-4 py-2 bg-slate-50/80 dark:bg-slate-950/80 shrink-0">
+        <div class="flex gap-2">
+          <button onclick="switchTab('itinerary')" id="tabBtn-itinerary" class="tab-btn active text-xs font-bold px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 shadow-sm text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700">
+            📍 行程名录 (<span id="placeCountBadge">39</span>)
+          </button>
+          
+          <button onclick="switchTab('phrases')" id="tabBtn-phrases" class="tab-btn text-xs font-semibold px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+            🗣️ 生存口语
+          </button>
+          
+          <button onclick="switchTab('photos')" id="tabBtn-photos" class="tab-btn text-xs font-semibold px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+            📷 实拍集锦 (1)
+          </button>
+          
+        </div>
+      </div>
+
+      <!-- Tab Content Area -->
+      <div class="flex-1 overflow-y-auto p-4 space-y-4">
+        
+        <!-- Active Selected Place Card (Highlighted Hero Card) -->
+        <div id="activePlaceCard" class="hidden rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800/60 dark:to-slate-900/60 border-2 border-primary/40 p-4 shadow-lg transition-all animate-fadeIn">
+          <div class="flex items-start justify-between gap-2 mb-2">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span id="activePlaceBadge" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-slate-900 text-white dark:bg-white dark:text-slate-900">#0</span>
+                <span id="activePlaceDay" class="text-xs font-bold text-primary">D1</span>
+                <span id="activePlaceCat" class="text-[11px] font-semibold text-slate-500">景点</span>
+                <span id="activePlaceAltitude" class="hidden px-1.5 py-0.5 rounded text-[10px] font-black bg-amber-500/20 text-amber-600">⛰️ 0m</span>
+              </div>
+              <h2 id="activePlaceNameZh" class="text-lg font-black tracking-tight text-slate-900 dark:text-white leading-tight"></h2>
+              <p id="activePlaceNameEn" class="text-xs text-slate-500 dark:text-slate-400 font-medium"></p>
+            </div>
+            <button onclick="closeActivePlace()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1">
+              ✕
+            </button>
+          </div>
+
+          <!-- Tactile Audio Pronunciation Strip -->
+          <div id="activePlacePronounceStrip" class="my-3 bg-white dark:bg-slate-800 rounded-xl p-2.5 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3 shadow-sm">
+            <div class="flex-1 min-w-0">
+              <div class="text-[10px] font-bold text-slate-400 flex items-center gap-1">
+                <span>🔊 当地语言发音示范</span>
+                <span id="activePlaceLangCode" class="uppercase px-1 py-0.2 rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">LOCAL</span>
+              </div>
+              <p id="activePlaceLocalName" class="text-sm font-extrabold text-slate-800 dark:text-slate-100 truncate mt-0.5"></p>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button onclick="speakCurrent(1.0)" class="px-2.5 py-1.5 rounded-lg bg-primary text-white text-xs font-bold hover:opacity-90 active:scale-95 transition flex items-center gap-1">
+                <span>🔊</span> 1.0x
+              </button>
+              <button onclick="speakCurrent(0.65)" class="px-2.5 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold hover:bg-slate-300 dark:hover:bg-slate-600 active:scale-95 transition flex items-center gap-1" title="慢速跟读">
+                <span>🐢</span> 0.65x
+              </button>
+            </div>
+          </div>
+
+          <!-- Story & High Altitude / Important Warning -->
+          <p id="activePlaceStory" class="text-xs leading-relaxed text-slate-700 dark:text-slate-300 mb-3"></p>
+          <div id="activePlaceWarningBox" class="hidden p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-300 text-xs mb-3 font-medium flex items-start gap-2">
+            <span>⚠️</span>
+            <span id="activePlaceWarningText"></span>
+          </div>
+
+          <!-- 3 Primary CTAs (44px min touch target) -->
+          <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+            <a id="activeNavBtn" href="#" target="_blank" class="h-11 rounded-xl bg-primary text-white text-xs font-extrabold flex flex-col items-center justify-center shadow-md hover:opacity-90 active:scale-95 transition">
+              <span>📍 导航定位</span>
+              <span class="text-[9px] opacity-80">一键路线</span>
+            </a>
+            <a id="activeRideBtn" href="#" target="_blank" class="h-11 rounded-xl bg-slate-800 dark:bg-slate-700 text-white text-xs font-extrabold flex flex-col items-center justify-center shadow-md hover:opacity-90 active:scale-95 transition">
+              <span id="activeRideLabel">🚗 一键叫车</span>
+              <span class="text-[9px] opacity-80">直达坐标</span>
+            </a>
+            <button onclick="showDriverCard()" class="h-11 rounded-xl bg-amber-500 text-stone-900 text-xs font-extrabold flex flex-col items-center justify-center shadow-md hover:bg-amber-400 active:scale-95 transition">
+              <span>🗣️ 司机问路卡</span>
+              <span class="text-[9px] opacity-80">大字免沟通</span>
+            </button>
+          </div>
+
+          <!-- Knowledge & Review Chips (Dual-Network) -->
+          <div id="activePlaceKnowledgeStrip" class="flex flex-wrap gap-1.5 mt-3 pt-2">
+            <!-- Dynamically rendered knowledge chips (Baike, Xiaohongshu, Ctrip, Wikipedia) -->
+          </div>
+        </div>
+
+        <!-- Section 1: Itinerary List View -->
+        <div id="tab-itinerary" class="space-y-2.5">
+          <div id="placesList" class="space-y-2">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        
+
+        <!-- Section 3: Survival Phrasebook -->
+        <div id="tab-phrases" class="hidden space-y-3">
+          
+          <div class="rounded-2xl bg-slate-50 dark:bg-slate-800/80 p-3.5 border border-slate-200 dark:border-slate-700 space-y-2">
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">
+              🗣️ AR 实用随身锦囊
+            </h4>
+            <div class="space-y-2">
+              
+              <div class="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 shadow-sm">
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-bold text-slate-900 dark:text-white">请带我去这个地址</p>
+                  <p class="text-xs font-extrabold text-primary truncate mt-0.5">Por favor, ¿me lleva a esta dirección?</p>
+                  
+                </div>
+                <button onclick="speakPhrase('Por favor, ¿me lleva a esta dirección?', 'es-AR')" class="w-8 h-8 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-white text-xs font-bold flex items-center justify-center shrink-0 transition">
+                  🔊
+                </button>
+              </div>
+              
+              <div class="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 shadow-sm">
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-bold text-slate-900 dark:text-white">请问这个多少钱？</p>
+                  <p class="text-xs font-extrabold text-primary truncate mt-0.5">Disculpe, ¿cuánto cuesta esto?</p>
+                  
+                </div>
+                <button onclick="speakPhrase('Disculpe, ¿cuánto cuesta esto?', 'es-AR')" class="w-8 h-8 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-white text-xs font-bold flex items-center justify-center shrink-0 transition">
+                  🔊
+                </button>
+              </div>
+              
+              <div class="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 shadow-sm">
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-bold text-slate-900 dark:text-white">买单，谢谢 (餐厅结账)</p>
+                  <p class="text-xs font-extrabold text-primary truncate mt-0.5">La cuenta, por favor. ¡Muchas gracias!</p>
+                  
+                </div>
+                <button onclick="speakPhrase('La cuenta, por favor. ¡Muchas gracias!', 'es-AR')" class="w-8 h-8 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-white text-xs font-bold flex items-center justify-center shrink-0 transition">
+                  🔊
+                </button>
+              </div>
+              
+              <div class="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 shadow-sm">
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-bold text-slate-900 dark:text-white">有什么招牌菜/牛排推荐吗？</p>
+                  <p class="text-xs font-extrabold text-primary truncate mt-0.5">¿Qué plato o corte de carne me recomienda?</p>
+                  
+                </div>
+                <button onclick="speakPhrase('¿Qué plato o corte de carne me recomienda?', 'es-AR')" class="w-8 h-8 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-white text-xs font-bold flex items-center justify-center shrink-0 transition">
+                  🔊
+                </button>
+              </div>
+              
+              <div class="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 shadow-sm">
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-bold text-slate-900 dark:text-white">请问洗手间在哪里？</p>
+                  <p class="text-xs font-extrabold text-primary truncate mt-0.5">Disculpe, ¿dónde está el baño?</p>
+                  
+                </div>
+                <button onclick="speakPhrase('Disculpe, ¿dónde está el baño?', 'es-AR')" class="w-8 h-8 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-white text-xs font-bold flex items-center justify-center shrink-0 transition">
+                  🔊
+                </button>
+              </div>
+              
+              <div class="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 shadow-sm">
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-bold text-slate-900 dark:text-white">可以刷信用卡吗？</p>
+                  <p class="text-xs font-extrabold text-primary truncate mt-0.5">¿Aceptan tarjeta de crédito?</p>
+                  
+                </div>
+                <button onclick="speakPhrase('¿Aceptan tarjeta de crédito?', 'es-AR')" class="w-8 h-8 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-white text-xs font-bold flex items-center justify-center shrink-0 transition">
+                  🔊
+                </button>
+              </div>
+              
+            </div>
+          </div>
+          
+          <div class="rounded-2xl bg-slate-50 dark:bg-slate-800/80 p-3.5 border border-slate-200 dark:border-slate-700 space-y-2">
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">
+              🗣️ BR 实用随身锦囊
+            </h4>
+            <div class="space-y-2">
+              
+              <div class="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 shadow-sm">
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-bold text-slate-900 dark:text-white">请带我去这个地址</p>
+                  <p class="text-xs font-extrabold text-primary truncate mt-0.5">Por favor, pode me levar para este endereço?</p>
+                  
+                </div>
+                <button onclick="speakPhrase('Por favor, pode me levar para este endereço?', 'pt-BR')" class="w-8 h-8 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-white text-xs font-bold flex items-center justify-center shrink-0 transition">
+                  🔊
+                </button>
+              </div>
+              
+              <div class="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 shadow-sm">
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-bold text-slate-900 dark:text-white">请问这个多少钱？</p>
+                  <p class="text-xs font-extrabold text-primary truncate mt-0.5">Com licença, quanto custa isso?</p>
+                  
+                </div>
+                <button onclick="speakPhrase('Com licença, quanto custa isso?', 'pt-BR')" class="w-8 h-8 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-white text-xs font-bold flex items-center justify-center shrink-0 transition">
+                  🔊
+                </button>
+              </div>
+              
+              <div class="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 shadow-sm">
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-bold text-slate-900 dark:text-white">买单，谢谢 (餐厅结账)</p>
+                  <p class="text-xs font-extrabold text-primary truncate mt-0.5">A conta, por favor. Muito obrigado!</p>
+                  
+                </div>
+                <button onclick="speakPhrase('A conta, por favor. Muito obrigado!', 'pt-BR')" class="w-8 h-8 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-white text-xs font-bold flex items-center justify-center shrink-0 transition">
+                  🔊
+                </button>
+              </div>
+              
+              <div class="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 shadow-sm">
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-bold text-slate-900 dark:text-white">有什么特色菜推荐吗？</p>
+                  <p class="text-xs font-extrabold text-primary truncate mt-0.5">Qual prato típico você recomenda?</p>
+                  
+                </div>
+                <button onclick="speakPhrase('Qual prato típico você recomenda?', 'pt-BR')" class="w-8 h-8 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-white text-xs font-bold flex items-center justify-center shrink-0 transition">
+                  🔊
+                </button>
+              </div>
+              
+              <div class="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 shadow-sm">
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-bold text-slate-900 dark:text-white">请问洗手间在哪里？</p>
+                  <p class="text-xs font-extrabold text-primary truncate mt-0.5">Por favor, onde fica o banheiro?</p>
+                  
+                </div>
+                <button onclick="speakPhrase('Por favor, onde fica o banheiro?', 'pt-BR')" class="w-8 h-8 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-white text-xs font-bold flex items-center justify-center shrink-0 transition">
+                  🔊
+                </button>
+              </div>
+              
+              <div class="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 shadow-sm">
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-bold text-slate-900 dark:text-white">可以刷信用卡吗 (Crédito)？</p>
+                  <p class="text-xs font-extrabold text-primary truncate mt-0.5">Aceita cartão de crédito?</p>
+                  
+                </div>
+                <button onclick="speakPhrase('Aceita cartão de crédito?', 'pt-BR')" class="w-8 h-8 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-white text-xs font-bold flex items-center justify-center shrink-0 transition">
+                  🔊
+                </button>
+              </div>
+              
+            </div>
+          </div>
+          
+        </div>
+
+        
+        <!-- Section 4: Live Photo Moments -->
+        <div id="tab-photos" class="hidden space-y-3">
+          <div class="grid grid-cols-1 gap-3">
+            
+            <div class="rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+              <img src="https://youngapple.github.io/south-america-2026/photos/el_calafate_nimez_sunset.jpg" alt="巴塔哥尼亚破云晚霞与野生麦哲伦雁" class="w-full h-48 object-cover cursor-pointer hover:scale-105 transition duration-300" onclick="openPhotoModal('https://youngapple.github.io/south-america-2026/photos/el_calafate_nimez_sunset_orig.jpg', '巴塔哥尼亚破云晚霞与野生麦哲伦雁')" loading="lazy" />
+              <div class="p-3">
+                <div class="flex items-center justify-between text-[11px] font-bold text-slate-400 mb-1">
+                  <span>D3 · 10/03 · El Calafate, Patagonia</span>
+                  <span class="text-primary">#13 埃尔卡拉法特 · 尼梅兹泻湖湿地 &amp; 安第斯雪山</span>
+                </div>
+                <h4 class="text-xs font-black text-slate-900 dark:text-white mb-1">巴塔哥尼亚破云晚霞与野生麦哲伦雁</h4>
+                <p class="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">黄昏时分的 El Calafate 湖畔草甸，一只巴塔哥尼亚野生雌性麦哲伦雁（Upland Goose / 西语 Cauquén común）在静谧水湾前侧首回望；中景是依坡散落的小镇屋舍与苍茫的巴塔哥尼亚高原阶地，远处皑皑白雪的安第斯山脉在厚云间裂开一道暖金色晚霞。</p>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+        
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Driver / Large Card Modal -->
+  <div id="driverModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4 text-center">
+      <div class="text-[11px] font-extrabold uppercase tracking-widest text-slate-400">
+        🚗 请向司机或问路人直接出示本卡片
+      </div>
+      <div class="py-4 border-y border-slate-200 dark:border-slate-800">
+        <h2 id="driverCardTitle" class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white leading-tight"></h2>
+        <p id="driverCardSub" class="text-sm font-bold text-primary mt-2"></p>
+        <p id="driverCardAddress" class="text-xs text-slate-500 dark:text-slate-400 mt-2 px-4"></p>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="speakDriverCard()" class="flex-1 py-3 rounded-2xl bg-primary text-white font-extrabold text-sm shadow-lg hover:opacity-90 active:scale-95 transition flex items-center justify-center gap-1.5">
+          <span>🔊</span> 朗读播报
+        </button>
+        <button onclick="toggleModal('driverModal')" class="flex-1 py-3 rounded-2xl bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-extrabold text-sm hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition">
+          关闭
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Emergency Contacts Modal -->
+  <div id="emergencyModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-black text-rose-600 dark:text-rose-400 flex items-center gap-2">
+          <span>🆘</span> 紧急求助与医疗联络人
+        </h3>
+        <button onclick="toggleModal('emergencyModal')" class="text-slate-400 hover:text-slate-600 p-1">✕</button>
+      </div>
+      <p class="text-xs text-slate-500 leading-relaxed">
+        如遇人身安全、高反重症或紧急证件遗失，可直接点击下方按钮发起直拨呼叫：
+      </p>
+      <div class="space-y-2">
+        
+        <a href="tel:+54-911-43997455" class="p-3 rounded-2xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 flex items-center justify-between transition group">
+          <div>
+            <div class="text-xs font-black text-slate-900 dark:text-white">领事保护与协助</div>
+            <div class="text-[10px] text-slate-500">中国驻阿根廷大使馆 · 24小时领事保护电话</div>
+          </div>
+          <div class="text-xs font-extrabold text-rose-600 font-mono group-hover:scale-105 transition">
+            📞 +54-911-43997455
+          </div>
+        </a>
+        
+        <a href="tel:+55-21-987623698" class="p-3 rounded-2xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 flex items-center justify-between transition group">
+          <div>
+            <div class="text-xs font-black text-slate-900 dark:text-white">领保应急热线</div>
+            <div class="text-[10px] text-slate-500">中国驻里约热内卢总领馆 · 巴西紧急领事保护</div>
+          </div>
+          <div class="text-xs font-extrabold text-rose-600 font-mono group-hover:scale-105 transition">
+            📞 +55-21-987623698
+          </div>
+        </a>
+        
+        <a href="tel:911" class="p-3 rounded-2xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 flex items-center justify-between transition group">
+          <div>
+            <div class="text-xs font-black text-slate-900 dark:text-white">急救 107 / 报警 911</div>
+            <div class="text-[10px] text-slate-500">阿根廷紧急报警/救护 · 当地紧急电话</div>
+          </div>
+          <div class="text-xs font-extrabold text-rose-600 font-mono group-hover:scale-105 transition">
+            📞 911
+          </div>
+        </a>
+        
+      </div>
+      <button onclick="toggleModal('emergencyModal')" class="w-full py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs">
+        返回行程
+      </button>
+    </div>
+  </div>
+
+  <!-- Data Injection -->
+  <script>
+    const TRIP_DATA = {"id": "south-america-2026", "titleZh": "2026 南美 15 日四语随身伴侣", "titleEn": "2026 South America 15-Day Expedition Companion", "subtitleZh": "布宜诺斯艾利斯 · 巴塔哥尼亚莫雷诺冰川 · 伊瓜苏双瀑 · 亚马逊热带雨林 · 里约热内卢", "startDate": "2026-10-01", "endDate": "2026-10-15", "totalDays": 15, "networkProfile": "global", "themeColor": "#0284c7", "secondaryColor": "#0369a1", "accentColor": "#0ea5e9", "currency": "USD / ARS / BRL", "currencySymbol": "$", "emergencyContacts": [{"roleZh": "中国驻阿根廷大使馆", "nameZh": "领事保护与协助", "phone": "+54-911-43997455", "noteZh": "24小时领事保护电话"}, {"roleZh": "中国驻里约热内卢总领馆", "nameZh": "领保应急热线", "phone": "+55-21-987623698", "noteZh": "巴西紧急领事保护"}, {"roleZh": "阿根廷紧急报警/救护", "nameZh": "急救 107 / 报警 911", "phone": "911", "noteZh": "当地紧急电话"}], "layers": [{"id": "all", "nameZh": "🌎 全程总览", "nameEn": "All 39 Stops", "desc": "阿根廷与巴西双国 5 大阶段完整纵贯线"}, {"id": "ba", "nameZh": "🇦🇷 布宜诺斯艾利斯 (D1–D3)", "nameEn": "Buenos Aires", "desc": "探戈发源地、雅典人书店、博卡彩色街区与世界最宽大道"}, {"id": "calafate", "nameZh": "🧊 埃尔卡拉法特·冰川 (D3–D5)", "nameEn": "El Calafate", "desc": "巴塔哥尼亚高原、佩里托莫雷诺冰川破冰健行与阿根廷烤全羊"}, {"id": "iguazu", "nameZh": "🌊 伊瓜苏大瀑布 (D5–D8)", "nameEn": "Iguazú Falls", "desc": "阿根廷魔鬼咽喉冲瀑 + 巴西全景栈道 + 鸟园生态"}, {"id": "amazon", "nameZh": "🌴 亚马逊雨林 (D8–D11)", "nameEn": "Amazon Rainforest", "desc": "玛瑙斯内格罗河与索利蒙伊斯河黑白交汇、钓食人鱼、夜巡凯门鳄"}, {"id": "rio", "nameZh": "🇧🇷 里约热内卢 (D11–D15)", "nameEn": "Rio de Janeiro", "desc": "救世基督像、糖面包山缆车、科帕卡巴纳海滩与赛利隆阶梯"}], "places": [{"id": 1, "layer": "ba", "country": "AR", "city": "Buenos Aires", "uberAvailable": true, "layerZh": "L1 布宜诺斯艾利斯 (D1–D3)", "layerEn": "L1 Buenos Aires (D1–D3)", "day": "D1 (10/01)", "dayNum": [1], "cat": "airport", "catZh": "机场", "catEn": "Airport", "nameZh": "埃塞萨皮斯塔里尼部长国际机场 (EZE)", "nameEn": "Ministro Pistarini International Airport (Ezeiza · EZE)", "nameEs": "Aeropuerto Internacional Ministro Pistarini (Ezeiza)", "namePt": "Aeroporto Internacional Ministro Pistarini (Ezeiza)", "wikiZh": "埃塞萨皮斯塔里尼部长国际机场", "wikiEn": "Ministro_Pistarini_International_Airport", "wikiLocal": "es:Aeropuerto_Internacional_Ministro_Pistarini", "storyZh": "布宜诺斯艾利斯最主要的国际门户机场（代号 EZE），位于西南郊埃塞萨，距市区约 35 公里。注意：布宜有两大机场，国际抵达在 EZE，而 D3 飞往冰川和伊瓜苏的国内航班在市区的乔治·纽伯里机场 (AEP)！", "lat": -34.8222, "lng": -58.5358, "address": "AU Tte. Gral. Pablo Ricchieri Km 33.5, B1802 Ezeiza, Provincia de Buenos Aires, Argentina", "hours": "D1 22:26 CM219 抵达 IA 航站楼 | Arrives 22:26 on Copa CM219", "note": "⚠️ 国际段抵达机场（距市区约40分钟车程）。切记：D3 飞卡拉法特是从市区的 AEP 机场起飞，千万别走错到 EZE！", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-34.8222,-58.5358", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-34.8222&dropoff[longitude]=-58.5358&dropoff[nickname]=Ministro%20Pistarini%20International%20Airport%20%28Ezeiza%20%C2%B7%20EZE%29&dropoff[formatted_address]=AU%20Tte.%20Gral.%20Pablo%20Ricchieri%20Km%2033.5%2C%20B1802%20Ezeiza%2C%20Provincia%20de%20Buenos%20Aires%2C%20Argentina", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E5%9F%83%E5%A1%9E%E8%90%A8%E7%9A%AE%E6%96%AF%E5%A1%94%E9%87%8C%E5%B0%BC%E9%83%A8%E9%95%BF%E5%9B%BD%E9%99%85%E6%9C%BA%E5%9C%BA", "wikiEn": "https://en.wikipedia.org/wiki/Ministro_Pistarini_International_Airport", "wikiLocal": "https://es.wikipedia.org/wiki/Aeropuerto_Internacional_Ministro_Pistarini"}}, {"id": 2, "layer": "ba", "country": "AR", "city": "Palermo, Buenos Aires", "uberAvailable": true, "layerZh": "L1 布宜诺斯艾利斯 (D1–D3)", "layerEn": "L1 Buenos Aires (D1–D3)", "day": "D1–D3 (10/01–03)", "dayNum": [1, 2, 3], "cat": "hotel", "catZh": "酒店", "catEn": "Hotel", "nameZh": "布宜诺斯艾利斯达斯勒马球温德姆酒店", "nameEn": "Dazzler by Wyndham Buenos Aires Polo", "nameEs": "Hotel Dazzler by Wyndham Buenos Aires Polo", "namePt": "Hotel Dazzler by Wyndham Buenos Aires Polo", "wikiZh": "巴勒莫_(布宜诺斯艾利斯)", "wikiEn": "Palermo,_Buenos_Aires", "wikiLocal": "es:Palermo_(Buenos_Aires)", "storyZh": "酒店坐落于布宜诺斯艾利斯最安全、最时尚的巴勒莫 (Palermo) 街区，紧邻著名的阿根廷皇家马球场 (Campo Argentino de Polo) 与巴勒莫森林公园，步行圈内云集了 Don Julio 等世界顶级炭烤牛排馆。", "lat": -34.5746, "lng": -58.4239, "address": "Sinclair 2929, C1425 Cdad. Autónoma de Buenos Aires (Palermo), Argentina", "hours": "连住 2 晚 (10/01–10/03) | 2 Nights Stay", "note": "位于安全的 Palermo 富人区，距 AEP 市区机场仅 12 分钟车程。注：南美环保规定酒店通常不提供一次性牙刷牙膏，请自带。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-34.5746,-58.4239", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-34.5746&dropoff[longitude]=-58.4239&dropoff[nickname]=Dazzler%20by%20Wyndham%20Buenos%20Aires%20Polo&dropoff[formatted_address]=Sinclair%202929%2C%20C1425%20Cdad.%20Aut%C3%B3noma%20de%20Buenos%20Aires%20%28Palermo%29%2C%20Argentina", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E5%B7%B4%E5%8B%92%E8%8E%AB_%28%E5%B8%83%E5%AE%9C%E8%AF%BA%E6%96%AF%E8%89%BE%E5%88%A9%E6%96%AF%29", "wikiEn": "https://en.wikipedia.org/wiki/Palermo%2C_Buenos_Aires", "wikiLocal": "https://es.wikipedia.org/wiki/Palermo_%28Buenos_Aires%29"}}, {"id": 3, "layer": "ba", "country": "AR", "city": "Microcentro, Buenos Aires", "uberAvailable": true, "layerZh": "L1 布宜诺斯艾利斯 (D1–D3)", "layerEn": "L1 Buenos Aires (D1–D3)", "day": "D2 (10/02)", "dayNum": [2], "cat": "attraction", "catZh": "景点", "catEn": "Attraction", "nameZh": "五月广场 & 玫瑰宫 (总统府)", "nameEn": "Plaza de Mayo & Casa Rosada (Presidential Palace)", "nameEs": "Plaza de Mayo y Casa Rosada", "namePt": "Praça de Maio e Casa Rosada", "wikiZh": "玫瑰宫", "wikiEn": "Casa_Rosada", "wikiLocal": "es:Casa_Rosada", "storyZh": "1810 年阿根廷「五月革命」的发源地。东侧粉红色的总统府「玫瑰宫 (Casa Rosada)」融合了意大利文艺复兴与法式风格，1946 年贝隆夫人 (Evita) 就是在二楼阳台上向民众发表演说（《Don't Cry for Me Argentina》实景地）。", "lat": -34.6083, "lng": -58.3722, "address": "Balcarce 50, C1064 Cdad. Autónoma de Buenos Aires, Argentina", "hours": "全天开放（建议游玩 1–2 小时）| Open 24h", "note": "布宜历史中心起点，总统府玫瑰宫与主座堂相邻，步行几分钟即可去百年咖啡馆 Café Tortoni。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-34.6083,-58.3722", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-34.6083&dropoff[longitude]=-58.3722&dropoff[nickname]=Plaza%20de%20Mayo%20%26%20Casa%20Rosada%20%28Presidential%20Palace%29&dropoff[formatted_address]=Balcarce%2050%2C%20C1064%20Cdad.%20Aut%C3%B3noma%20de%20Buenos%20Aires%2C%20Argentina", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E7%8E%AB%E7%91%B0%E5%AE%AB", "wikiEn": "https://en.wikipedia.org/wiki/Casa_Rosada", "wikiLocal": "https://es.wikipedia.org/wiki/Casa_Rosada"}}, {"id": 4, "layer": "ba", "country": "AR", "city": "Microcentro, Buenos Aires", "uberAvailable": true, "layerZh": "L1 布宜诺斯艾利斯 (D1–D3)", "layerEn": "L1 Buenos Aires (D1–D3)", "day": "D2 (10/02)", "dayNum": [2], "cat": "attraction", "catZh": "景点", "catEn": "Attraction", "nameZh": "布宜诺斯艾利斯主教座堂", "nameEn": "Buenos Aires Metropolitan Cathedral", "nameEs": "Catedral Metropolitana de Buenos Aires", "namePt": "Catedral Metropolitana de Buenos Aires", "wikiZh": "布宜诺斯艾利斯主教座堂", "wikiEn": "Buenos_Aires_Metropolitan_Cathedral", "wikiLocal": "es:Catedral_metropolitana_de_Buenos_Aires", "storyZh": "外观酷似古希腊神庙（12 根科林斯石柱象征十二使徒），内部则是宏伟的 18 世纪巴洛克金箔穹顶。这里是已故教宗方济各担任大主教长达 15 年的驻地，右侧礼拜堂安放着南美解放者圣马丁将军的陵墓。", "lat": -34.6076, "lng": -58.3733, "address": "San Martín 27, C1004 Cdad. Autónoma de Buenos Aires, Argentina", "hours": "周一至周五 07:30–18:30；周末 09:00–17:00", "note": "免费入内参观，内有阿根廷国父圣马丁将军陵墓（有礼兵守卫），就在五月广场西北角。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-34.6076,-58.3733", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-34.6076&dropoff[longitude]=-58.3733&dropoff[nickname]=Buenos%20Aires%20Metropolitan%20Cathedral&dropoff[formatted_address]=San%20Mart%C3%ADn%2027%2C%20C1004%20Cdad.%20Aut%C3%B3noma%20de%20Buenos%20Aires%2C%20Argentina", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E5%B8%83%E5%AE%9C%E8%AF%BA%E6%96%AF%E8%89%BE%E5%88%A9%E6%96%AF%E4%B8%BB%E6%95%99%E5%BA%A7%E5%A0%82", "wikiEn": "https://en.wikipedia.org/wiki/Buenos_Aires_Metropolitan_Cathedral", "wikiLocal": "https://es.wikipedia.org/wiki/Catedral_metropolitana_de_Buenos_Aires"}}, {"id": 5, "layer": "ba", "country": "AR", "city": "San Nicolás, Buenos Aires", "uberAvailable": true, "layerZh": "L1 布宜诺斯艾利斯 (D1–D3)", "layerEn": "L1 Buenos Aires (D1–D3)", "day": "D2 (10/02)", "dayNum": [2], "cat": "attraction", "catZh": "景点", "catEn": "Attraction", "nameZh": "布宜诺斯艾利斯方尖碑 (七月九日大道)", "nameEn": "Obelisco de Buenos Aires (Av. 9 de Julio)", "nameEs": "Obelisco de Buenos Aires (Avenida 9 de Julio)", "namePt": "Obelisco de Buenos Aires (Avenida 9 de Julho)", "wikiZh": "布宜诺斯艾利斯方尖碑", "wikiEn": "Obelisco_de_Buenos_Aires", "wikiLocal": "es:Obelisco_de_Buenos_Aires", "storyZh": "建于 1936 年以纪念布宜建城 400 周年，高 67.5 米，矗立在世界最宽的「七月九日大道 (Av. 9 de Julio)」与科连特斯剧院街交汇处。每逢阿根廷国家队夺冠，这里都是百万人狂欢的心脏。", "lat": -34.6037, "lng": -58.3816, "address": "Av. 9 de Julio s/n, C1043 Cdad. Autónoma de Buenos Aires, Argentina", "hours": "全天开放（地标打卡 30 分钟）| Open 24h", "note": "双向 16 车道的世界最宽大道中央，在北侧 BA 巨型绿植字母雕像处拍照角度最佳。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-34.6037,-58.3816", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-34.6037&dropoff[longitude]=-58.3816&dropoff[nickname]=Obelisco%20de%20Buenos%20Aires%20%28Av.%209%20de%20Julio%29&dropoff[formatted_address]=Av.%209%20de%20Julio%20s/n%2C%20C1043%20Cdad.%20Aut%C3%B3noma%20de%20Buenos%20Aires%2C%20Argentina", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E5%B8%83%E5%AE%9C%E8%AF%BA%E6%96%AF%E8%89%BE%E5%88%A9%E6%96%AF%E6%96%B9%E5%B0%96%E7%A2%91", "wikiEn": "https://en.wikipedia.org/wiki/Obelisco_de_Buenos_Aires", "wikiLocal": "https://es.wikipedia.org/wiki/Obelisco_de_Buenos_Aires"}}, {"id": 6, "layer": "ba", "country": "AR", "city": "La Boca, Buenos Aires", "uberAvailable": true, "layerZh": "L1 布宜诺斯艾利斯 (D1–D3)", "layerEn": "L1 Buenos Aires (D1–D3)", "day": "D2 (10/02)", "dayNum": [2], "cat": "attraction", "catZh": "景点", "catEn": "Attraction", "nameZh": "博卡区卡米尼托彩色街", "nameEn": "Caminito Street, La Boca", "nameEs": "Calle Museo Caminito, La Boca", "namePt": "Caminito, Bairro de La Boca", "wikiZh": "卡米尼托", "wikiEn": "Caminito", "wikiLocal": "es:Caminito", "storyZh": "19 世纪末意大利热那亚水手与移民聚居的港口街区，船工们用修船剩下的各色船漆涂刷波纹铁皮屋，形成了绚丽的彩色街景。这里是阿根廷探戈的重要发源地，旁边就是马拉多纳曾效力的博卡青年队主场「糖果盒球场 (La Bombonera)」。", "lat": -34.6394, "lng": -58.3627, "address": "Av. Don Pedro de Mendoza 1835, C1169 Cdad. Autónoma de Buenos Aires, Argentina", "hours": "全天开放（⚠️ 强烈建议仅在白天 10:00–17:00 游览）", "note": "⚠️ 安全重点：仅在卡米尼托旅游核心街区活动，切勿偏离主街深入周边小巷，拍完照直接叫 Uber 离开。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-34.6394,-58.3627", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-34.6394&dropoff[longitude]=-58.3627&dropoff[nickname]=Caminito%20Street%2C%20La%20Boca&dropoff[formatted_address]=Av.%20Don%20Pedro%20de%20Mendoza%201835%2C%20C1169%20Cdad.%20Aut%C3%B3noma%20de%20Buenos%20Aires%2C%20Argentina", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E5%8D%A1%E7%B1%B3%E5%B0%BC%E6%89%98", "wikiEn": "https://en.wikipedia.org/wiki/Caminito", "wikiLocal": "https://es.wikipedia.org/wiki/Caminito"}}, {"id": 7, "layer": "ba", "country": "AR", "city": "Recoleta, Buenos Aires", "uberAvailable": true, "layerZh": "L1 布宜诺斯艾利斯 (D1–D3)", "layerEn": "L1 Buenos Aires (D1–D3)", "day": "D2 (10/02)", "dayNum": [2], "cat": "attraction", "catZh": "景点", "catEn": "Attraction", "nameZh": "雅典人书店 (全球最美剧院书店)", "nameEn": "El Ateneo Grand Splendid Bookstore", "nameEs": "Librería El Ateneo Grand Splendid", "namePt": "Livraria El Ateneo Grand Splendid", "wikiZh": "雅典人书店", "wikiEn": "El_Ateneo_Grand_Splendid", "wikiLocal": "es:El_Ateneo_Grand_Splendid", "storyZh": "前身是 1919 年落成的 Grand Splendid 大剧院（探戈传奇歌王 Carlos Gardel 曾在此登台录音）。2000 年改建为书店时完整保留了剧院包厢、红色天鹅绒幕布与意大利画家绘制的和平穹顶壁画，被《国家地理》评为全球最美书店。", "lat": -34.5959, "lng": -58.3942, "address": "Av. Sta. Fe 1860, C1123 Cdad. Autónoma de Buenos Aires, Argentina", "hours": "周一至周六 09:00–21:00；周日 12:00–21:00", "note": "原来的剧院主舞台现在是咖啡厅，推荐登上二楼包厢俯拍整个剧院书店全景。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-34.5959,-58.3942", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-34.5959&dropoff[longitude]=-58.3942&dropoff[nickname]=El%20Ateneo%20Grand%20Splendid%20Bookstore&dropoff[formatted_address]=Av.%20Sta.%20Fe%201860%2C%20C1123%20Cdad.%20Aut%C3%B3noma%20de%20Buenos%20Aires%2C%20Argentina", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E9%9B%85%E5%85%B8%E4%BA%BA%E4%B9%A6%E5%BA%97", "wikiEn": "https://en.wikipedia.org/wiki/El_Ateneo_Grand_Splendid", "wikiLocal": "https://es.wikipedia.org/wiki/El_Ateneo_Grand_Splendid"}}, {"id": 8, "layer": "ba", "country": "AR", "city": "San Telmo, Buenos Aires", "uberAvailable": true, "layerZh": "L1 布宜诺斯艾利斯 (D1–D3)", "layerEn": "L1 Buenos Aires (D1–D3)", "day": "D2 晚 (10/02)", "dayNum": [2], "cat": "show", "catZh": "演出/晚宴", "catEn": "Tango Show", "nameZh": "老仓库探戈秀 (含三道式晚宴)", "nameEn": "El Viejo Almacén Tango Show & Dinner", "nameEs": "El Viejo Almacén Casa de Tango", "namePt": "El Viejo Almacén Show de Tango", "wikiZh": "探戈", "wikiEn": "Tango", "wikiLocal": "es:El_Viejo_Almacén", "storyZh": "坐落于圣特尔莫古董街区 1798 年的殖民时期老建筑内，1969 年由探戈大师 Edmundo Rivero 创立，是布宜历史最悠久、最正统的传统探戈殿堂 (Tango Tradicional)。", "lat": -34.6165, "lng": -58.3688, "address": "Av. Independencia 299, C1099 Cdad. Autónoma de Buenos Aires, Argentina", "hours": "D2 晚 20:00 晚宴 / 22:00 探戈演出 (含接送)", "note": "包含阿根廷传统三道式牛排晚宴、马尔贝克红酒与百年老字号探戈演出。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-34.6165,-58.3688", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-34.6165&dropoff[longitude]=-58.3688&dropoff[nickname]=El%20Viejo%20Almac%C3%A9n%20Tango%20Show%20%26%20Dinner&dropoff[formatted_address]=Av.%20Independencia%20299%2C%20C1099%20Cdad.%20Aut%C3%B3noma%20de%20Buenos%20Aires%2C%20Argentina", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E6%8E%A2%E6%88%88", "wikiEn": "https://en.wikipedia.org/wiki/Tango", "wikiLocal": "https://es.wikipedia.org/wiki/El_Viejo_Almac%C3%A9n"}}, {"id": 9, "layer": "ba", "country": "AR", "city": "Palermo, Buenos Aires", "uberAvailable": true, "layerZh": "L1 布宜诺斯艾利斯 (D1–D3)", "layerEn": "L1 Buenos Aires (D1–D3)", "day": "D3 & D5 (10/03 & 05)", "dayNum": [3, 5], "cat": "airport", "catZh": "机场", "catEn": "Airport", "nameZh": "乔治·纽伯里市区机场 (AEP)", "nameEn": "Aeroparque Jorge Newbery Airport (AEP)", "nameEs": "Aeroparque Internacional Jorge Newbery (AEP)", "namePt": "Aeroparque Internacional Jorge Newbery (AEP)", "wikiZh": "乔治·纽伯里机场", "wikiEn": "Aeroparque_Jorge_Newbery", "wikiLocal": "es:Aeroparque_Jorge_Newbery", "storyZh": "紧邻拉普拉塔河畔的布宜市区机场（代号 AEP），以阿根廷航空先驱 Jorge Newbery 命名。从 Palermo 酒店打车仅需 10–15 分钟，起降时可俯瞰布宜城市天际线。", "lat": -34.5592, "lng": -58.4156, "address": "Av. Costanera Rafael Obligado s/n, C1425 Cdad. Autónoma de Buenos Aires, Argentina", "hours": "D3 11:20 AR1894 飞 FTE | D5 15:30 抵 / 17:40 AR1790 飞 IGR", "note": "⚠️ 核心交通节点：距离 Dazzler 酒店仅 12 分钟车程！D3 飞冰川、D5 中转飞伊瓜苏都在此机场。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-34.5592,-58.4156", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-34.5592&dropoff[longitude]=-58.4156&dropoff[nickname]=Aeroparque%20Jorge%20Newbery%20Airport%20%28AEP%29&dropoff[formatted_address]=Av.%20Costanera%20Rafael%20Obligado%20s/n%2C%20C1425%20Cdad.%20Aut%C3%B3noma%20de%20Buenos%20Aires%2C%20Argentina", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E4%B9%94%E6%B2%BB%C2%B7%E7%BA%BD%E4%BC%AF%E9%87%8C%E6%9C%BA%E5%9C%BA", "wikiEn": "https://en.wikipedia.org/wiki/Aeroparque_Jorge_Newbery", "wikiLocal": "https://es.wikipedia.org/wiki/Aeroparque_Jorge_Newbery"}}, {"id": 10, "layer": "calafate", "country": "AR", "city": "El Calafate", "uberAvailable": false, "layerZh": "L2 卡拉法特 & 冰川 (D3–D5)", "layerEn": "L2 El Calafate & Glacier (D3–D5)", "day": "D3 & D5 (10/03 & 05)", "dayNum": [3, 5], "cat": "airport", "catZh": "机场", "catEn": "Airport", "nameZh": "卡拉法特阿曼多·托拉司令国际机场 (FTE)", "nameEn": "Comandante Armando Tola International Airport (FTE)", "nameEs": "Aeropuerto Internacional Comandante Armando Tola (El Calafate)", "namePt": "Aeroporto Internacional Comandante Armando Tola (El Calafate)", "wikiZh": "埃尔卡拉法特", "wikiEn": "Comandante_Armando_Tola_International_Airport", "wikiLocal": "es:Aeropuerto_Internacional_Comandante_Armando_Tola", "storyZh": "通往巴塔哥尼亚南部「冰川国家公园」的空中门户，位于阿根廷湖畔，距卡拉法特镇中心约 21 公里。降落前从舷窗可俯瞰牛奶蓝色的阿根廷湖 (Lago Argentino)。", "lat": -50.2803, "lng": -72.0531, "address": "Ruta Provincial 11 Km 52, Z9405 El Calafate, Santa Cruz, Argentina", "hours": "D3 14:40 AR1894 抵达 | D5 12:30 AR1897 起飞", "note": "距离卡拉法特镇区约 20 分钟车程。注：卡拉法特无 Uber，使用接送专车或酒店叫 Remis 出租车。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-50.2803,-72.0531", "rideInfo": {"type": "uber", "available": false, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-50.2803&dropoff[longitude]=-72.0531&dropoff[nickname]=Comandante%20Armando%20Tola%20International%20Airport%20%28FTE%29&dropoff[formatted_address]=Ruta%20Provincial%2011%20Km%2052%2C%20Z9405%20El%20Calafate%2C%20Santa%20Cruz%2C%20Argentina", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E5%9F%83%E5%B0%94%E5%8D%A1%E6%8B%89%E6%B3%95%E7%89%B9", "wikiEn": "https://en.wikipedia.org/wiki/Comandante_Armando_Tola_International_Airport", "wikiLocal": "https://es.wikipedia.org/wiki/Aeropuerto_Internacional_Comandante_Armando_Tola"}}, {"id": 11, "layer": "calafate", "country": "AR", "city": "El Calafate", "uberAvailable": false, "layerZh": "L2 卡拉法特 & 冰川 (D3–D5)", "layerEn": "L2 El Calafate & Glacier (D3–D5)", "day": "D3–D5 (10/03–05)", "dayNum": [3, 4, 5], "cat": "hotel", "catZh": "酒店", "catEn": "Hotel", "nameZh": "波萨达洛斯阿拉莫斯酒店 (卡拉法特)", "nameEn": "Posada Los Álamos Hotel, El Calafate", "nameEs": "Hotel Posada Los Álamos", "namePt": "Hotel Posada Los Álamos", "wikiZh": "埃尔卡拉法特", "wikiEn": "El_Calafate", "wikiLocal": "es:El_Calafate", "storyZh": "卡拉法特镇中心最具巴塔哥尼亚木屋庄园风情的四星级度假酒店，被高大的白杨树 (Álamos) 环绕，步行 3 分钟即可抵达主街解放者大道 (Av. del Libertador) 品尝巴塔哥尼亚炭烤全羊 (Cordero Patagónico)。", "lat": -50.3364, "lng": -72.2661, "address": "Gobernador Moyano 1355, Z9405 El Calafate, Santa Cruz, Argentina", "hours": "连住 2 晚 (10/03–10/05) | 2 Nights Stay", "note": "位于卡拉法特镇中心核心区，周边有多家地道烤全羊餐厅（如 La Tablita、Mi Viejo）和户外装备店。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-50.3364,-72.2661", "rideInfo": {"type": "uber", "available": false, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-50.3364&dropoff[longitude]=-72.2661&dropoff[nickname]=Posada%20Los%20%C3%81lamos%20Hotel%2C%20El%20Calafate&dropoff[formatted_address]=Gobernador%20Moyano%201355%2C%20Z9405%20El%20Calafate%2C%20Santa%20Cruz%2C%20Argentina", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E5%9F%83%E5%B0%94%E5%8D%A1%E6%8B%89%E6%B3%95%E7%89%B9", "wikiEn": "https://en.wikipedia.org/wiki/El_Calafate", "wikiLocal": "https://es.wikipedia.org/wiki/El_Calafate"}}, {"id": 12, "layer": "calafate", "country": "AR", "city": "El Calafate", "uberAvailable": false, "layerZh": "L2 卡拉法特 & 冰川 (D3–D5)", "layerEn": "L2 El Calafate & Glacier (D3–D5)", "day": "D3 下午 (10/03)", "dayNum": [3], "cat": "attraction", "catZh": "景点", "catEn": "Attraction", "nameZh": "解放者大道 (卡拉法特小镇主街)", "nameEn": "Avenida del Libertador (El Calafate Main Street)", "nameEs": "Avenida del Libertador General San Martín, El Calafate", "namePt": "Avenida del Libertador, El Calafate", "wikiZh": "埃尔卡拉法特", "wikiEn": "El_Calafate", "wikiLocal": "es:El_Calafate", "storyZh": "卡拉法特最热闹的商业主街。「Calafate」源自巴塔哥尼亚特有的一种深蓝色小浆果（小檗果），当地古老传说称：「只要吃过一次 Calafate 浆果冰淇淋或果酱，就注定会重返巴塔哥尼亚。」", "lat": -50.3379, "lng": -72.2647, "address": "Av. del Libertador 1000-1400, Z9405 El Calafate, Santa Cruz, Argentina", "hours": "全天开放（D3 下午漫步、采购次日冰川午餐）", "note": "必试 Acuarela 出品的 Calafate 浆果手工冰淇淋！同时记得在超市买好 D4 冰川徒步自带的便当和饮用水。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-50.3379,-72.2647", "rideInfo": {"type": "uber", "available": false, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-50.3379&dropoff[longitude]=-72.2647&dropoff[nickname]=Avenida%20del%20Libertador%20%28El%20Calafate%20Main%20Street%29&dropoff[formatted_address]=Av.%20del%20Libertador%201000-1400%2C%20Z9405%20El%20Calafate%2C%20Santa%20Cruz%2C%20Argentina", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E5%9F%83%E5%B0%94%E5%8D%A1%E6%8B%89%E6%B3%95%E7%89%B9", "wikiEn": "https://en.wikipedia.org/wiki/El_Calafate", "wikiLocal": "https://es.wikipedia.org/wiki/El_Calafate"}}, {"id": 13, "layer": "calafate", "country": "AR", "city": "El Calafate", "uberAvailable": false, "layerZh": "L2 卡拉法特 & 冰川 (D3–D5)", "layerEn": "L2 El Calafate & Glacier (D3–D5)", "day": "D3 下午 (10/03)", "dayNum": [3], "cat": "attraction", "catZh": "景点", "catEn": "Attraction", "nameZh": "尼梅兹泻湖生态保护区 (火烈鸟保护区)", "nameEn": "Laguna Nimez Nature Reserve (Flamingos)", "nameEs": "Reserva Ecológica Municipal Laguna Nimez", "namePt": "Reserva Ecológica Laguna Nimez", "wikiZh": "阿根廷湖", "wikiEn": "Argentino_Lake", "wikiLocal": "es:Lago_Argentino", "storyZh": "紧邻阿根廷湖岸的湿地鸟类保护区，栖息着超过 80 种鸟类，最著名的是粉红色的智利火烈鸟 (Flamenco Austral)、黑颈天鹅与巴塔哥尼亚银鸊鷉，背景即是白雪皑皑的安第斯山脉。", "lat": -50.3249, "lng": -72.2648, "address": "Av. Costanera Presidente Néstor Kirchner, Z9405 El Calafate, Santa Cruz, Argentina", "hours": "09:30–19:30", "note": "距离 Posada Los Álamos 酒店步行仅 15 分钟，黄昏时分在湖畔木栈道看火烈鸟和日落极美。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-50.3249,-72.2648", "rideInfo": {"type": "uber", "available": false, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-50.3249&dropoff[longitude]=-72.2648&dropoff[nickname]=Laguna%20Nimez%20Nature%20Reserve%20%28Flamingos%29&dropoff[formatted_address]=Av.%20Costanera%20Presidente%20N%C3%A9stor%20Kirchner%2C%20Z9405%20El%20Calafate%2C%20Santa%20Cruz%2C%20Argentina", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E9%98%BF%E6%A0%B9%E5%BB%B7%E6%B9%96", "wikiEn": "https://en.wikipedia.org/wiki/Argentino_Lake", "wikiLocal": "https://es.wikipedia.org/wiki/Lago_Argentino"}}, {"id": 14, "layer": "calafate", "country": "AR", "city": "Parque Nacional Los Glaciares", "uberAvailable": false, "layerZh": "L2 卡拉法特 & 冰川 (D3–D5)", "layerEn": "L2 El Calafate & Glacier (D3–D5)", "day": "D4 全天 (10/04)", "dayNum": [4], "cat": "attraction", "catZh": "核心景点", "catEn": "Glacier Trek & Walkways", "nameZh": "佩里托莫雷诺冰川 (栈道 & 冰川徒步)", "nameEn": "Perito Moreno Glacier (Walkways & Minitrekking)", "nameEs": "Glaciar Perito Moreno (Pasarelas y Minitrekking)", "namePt": "Glaciar Perito Moreno (Passarelas e Trekking)", "wikiZh": "佩里托莫雷诺冰川", "wikiEn": "Perito_Moreno_Glacier", "wikiLocal": "es:Glaciar_Perito_Moreno", "storyZh": "世界自然遗产「冰川国家公园」的皇冠明珠，面积达 250 平方公里（相当于布宜市区大小），冰舌前缘宽 5 公里、高出湖面 70 米。它是地球上极少数仍在保持动态平衡推进的活冰川，现场常能听到震耳欲聋的冰崩轰鸣。", "lat": -50.4694, "lng": -73.0314, "address": "Ruta Provincial 11, Parque Nacional Los Glaciares, Santa Cruz, Argentina", "hours": "08:00–18:00（全天游览约 7 小时，含游船与冰爪徒步）", "note": "⚠️ Hielo y Aventura 硬性规定：必须穿硬底徒步鞋/运动鞋（严禁雨靴、高跟鞋、Crocs），必带手套、墨镜、防晒霜、防风防水冲锋衣及自带午餐盒！", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-50.4694,-73.0314", "rideInfo": {"type": "uber", "available": false, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-50.4694&dropoff[longitude]=-73.0314&dropoff[nickname]=Perito%20Moreno%20Glacier%20%28Walkways%20%26%20Minitrekking%29&dropoff[formatted_address]=Ruta%20Provincial%2011%2C%20Parque%20Nacional%20Los%20Glaciares%2C%20Santa%20Cruz%2C%20Argentina", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E4%BD%A9%E9%87%8C%E6%89%98%E8%8E%AB%E9%9B%B7%E8%AF%BA%E5%86%B0%E5%B7%9D", "wikiEn": "https://en.wikipedia.org/wiki/Perito_Moreno_Glacier", "wikiLocal": "https://es.wikipedia.org/wiki/Glaciar_Perito_Moreno"}}, {"id": 15, "layer": "iguazu", "country": "AR", "city": "Puerto Iguazú, Argentina", "uberAvailable": false, "layerZh": "L3 伊瓜苏阿/巴两侧 (D5–D7)", "layerEn": "L3 Iguazú Falls AR & BR (D5–D7)", "day": "D5 晚 (10/05)", "dayNum": [5], "cat": "airport", "catZh": "机场", "catEn": "Airport", "nameZh": "阿根廷伊瓜苏大瀑布国际机场 (IGR)", "nameEn": "Cataratas del Iguazú International Airport (IGR · Argentina)", "nameEs": "Aeropuerto Internacional Cataratas del Iguazú (IGR)", "namePt": "Aeroporto Internacional Cataratas del Iguazú (IGR)", "wikiZh": "伊瓜苏港", "wikiEn": "Cataratas_del_Iguaz%C3%BA_International_Airport", "wikiLocal": "es:Aeropuerto_Internacional_Cataratas_del_Iguazú", "storyZh": "位于阿根廷米西奥内斯省亚热带雨林中的机场（代号 IGR）。注意：D5 抵达的是阿根廷侧 IGR 机场，随后专车跨境进入巴西侧酒店；而 D7 飞往玛瑙斯是从巴西侧的 IGU 机场起飞！", "lat": -25.7373, "lng": -54.4734, "address": "Ruta Provincial 101, N3370 Puerto Iguazú, Misiones, Argentina", "hours": "D5 19:35 AR1790 抵达 | Arrives 19:35", "note": "⚠️ 阿根廷侧机场 (IGR)。落地后由专车接机跨境通过 Tancredo Neves 大桥边检前往巴西侧 Bourbon 酒店（请随身备好护照）。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-25.7373,-54.4734", "rideInfo": {"type": "uber", "available": false, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-25.7373&dropoff[longitude]=-54.4734&dropoff[nickname]=Cataratas%20del%20Iguaz%C3%BA%20International%20Airport%20%28IGR%20%C2%B7%20Argentina%29&dropoff[formatted_address]=Ruta%20Provincial%20101%2C%20N3370%20Puerto%20Iguaz%C3%BA%2C%20Misiones%2C%20Argentina", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E4%BC%8A%E7%93%9C%E8%8B%8F%E6%B8%AF", "wikiEn": "https://en.wikipedia.org/wiki/Cataratas_del_Iguaz%25C3%25BA_International_Airport", "wikiLocal": "https://es.wikipedia.org/wiki/Aeropuerto_Internacional_Cataratas_del_Iguaz%C3%BA"}}, {"id": 16, "layer": "iguazu", "country": "AR", "city": "Puerto Iguazú, Argentina", "uberAvailable": false, "layerZh": "L3 伊瓜苏阿/巴两侧 (D5–D7)", "layerEn": "L3 Iguazú Falls AR & BR (D5–D7)", "day": "D6 全天 (10/06)", "dayNum": [6], "cat": "attraction", "catZh": "景点", "catEn": "National Park (AR Side)", "nameZh": "阿根廷伊瓜苏国家公园 (上/下栈道 & 森林小火车)", "nameEn": "Iguazú National Park — Argentine Side", "nameEs": "Parque Nacional Iguazú (Lado Argentino)", "namePt": "Parque Nacional do Iguaçu (Lado Argentino)", "wikiZh": "伊瓜苏国家公园_(阿根廷)", "wikiEn": "Iguaz%C3%BA_National_Park", "wikiLocal": "es:Parque_nacional_Iguazú", "storyZh": "世界三大瀑布中宽度最广的伊瓜苏瀑布，约 80% 的瀑布群位于阿根廷境内。阿根廷侧可深入瀑布之中，分为俯瞰瀑布边缘的「上栈道 (Circuito Superior)」、深入水雾底部的「下栈道 (Circuito Inferior)」及通往恶魔咽喉的森林生态小火车。", "lat": -25.6752, "lng": -54.4442, "address": "Ruta 101 Km 142, N3370 Puerto Iguazú, Misiones, Argentina", "hours": "08:00–18:00（建议游玩 5–6 小时）", "note": "俗话说「阿根廷侧走入瀑布里，巴西侧饱览全景」。小心园区内的长鼻浣熊 (Coatí) 抢夺食物，切勿投喂！", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-25.6752,-54.4442", "rideInfo": {"type": "uber", "available": false, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-25.6752&dropoff[longitude]=-54.4442&dropoff[nickname]=Iguaz%C3%BA%20National%20Park%20%E2%80%94%20Argentine%20Side&dropoff[formatted_address]=Ruta%20101%20Km%20142%2C%20N3370%20Puerto%20Iguaz%C3%BA%2C%20Misiones%2C%20Argentina", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E4%BC%8A%E7%93%9C%E8%8B%8F%E5%9B%BD%E5%AE%B6%E5%85%AC%E5%9B%AD_%28%E9%98%BF%E6%A0%B9%E5%BB%B7%29", "wikiEn": "https://en.wikipedia.org/wiki/Iguaz%25C3%25BA_National_Park", "wikiLocal": "https://es.wikipedia.org/wiki/Parque_nacional_Iguaz%C3%BA"}}, {"id": 17, "layer": "iguazu", "country": "AR", "city": "Puerto Iguazú, Argentina", "uberAvailable": false, "layerZh": "L3 伊瓜苏阿/巴两侧 (D5–D7)", "layerEn": "L3 Iguazú Falls AR & BR (D5–D7)", "day": "D6 (10/06)", "dayNum": [6], "cat": "attraction", "catZh": "核心奇观", "catEn": "Waterfall Viewpoint", "nameZh": "恶魔咽喉观景台 (伊瓜苏最壮观核心)", "nameEn": "Devil's Throat (Garganta del Diablo)", "nameEs": "Garganta del Diablo, Cataratas del Iguazú", "namePt": "Garganta do Diabo, Cataratas do Iguaçu", "wikiZh": "伊瓜苏瀑布", "wikiEn": "Iguazu_Falls", "wikiLocal": "es:Garganta_del_Diablo", "storyZh": "伊瓜苏 275 道瀑布中最震撼的核心马蹄形大峡谷：高 82 米、宽 150 米、长 700 米，每秒上万立方米的河水从三面倾泻而下，水雾直冲百米高空，彩虹终日不散。", "lat": -25.6953, "lng": -54.4367, "address": "Garganta del Diablo, Parque Nacional Iguazú, Misiones, Argentina", "hours": "08:00–16:30（尾班森林小火车约 16:00）", "note": "乘生态小火车至终点后沿河面铁栈道步行 1.1 公里直达瀑布正上方，水雾极大，建议备雨衣与手机防水袋。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-25.6953,-54.4367", "rideInfo": {"type": "uber", "available": false, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-25.6953&dropoff[longitude]=-54.4367&dropoff[nickname]=Devil%27s%20Throat%20%28Garganta%20del%20Diablo%29&dropoff[formatted_address]=Garganta%20del%20Diablo%2C%20Parque%20Nacional%20Iguaz%C3%BA%2C%20Misiones%2C%20Argentina", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E4%BC%8A%E7%93%9C%E8%8B%8F%E7%80%91%E5%B8%83", "wikiEn": "https://en.wikipedia.org/wiki/Iguazu_Falls", "wikiLocal": "https://es.wikipedia.org/wiki/Garganta_del_Diablo"}}, {"id": 18, "layer": "iguazu", "country": "BR", "city": "Foz do Iguaçu, Brasil", "uberAvailable": true, "layerZh": "L3 伊瓜苏阿/巴两侧 (D5–D7)", "layerEn": "L3 Iguazú Falls AR & BR (D5–D7)", "day": "D5–D7 (10/05–07)", "dayNum": [5, 6, 7], "cat": "hotel", "catZh": "酒店", "catEn": "Resort Hotel", "nameZh": "伊瓜苏卡塔拉塔斯波旁温泉度假酒店 (巴西侧)", "nameEn": "Bourbon Thermas Eco Resort Cataratas do Iguaçu", "nameEs": "Bourbon Thermas Eco Resort Cataratas do Iguaçu", "namePt": "Bourbon Thermas Eco Resort Cataratas do Iguaçu", "wikiZh": "伊瓜苏_(巴西)", "wikiEn": "Foz_do_Igua%C3%A7u", "wikiLocal": "pt:Foz_do_Iguaçu", "storyZh": "注意：从这一站起进入巴西境内，当地官方语言切换为葡萄牙语 (Português)！波旁度假酒店位于通往瀑布的景观大道上，拥有天然温泉泳池、热带花园与巴西烤肉餐厅。", "lat": -25.5653, "lng": -54.5553, "address": "Av. das Cataratas, 2345 - Vila Yolanda, Foz do Iguaçu - PR, 85853-000, Brasil", "hours": "连住 2 晚 (10/05–10/07) | 2 Nights Stay", "note": "位于巴西伊瓜苏市 (Foz do Iguaçu) 瀑布大道，在巴西侧可以直接使用 Uber 打车！", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-25.5653,-54.5553", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-25.5653&dropoff[longitude]=-54.5553&dropoff[nickname]=Bourbon%20Thermas%20Eco%20Resort%20Cataratas%20do%20Igua%C3%A7u&dropoff[formatted_address]=Av.%20das%20Cataratas%2C%202345%20-%20Vila%20Yolanda%2C%20Foz%20do%20Igua%C3%A7u%20-%20PR%2C%2085853-000%2C%20Brasil", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E4%BC%8A%E7%93%9C%E8%8B%8F_%28%E5%B7%B4%E8%A5%BF%29", "wikiEn": "https://en.wikipedia.org/wiki/Foz_do_Igua%25C3%25A7u", "wikiLocal": "https://pt.wikipedia.org/wiki/Foz_do_Igua%C3%A7u"}}, {"id": 19, "layer": "iguazu", "country": "BR", "city": "Foz do Iguaçu, Brasil", "uberAvailable": true, "layerZh": "L3 伊瓜苏阿/巴两侧 (D5–D7)", "layerEn": "L3 Iguazú Falls AR & BR (D5–D7)", "day": "D7 上午 (10/07)", "dayNum": [7], "cat": "attraction", "catZh": "景点", "catEn": "National Park (BR Side)", "nameZh": "巴西伊瓜苏国家公园 (全景步道 & 观景电梯)", "nameEn": "Iguaçu National Park — Brazilian Panoramic Side", "nameEs": "Parque Nacional de Iguazú (Lado Brasileño)", "namePt": "Parque Nacional do Iguaçu (Cataratas do Iguaçu)", "wikiZh": "伊瓜苏国家公园_(巴西)", "wikiEn": "Igua%C3%A7u_National_Park", "wikiLocal": "pt:Parque_Nacional_do_Iguaçu", "storyZh": "联合国教科文组织世界遗产。如果说阿根廷侧是「身在舞台中央」，巴西侧就是「最完美的观众席 VIP 包厢」——沿 1.5 公里悬崖步道缓步下行，可将对面阿根廷侧绵延近 3 公里的数百道瀑布全景尽收眼底。", "lat": -25.6867, "lng": -54.4408, "address": "BR-469, Km 18, Foz do Iguaçu - PR, 85855-750, Brasil", "hours": "周一至周五 09:00–16:00；周末 08:30–16:00", "note": "终点延伸至瀑布中心的栈桥视野无敌，参观完可乘全景玻璃电梯直达顶层餐厅与大巴站。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-25.6867,-54.4408", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-25.6867&dropoff[longitude]=-54.4408&dropoff[nickname]=Igua%C3%A7u%20National%20Park%20%E2%80%94%20Brazilian%20Panoramic%20Side&dropoff[formatted_address]=BR-469%2C%20Km%2018%2C%20Foz%20do%20Igua%C3%A7u%20-%20PR%2C%2085855-750%2C%20Brasil", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E4%BC%8A%E7%93%9C%E8%8B%8F%E5%9B%BD%E5%AE%B6%E5%85%AC%E5%9B%AD_%28%E5%B7%B4%E8%A5%BF%29", "wikiEn": "https://en.wikipedia.org/wiki/Igua%25C3%25A7u_National_Park", "wikiLocal": "https://pt.wikipedia.org/wiki/Parque_Nacional_do_Igua%C3%A7u"}}, {"id": 20, "layer": "iguazu", "country": "BR", "city": "Foz do Iguaçu, Brasil", "uberAvailable": true, "layerZh": "L3 伊瓜苏阿/巴两侧 (D5–D7)", "layerEn": "L3 Iguazú Falls AR & BR (D5–D7)", "day": "D7 上午 (10/07)", "dayNum": [7], "cat": "attraction", "catZh": "景点", "catEn": "Attraction", "nameZh": "伊瓜苏鸟园 (巨嘴鸟 & 金刚鹦鹉步入式雨林)", "nameEn": "Parque das Aves (Iguaçu Bird Park)", "nameEs": "Parque de las Aves, Foz do Iguaçu", "namePt": "Parque das Aves", "wikiZh": "巨嘴鸟", "wikiEn": "Parque_das_Aves", "wikiLocal": "pt:Parque_das_Aves", "storyZh": "拉丁美洲最大的热带鸟类保护与救助中心，占地 16 公顷大西洋原生雨林。拥有多个巨型步入式生态大网笼，游客可以近在咫尺观察托哥巨嘴鸟 (Tucano)、紫蓝金刚鹦鹉、红鹮和蜂鸟在身边飞翔。", "lat": -25.6139, "lng": -54.4828, "address": "Av. das Cataratas, 12450 - KM 17.1, Foz do Iguaçu - PR, 85859-899, Brasil", "hours": "08:30–16:30（建议游玩 1.5–2 小时）", "note": "就在巴西伊瓜苏国家公园大门正对面（步行 3 分钟），巨嘴鸟与金刚鹦鹉互动拍照绝佳！", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-25.6139,-54.4828", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-25.6139&dropoff[longitude]=-54.4828&dropoff[nickname]=Parque%20das%20Aves%20%28Igua%C3%A7u%20Bird%20Park%29&dropoff[formatted_address]=Av.%20das%20Cataratas%2C%2012450%20-%20KM%2017.1%2C%20Foz%20do%20Igua%C3%A7u%20-%20PR%2C%2085859-899%2C%20Brasil", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E5%B7%A8%E5%98%B4%E9%B8%9F", "wikiEn": "https://en.wikipedia.org/wiki/Parque_das_Aves", "wikiLocal": "https://pt.wikipedia.org/wiki/Parque_das_Aves"}}, {"id": 21, "layer": "iguazu", "country": "BR", "city": "Foz do Iguaçu, Brasil", "uberAvailable": true, "layerZh": "L3 伊瓜苏阿/巴两侧 (D5–D7)", "layerEn": "L3 Iguazú Falls AR & BR (D5–D7)", "day": "D7 下午 (10/07)", "dayNum": [7], "cat": "airport", "catZh": "机场", "catEn": "Airport", "nameZh": "巴西伊瓜苏卡塔拉塔斯国际机场 (IGU)", "nameEn": "Foz do Iguaçu / Cataratas International Airport (IGU · Brazil)", "nameEs": "Aeropuerto Internacional de Foz do Iguaçu (IGU)", "namePt": "Aeroporto Internacional de Foz do Iguaçu / Cataratas (IGU)", "wikiZh": "伊瓜苏国际机场", "wikiEn": "Foz_do_Igua%C3%A7u_International_Airport", "wikiLocal": "pt:Aeroporto_Internacional_de_Foz_do_Iguaçu", "storyZh": "巴西侧的伊瓜苏机场（代号 IGU），距离鸟园和巴西国家公园仅 5 分钟车程。从这里搭乘 LATAM 航空经首都巴西利亚 (BSB) 飞往亚马逊雨林心脏玛瑙斯 (MAO)。", "lat": -25.6003, "lng": -54.485, "address": "BR-469, Km 16.5, Foz do Iguaçu - PR, 85853-900, Brasil", "hours": "D7 17:15 LA3461 起飞 -> 经巴西利亚 BSB 中转 -> 23:20 抵玛瑙斯 MAO", "note": "⚠️ 巴西侧机场 (IGU)，就在鸟园和巴西瀑布公园附近 5 分钟车程，直挂行李经 BSB 飞玛瑙斯。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-25.6003,-54.485", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-25.6003&dropoff[longitude]=-54.485&dropoff[nickname]=Foz%20do%20Igua%C3%A7u%20/%20Cataratas%20International%20Airport%20%28IGU%20%C2%B7%20Brazil%29&dropoff[formatted_address]=BR-469%2C%20Km%2016.5%2C%20Foz%20do%20Igua%C3%A7u%20-%20PR%2C%2085853-900%2C%20Brasil", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E4%BC%8A%E7%93%9C%E8%8B%8F%E5%9B%BD%E9%99%85%E6%9C%BA%E5%9C%BA", "wikiEn": "https://en.wikipedia.org/wiki/Foz_do_Igua%25C3%25A7u_International_Airport", "wikiLocal": "https://pt.wikipedia.org/wiki/Aeroporto_Internacional_de_Foz_do_Igua%C3%A7u"}}, {"id": 22, "layer": "amazon", "country": "BR", "city": "Manaus, Amazonas", "uberAvailable": true, "layerZh": "L4 玛瑙斯 & 亚马逊 (D7–D10)", "layerEn": "L4 Manaus & Amazon (D7–D10)", "day": "D7 深夜 & D11 凌晨", "dayNum": [7, 10, 11], "cat": "airport", "catZh": "机场", "catEn": "Airport", "nameZh": "玛瑙斯爱德华多·戈梅斯国际机场 (MAO)", "nameEn": "Eduardo Gomes International Airport (Manaus · MAO)", "nameEs": "Aeropuerto Internacional Eduardo Gomes (Manaus · MAO)", "namePt": "Aeroporto Internacional de Manaus - Eduardo Gomes (MAO)", "wikiZh": "乌戈·爱德华多·戈梅斯国际机场", "wikiEn": "Eduardo_Gomes_International_Airport", "wikiLocal": "pt:Aeroporto_Internacional_de_Manaus", "storyZh": "巴西亚马逊州首府玛瑙斯的门户机场。请注意时差：玛瑙斯属于亚马逊标准时间 (AMT, UTC-4)，比伊瓜苏、巴西利亚和里约热内卢 (BRT, UTC-3) 慢 1 个小时！", "lat": -3.0386, "lng": -60.0497, "address": "Av. Santos Dumont, 1350 - Tarumã, Manaus - AM, 69041-000, Brasil", "hours": "D7 23:20 LA3750 抵达 | D11 01:00 (即 D10 深夜) LA3891 飞里约 GIG", "note": "⚠️ 时区提醒：玛瑙斯为 UTC-4（比伊瓜苏/里约慢 1 小时）。D10 晚游览完玛瑙斯市区后前往机场搭 01:00 红眼航班飞里约。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-3.0386,-60.0497", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-3.0386&dropoff[longitude]=-60.0497&dropoff[nickname]=Eduardo%20Gomes%20International%20Airport%20%28Manaus%20%C2%B7%20MAO%29&dropoff[formatted_address]=Av.%20Santos%20Dumont%2C%201350%20-%20Tarum%C3%A3%2C%20Manaus%20-%20AM%2C%2069041-000%2C%20Brasil", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E4%B9%8C%E6%88%88%C2%B7%E7%88%B1%E5%BE%B7%E5%8D%8E%E5%A4%9A%C2%B7%E6%88%88%E6%A2%85%E6%96%AF%E5%9B%BD%E9%99%85%E6%9C%BA%E5%9C%BA", "wikiEn": "https://en.wikipedia.org/wiki/Eduardo_Gomes_International_Airport", "wikiLocal": "https://pt.wikipedia.org/wiki/Aeroporto_Internacional_de_Manaus"}}, {"id": 23, "layer": "amazon", "country": "BR", "city": "Manaus, Amazonas", "uberAvailable": true, "layerZh": "L4 玛瑙斯 & 亚马逊 (D7–D10)", "layerEn": "L4 Manaus & Amazon (D7–D10)", "day": "D7 晚 (10/07)", "dayNum": [7, 8], "cat": "hotel", "catZh": "酒店", "catEn": "Hotel", "nameZh": "玛瑙斯阿德里亚诺波利斯美居酒店", "nameEn": "Mercure Manaus Hotel", "nameEs": "Hotel Mercure Manaus", "namePt": "Hotel Mercure Manaus", "wikiZh": "玛瑙斯", "wikiEn": "Manaus", "wikiLocal": "pt:Manaus", "storyZh": "位于玛瑙斯现代化商务与高档住宅区 Adrianópolis，毗邻 Manauara 购物中心。D7 深夜航班落地后在此休整一晚，D8 早晨退房后可把大件行李箱寄存，轻装乘船深入亚马逊雨林木屋！", "lat": -3.1036, "lng": -60.0119, "address": "Av. Mário Ypiranga, 1000 - Adrianópolis, Manaus - AM, 69057-002, Brasil", "hours": "D7 入住 1 晚 (10/07–10/08) | 1 Night Transit Stay", "note": "D7 深夜落地休息，D8 早晨出发前往码头乘快艇进入亚马逊雨林生态木屋。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-3.1036,-60.0119", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-3.1036&dropoff[longitude]=-60.0119&dropoff[nickname]=Mercure%20Manaus%20Hotel&dropoff[formatted_address]=Av.%20M%C3%A1rio%20Ypiranga%2C%201000%20-%20Adrian%C3%B3polis%2C%20Manaus%20-%20AM%2C%2069057-002%2C%20Brasil", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E7%8E%9B%E7%91%99%E6%96%AF", "wikiEn": "https://en.wikipedia.org/wiki/Manaus", "wikiLocal": "https://pt.wikipedia.org/wiki/Manaus"}}, {"id": 24, "layer": "amazon", "country": "BR", "city": "Iranduba / Rio Ariaú, Amazonas", "uberAvailable": false, "layerZh": "L4 玛瑙斯 & 亚马逊 (D7–D10)", "layerEn": "L4 Manaus & Amazon (D7–D10)", "day": "D8–D10 (10/08–10)", "dayNum": [8, 9, 10], "cat": "hotel", "catZh": "雨林度假村", "catEn": "Amazon Jungle Lodge", "nameZh": "亚马逊生态公园丛林木屋度假村", "nameEn": "Amazon Ecopark Jungle Lodge", "nameEs": "Amazon Ecopark Jungle Lodge", "namePt": "Amazon Ecopark Jungle Lodge", "wikiZh": "亚马逊雨林", "wikiEn": "Amazon_rainforest", "wikiLocal": "pt:Floresta_Amazônica", "storyZh": "坐落于黑河 (Rio Negro) 支流塔鲁芒河畔的原生雨林保护区内（仅能从玛瑙斯码头乘船约 30 分钟抵达）。包含原始丛林徒步、野生猴子康复中心 (Floresta dos Macacos)、印第安土著部落探访、独木舟钓食人鱼及夜间手电筒寻凯门鳄。", "lat": -3.0058, "lng": -60.1239, "address": "Igarapé do Tarumã, Rio Negro, Manaus - AM, 69000-000, Brasil", "hours": "连住 2 晚 (10/08–10/10 全包式雨林探险) | 2 Nights All-Inclusive", "note": "⚠️ 防蚊重点：穿浅色薄长袖长裤，裸露皮肤每 4 小时补涂一次 25%–30% DEET 防蚊液（两人3天共需约 110–130ml，先涂防晒再涂防蚊）。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-3.0058,-60.1239", "rideInfo": {"type": "uber", "available": false, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-3.0058&dropoff[longitude]=-60.1239&dropoff[nickname]=Amazon%20Ecopark%20Jungle%20Lodge&dropoff[formatted_address]=Igarap%C3%A9%20do%20Tarum%C3%A3%2C%20Rio%20Negro%2C%20Manaus%20-%20AM%2C%2069000-000%2C%20Brasil", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E4%BA%9A%E9%A9%AC%E9%80%8A%E9%9B%A8%E6%9E%97", "wikiEn": "https://en.wikipedia.org/wiki/Amazon_rainforest", "wikiLocal": "https://pt.wikipedia.org/wiki/Floresta_Amaz%C3%B4nica"}}, {"id": 25, "layer": "amazon", "country": "BR", "city": "Manaus, Amazonas", "uberAvailable": true, "layerZh": "L4 玛瑙斯 & 亚马逊 (D7–D10)", "layerEn": "L4 Manaus & Amazon (D7–D10)", "day": "D8 (10/08)", "dayNum": [8], "cat": "attraction", "catZh": "自然奇观", "catEn": "Natural Phenomenon", "nameZh": "黑白两河交汇奇观 (内格罗河与索利芒斯河)", "nameEn": "Meeting of Waters (Rio Negro & Solimões River)", "nameEs": "Encuentro de las Aguas (Río Negro y Río Solimões)", "namePt": "Encontro das Águas (Rio Negro e Rio Solimões)", "wikiZh": "两河交汇", "wikiEn": "Meeting_of_Waters", "wikiLocal": "pt:Encontro_das_Águas", "storyZh": "世界最著名的水文奇观：深如浓茶的黑河（水温约 28°C、流速 2 km/h、偏酸性且几乎无泥沙）与浑黄如拿铁的索利芒斯河（水温约 22°C、流速 6 km/h、富含安第斯山脉冲刷下的泥沙）在此交汇，因温度、流速和密度差异，两股河水并流长达 6 公里互不融合！", "lat": -3.1364, "lng": -59.9044, "address": "Encontro das Águas, Rio Amazonas, Manaus - AM, Brasil", "hours": "乘船游览（还可偶遇亚马逊粉色河豚 Boto-cor-de-rosa）", "note": "将手伸入交界线能明显感受到两边水温相差 6°C！从交汇处起，下游才正式被称为「亚马逊河」。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-3.1364,-59.9044", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-3.1364&dropoff[longitude]=-59.9044&dropoff[nickname]=Meeting%20of%20Waters%20%28Rio%20Negro%20%26%20Solim%C3%B5es%20River%29&dropoff[formatted_address]=Encontro%20das%20%C3%81guas%2C%20Rio%20Amazonas%2C%20Manaus%20-%20AM%2C%20Brasil", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E4%B8%A4%E6%B2%B3%E4%BA%A4%E6%B1%87", "wikiEn": "https://en.wikipedia.org/wiki/Meeting_of_Waters", "wikiLocal": "https://pt.wikipedia.org/wiki/Encontro_das_%C3%81guas"}}, {"id": 26, "layer": "amazon", "country": "BR", "city": "Centro, Manaus", "uberAvailable": true, "layerZh": "L4 玛瑙斯 & 亚马逊 (D7–D10)", "layerEn": "L4 Manaus & Amazon (D7–D10)", "day": "D10 下午 (10/10)", "dayNum": [10], "cat": "attraction", "catZh": "景点", "catEn": "Historic Landmark", "nameZh": "亚马逊大剧院 & 百年古市场", "nameEn": "Amazon Theatre (Teatro Amazonas) & Adolpho Lisboa Market", "nameEs": "Teatro Amazonas y Mercado Municipal Adolpho Lisboa", "namePt": "Teatro Amazonas e Mercado Municipal Adolpho Lisboa", "wikiZh": "亚马逊剧院", "wikiEn": "Amazon_Theatre", "wikiLocal": "pt:Teatro_Amazonas", "storyZh": "1896 年亚马逊「橡胶繁荣期」的奢华巅峰：当时橡胶大亨不惜重金从巴黎运来 3.6 万片代表巴西国旗四色的阿尔萨斯琉璃瓦铺设穹顶，从意大利进口卡拉拉大理石与威尼斯水晶吊灯，在雨林深处建起了一座歌剧殿堂。旁边的古市场则由埃菲尔铁塔设计团队打造。", "lat": -3.1303, "lng": -60.0234, "address": "Largo de São Sebastião - Centro, Manaus - AM, 69067-080, Brasil", "hours": "周二至周六 09:00–17:00；周日 09:00–13:00", "note": "剧院前的广场黑白波浪石砖正是后来里约科帕卡巴纳海滩步道的设计原型！晚餐必尝烤巨骨舌鱼 (Pirarucu) 或大脂鲤 (Tambaqui)。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-3.1303,-60.0234", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-3.1303&dropoff[longitude]=-60.0234&dropoff[nickname]=Amazon%20Theatre%20%28Teatro%20Amazonas%29%20%26%20Adolpho%20Lisboa%20Market&dropoff[formatted_address]=Largo%20de%20S%C3%A3o%20Sebasti%C3%A3o%20-%20Centro%2C%20Manaus%20-%20AM%2C%2069067-080%2C%20Brasil", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E4%BA%9A%E9%A9%AC%E9%80%8A%E5%89%A7%E9%99%A2", "wikiEn": "https://en.wikipedia.org/wiki/Amazon_Theatre", "wikiLocal": "https://pt.wikipedia.org/wiki/Teatro_Amazonas"}}, {"id": 27, "layer": "rio", "country": "BR", "city": "Rio de Janeiro", "uberAvailable": true, "layerZh": "L5 里约热内卢 (D11–D14)", "layerEn": "L5 Rio de Janeiro (D11–D14)", "day": "D11 晨 & D14 晚", "dayNum": [11, 14], "cat": "airport", "catZh": "机场", "catEn": "Airport", "nameZh": "里约热内卢加利昂国际机场 (GIG)", "nameEn": "Rio de Janeiro / Galeão International Airport (GIG)", "nameEs": "Aeropuerto Internacional de Río de Janeiro-Galeão (GIG)", "namePt": "Aeroporto Internacional Tom Jobim / Galeão (GIG)", "wikiZh": "里约热内卢/加利昂-安东尼奥·卡洛斯·若比姆国际机场", "wikiEn": "Rio_de_Janeiro/Gale%C3%A3o_International_Airport", "wikiLocal": "pt:Aeroporto_Internacional_do_Rio_de_Janeiro-Galeão", "storyZh": "全名安东尼奥·卡洛斯·若比姆国际机场（纪念《伊帕内玛女孩》曲作者、Bossa Nova 大师 Tom Jobim），位于瓜纳巴拉湾的总督岛上，距科帕卡巴纳海滩约 35–45 分钟车程。", "lat": -22.81, "lng": -43.2506, "address": "Av. Vinte de Janeiro, s/nº - Ilha do Governador, Rio de Janeiro - RJ, 21941-900, Brasil", "hours": "D11 06:10 LA3891 抵达 | D14 21:55 AA7759 飞纽约 JFK", "note": "⚠️ D14 返程国际航班建议提前 3.5 小时（18:00 前）抵达 T2 国际航站楼办理值机与离境。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-22.81,-43.2506", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-22.81&dropoff[longitude]=-43.2506&dropoff[nickname]=Rio%20de%20Janeiro%20/%20Gale%C3%A3o%20International%20Airport%20%28GIG%29&dropoff[formatted_address]=Av.%20Vinte%20de%20Janeiro%2C%20s/n%C2%BA%20-%20Ilha%20do%20Governador%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%2021941-900%2C%20Brasil", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E9%87%8C%E7%BA%A6%E7%83%AD%E5%86%85%E5%8D%A2/%E5%8A%A0%E5%88%A9%E6%98%82-%E5%AE%89%E4%B8%9C%E5%B0%BC%E5%A5%A5%C2%B7%E5%8D%A1%E6%B4%9B%E6%96%AF%C2%B7%E8%8B%A5%E6%AF%94%E5%A7%86%E5%9B%BD%E9%99%85%E6%9C%BA%E5%9C%BA", "wikiEn": "https://en.wikipedia.org/wiki/Rio_de_Janeiro/Gale%25C3%25A3o_International_Airport", "wikiLocal": "https://pt.wikipedia.org/wiki/Aeroporto_Internacional_do_Rio_de_Janeiro-Gale%C3%A3o"}}, {"id": 28, "layer": "rio", "country": "BR", "city": "Copacabana, Rio de Janeiro", "uberAvailable": true, "layerZh": "L5 里约热内卢 (D11–D14)", "layerEn": "L5 Rio de Janeiro (D11–D14)", "day": "D11–D14 (10/11–14)", "dayNum": [11, 12, 13, 14], "cat": "hotel", "catZh": "海滨酒店", "catEn": "Beachfront Hotel", "nameZh": "里约温莎勒姆海滨酒店 (科帕卡巴纳)", "nameEn": "Windsor Leme Hotel (Copacabana / Leme Beachfront)", "nameEs": "Hotel Windsor Leme, Copacabana", "namePt": "Windsor Leme Hotel", "wikiZh": "科帕卡巴纳_(里约热内卢)", "wikiEn": "Leme,_Rio_de_Janeiro", "wikiLocal": "pt:Leme_(bairro_do_Rio_de_Janeiro)", "storyZh": "正对科帕卡巴纳海滩最东端宁静安全的莱梅 (Leme) 海湾，紧邻莱梅山军事要塞保护区，治安远优于科帕卡巴纳中段，顶层拥有无边海景泳池，可直眺糖面包山。", "lat": -22.9628, "lng": -43.1669, "address": "Av. Atlântica, 656 - Leme, Rio de Janeiro - RJ, 22010-000, Brasil", "hours": "连住 3 晚 (10/11–10/14) | 3 Nights Stay", "note": "出门过马路即是海滩步道！附近步行可达 Churrascaria Palace 百年烤肉与 Marius Degustare 海鲜烤肉。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-22.9628,-43.1669", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-22.9628&dropoff[longitude]=-43.1669&dropoff[nickname]=Windsor%20Leme%20Hotel%20%28Copacabana%20/%20Leme%20Beachfront%29&dropoff[formatted_address]=Av.%20Atl%C3%A2ntica%2C%20656%20-%20Leme%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%2022010-000%2C%20Brasil", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E7%A7%91%E5%B8%95%E5%8D%A1%E5%B7%B4%E7%BA%B3_%28%E9%87%8C%E7%BA%A6%E7%83%AD%E5%86%85%E5%8D%A2%29", "wikiEn": "https://en.wikipedia.org/wiki/Leme%2C_Rio_de_Janeiro", "wikiLocal": "https://pt.wikipedia.org/wiki/Leme_%28bairro_do_Rio_de_Janeiro%29"}}, {"id": 29, "layer": "rio", "country": "BR", "city": "Copacabana, Rio de Janeiro", "uberAvailable": true, "layerZh": "L5 里约热内卢 (D11–D14)", "layerEn": "L5 Rio de Janeiro (D11–D14)", "day": "D11–D14", "dayNum": [11, 12, 13, 14], "cat": "attraction", "catZh": "景点", "catEn": "Beach", "nameZh": "科帕卡巴纳海滩 (4公里黑白波浪步道)", "nameEn": "Copacabana Beach & Portuguese Wave Promenade", "nameEs": "Playa de Copacabana", "namePt": "Praia de Copacabana (Calçadão de Copacabana)", "wikiZh": "科帕卡巴纳海滩", "wikiEn": "Copacabana,_Rio_de_Janeiro", "wikiLocal": "pt:Praia_de_Copacabana", "storyZh": "全球最著名的 4 公里新月形黄金海滩，被称为「大西洋小公主 (Princesinha do Mar)」。海滨大道的黑白葡式碎石波浪拼花由景观大师 Roberto Burle Marx 于 1970 年重新设计，买一颗冰镇青椰子 (Água de Coco) 漫步最惬意。", "lat": -22.9698, "lng": -43.1869, "address": "Av. Atlântica - Copacabana, Rio de Janeiro - RJ, Brasil", "hours": "全天开放（建议白天及傍晚漫步）", "note": "⚠️ 安全提示：去海滩漫步只需带少量现金/卡和手机，切勿佩戴金银首饰或名表，手机拍完照即收回包内。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-22.9698,-43.1869", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-22.9698&dropoff[longitude]=-43.1869&dropoff[nickname]=Copacabana%20Beach%20%26%20Portuguese%20Wave%20Promenade&dropoff[formatted_address]=Av.%20Atl%C3%A2ntica%20-%20Copacabana%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%20Brasil", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E7%A7%91%E5%B8%95%E5%8D%A1%E5%B7%B4%E7%BA%B3%E6%B5%B7%E6%BB%A9", "wikiEn": "https://en.wikipedia.org/wiki/Copacabana%2C_Rio_de_Janeiro", "wikiLocal": "https://pt.wikipedia.org/wiki/Praia_de_Copacabana"}}, {"id": 30, "layer": "rio", "country": "BR", "city": "Alto da Boa Vista, Rio de Janeiro", "uberAvailable": true, "layerZh": "L5 里约热内卢 (D11–D14)", "layerEn": "L5 Rio de Janeiro (D11–D14)", "day": "D12 上午 (10/12)", "dayNum": [12], "cat": "attraction", "catZh": "世界新七大奇迹", "catEn": "World Wonder", "nameZh": "里约救世基督像 (科科瓦多山/耶稣山)", "nameEn": "Christ the Redeemer (Corcovado Mountain)", "nameEs": "Cristo Redentor (Cerro del Corcovado)", "namePt": "Cristo Redentor (Morro do Corcovado)", "wikiZh": "里约热内卢基督像", "wikiEn": "Christ_the_Redeemer_(statue)", "wikiLocal": "pt:Cristo_Redentor", "storyZh": "世界新七大奇迹之一，矗立在海拔 710 米的科科瓦多山巅，1931 年落成。雕像高 30 米（基座 8 米）、双臂展开宽 28 米，外层镶嵌着数百万片抗腐蚀的皂石三角马赛克，张开双臂拥抱整个里约山海。", "lat": -22.9519, "lng": -43.2105, "address": "Parque Nacional da Tijuca - Alto da Boa Vista, Rio de Janeiro - RJ, Brasil", "hours": "08:00–19:00（乘红色登山齿轮火车或官方环保车登顶）", "note": "登山小火车起点站位于 Rua Cosme Velho 513；山顶 360° 俯瞰糖面包山、罗德里戈湖与科帕卡巴纳海湾。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-22.9519,-43.2105", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-22.9519&dropoff[longitude]=-43.2105&dropoff[nickname]=Christ%20the%20Redeemer%20%28Corcovado%20Mountain%29&dropoff[formatted_address]=Parque%20Nacional%20da%20Tijuca%20-%20Alto%20da%20Boa%20Vista%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%20Brasil", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E9%87%8C%E7%BA%A6%E7%83%AD%E5%86%85%E5%8D%A2%E5%9F%BA%E7%9D%A3%E5%83%8F", "wikiEn": "https://en.wikipedia.org/wiki/Christ_the_Redeemer_%28statue%29", "wikiLocal": "https://pt.wikipedia.org/wiki/Cristo_Redentor"}}, {"id": 31, "layer": "rio", "country": "BR", "city": "Urca, Rio de Janeiro", "uberAvailable": true, "layerZh": "L5 里约热内卢 (D11–D14)", "layerEn": "L5 Rio de Janeiro (D11–D14)", "day": "D12 下午 (10/12)", "dayNum": [12], "cat": "attraction", "catZh": "核心景点", "catEn": "Cable Car & Peak", "nameZh": "糖面包山 (双段高空全景缆车)", "nameEn": "Sugarloaf Mountain & Bondinho Cable Car", "nameEs": "Pan de Azúcar (Teleférico Bondinho)", "namePt": "Pão de Açúcar (Bondinho do Pão de Açúcar)", "wikiZh": "糖面包山", "wikiEn": "Sugarloaf_Mountain", "wikiLocal": "pt:Pão_de_Açúcar", "storyZh": "矗立在瓜纳巴拉湾入口处的 396 米高花岗岩巨峰，因酷似早期精炼甘蔗糖的圆锥形糖块而得名。1912 年开通的「Bondinho」是全球第三座高空缆车（也是 007 电影《太空城》取景地），分两段连接乌尔卡山与糖面包山顶。", "lat": -22.9492, "lng": -43.1545, "address": "Av. Pasteur, 520 - Urca, Rio de Janeiro - RJ, 22290-240, Brasil", "hours": "08:30–20:00（日落前 1 小时登顶视野最震撼）", "note": "黄昏时分在山顶看夕阳落入耶稣山身后、城市华灯初上，是整个里约最浪漫的机位！", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-22.9492,-43.1545", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-22.9492&dropoff[longitude]=-43.1545&dropoff[nickname]=Sugarloaf%20Mountain%20%26%20Bondinho%20Cable%20Car&dropoff[formatted_address]=Av.%20Pasteur%2C%20520%20-%20Urca%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%2022290-240%2C%20Brasil", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E7%B3%96%E9%9D%A2%E5%8C%85%E5%B1%B1", "wikiEn": "https://en.wikipedia.org/wiki/Sugarloaf_Mountain", "wikiLocal": "https://pt.wikipedia.org/wiki/P%C3%A3o_de_A%C3%A7%C3%BAcar"}}, {"id": 32, "layer": "rio", "country": "BR", "city": "Maracanã, Rio de Janeiro", "uberAvailable": true, "layerZh": "L5 里约热内卢 (D11–D14)", "layerEn": "L5 Rio de Janeiro (D11–D14)", "day": "D12 (10/12)", "dayNum": [12], "cat": "attraction", "catZh": "景点", "catEn": "Stadium", "nameZh": "马拉卡纳传奇足球场", "nameEn": "Maracanã Stadium", "nameEs": "Estadio Maracaná", "namePt": "Estádio do Maracanã (Estádio Jornalista Mário Filho)", "wikiZh": "马拉卡纳体育场", "wikiEn": "Maracan%C3%A3_Stadium", "wikiLocal": "pt:Estádio_do_Maracanã", "storyZh": "世界足球圣殿：为 1950 年世界杯而建（当年决赛曾涌入近 20 万名观众），1969 年球王贝利在此踢进职业生涯第 1000 粒进球，同时也是 2014 年世界杯决赛与 2016 年里约奥运会开闭幕式主场馆。", "lat": -22.9121, "lng": -43.2302, "address": "Av. Pres. Castelo Branco, Portão 3 - Maracanã, Rio de Janeiro - RJ, 20271-130, Brasil", "hours": "09:00–16:00（外观或入内参观球星脚印名人堂）", "note": "展厅内收藏有贝利、济科、罗纳尔多、内马尔等传奇球星的足印模型与球衣。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-22.9121,-43.2302", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-22.9121&dropoff[longitude]=-43.2302&dropoff[nickname]=Maracan%C3%A3%20Stadium&dropoff[formatted_address]=Av.%20Pres.%20Castelo%20Branco%2C%20Port%C3%A3o%203%20-%20Maracan%C3%A3%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%2020271-130%2C%20Brasil", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E9%A9%AC%E6%8B%89%E5%8D%A1%E7%BA%B3%E4%BD%93%E8%82%B2%E5%9C%BA", "wikiEn": "https://en.wikipedia.org/wiki/Maracan%25C3%25A3_Stadium", "wikiLocal": "https://pt.wikipedia.org/wiki/Est%C3%A1dio_do_Maracan%C3%A3"}}, {"id": 33, "layer": "rio", "country": "BR", "city": "Centro, Rio de Janeiro", "uberAvailable": true, "layerZh": "L5 里约热内卢 (D11–D14)", "layerEn": "L5 Rio de Janeiro (D11–D14)", "day": "D12 晚 (10/12)", "dayNum": [12], "cat": "show", "catZh": "演出", "catEn": "Carnival Samba Show", "nameZh": "里约桑巴舞表演 (Ginga Tropical / Roxy)", "nameEn": "Rio Samba & Carnival Show (Ginga Tropical)", "nameEs": "Show de Samba Brasileño", "namePt": "Show de Samba e Carnaval (Ginga Tropical)", "wikiZh": "桑巴", "wikiEn": "Samba", "wikiLocal": "pt:Samba", "storyZh": "浓缩巴西多元文化精髓的舞台盛宴：从巴伊亚州的战舞卡波耶拉 (Capoeira)、亚马逊印第安战舞、高乔牧人舞，一路高潮至华丽的里约狂欢节桑巴皇后羽冠盛装巡游。", "lat": -22.9094, "lng": -43.1825, "address": "Centro / Copacabana, Rio de Janeiro - RJ, Brasil", "hours": "晚间演出约 20:30–23:00（含专车接送）", "note": "演出的最后半小时舞者会邀请观众上台一起学跳桑巴基本步，气氛极其热烈！", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-22.9094,-43.1825", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-22.9094&dropoff[longitude]=-43.1825&dropoff[nickname]=Rio%20Samba%20%26%20Carnival%20Show%20%28Ginga%20Tropical%29&dropoff[formatted_address]=Centro%20/%20Copacabana%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%20Brasil", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E6%A1%91%E5%B7%B4", "wikiEn": "https://en.wikipedia.org/wiki/Samba", "wikiLocal": "https://pt.wikipedia.org/wiki/Samba"}}, {"id": 34, "layer": "rio", "country": "BR", "city": "Lapa / Santa Teresa, Rio de Janeiro", "uberAvailable": true, "layerZh": "L5 里约热内卢 (D11–D14)", "layerEn": "L5 Rio de Janeiro (D11–D14)", "day": "D13 (10/13)", "dayNum": [13], "cat": "attraction", "catZh": "景点", "catEn": "Art Landmark", "nameZh": "塞拉隆彩色阶梯 (2000块全球瓷砖)", "nameEn": "Escadaria Selarón (Selarón Steps)", "nameEs": "Escalera de Selarón", "namePt": "Escadaria Selarón", "wikiZh": "塞勒隆阶梯", "wikiEn": "Escadaria_Selar%C3%B3n", "wikiLocal": "pt:Escadaria_Selarón", "storyZh": "智利裔艺术家 Jorge Selarón 从 1990 年起耗费 23 年心血，用来自全球 60 多个国家的 2000 多块彩色瓷砖，将连接拉帕 (Lapa) 与圣特雷莎 (Santa Teresa) 的 215 级破旧台阶改造成了献给巴西人民的巨型露天艺术品。", "lat": -22.9153, "lng": -43.1792, "address": "R. Manuel Carneiro - Santa Teresa, Rio de Janeiro - RJ, 20241-120, Brasil", "hours": "全天开放（建议上午尽早前往避开人潮）", "note": "可以在台阶两侧寻找印有中国长城和北京天安门图案的专属瓷砖！", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-22.9153,-43.1792", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-22.9153&dropoff[longitude]=-43.1792&dropoff[nickname]=Escadaria%20Selar%C3%B3n%20%28Selar%C3%B3n%20Steps%29&dropoff[formatted_address]=R.%20Manuel%20Carneiro%20-%20Santa%20Teresa%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%2020241-120%2C%20Brasil", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E5%A1%9E%E5%8B%92%E9%9A%86%E9%98%B6%E6%A2%AF", "wikiEn": "https://en.wikipedia.org/wiki/Escadaria_Selar%25C3%25B3n", "wikiLocal": "https://pt.wikipedia.org/wiki/Escadaria_Selar%C3%B3n"}}, {"id": 35, "layer": "rio", "country": "BR", "city": "Centro, Rio de Janeiro", "uberAvailable": true, "layerZh": "L5 里约热内卢 (D11–D14)", "layerEn": "L5 Rio de Janeiro (D11–D14)", "day": "D13 (10/13)", "dayNum": [13], "cat": "attraction", "catZh": "景点", "catEn": "Cathedral", "nameZh": "里约热内卢天梯大教堂 (圣塞巴斯蒂安大教堂)", "nameEn": "Metropolitan Cathedral of Saint Sebastian", "nameEs": "Catedral Metropolitana de Río de Janeiro", "namePt": "Catedral Metropolitana de São Sebastião", "wikiZh": "里约热内卢主教座堂", "wikiEn": "Rio_de_Janeiro_Cathedral", "wikiLocal": "pt:Catedral_Metropolitana_do_Rio_de_Janeiro", "storyZh": "建于 1979 年，由建筑师 Edgar Fonseca 受玛雅金字塔启发设计。高 75 米、底径 106 米的巨型圆锥体内部没有任何一根柱子，四道从地面直通穹顶十字架的 64 米高彩色玻璃花窗如同通往天堂的彩虹天梯。", "lat": -22.9108, "lng": -43.1806, "address": "Av. Chile, 245 - Centro, Rio de Janeiro - RJ, 20031-170, Brasil", "hours": "07:00–17:00", "note": "距离塞拉隆彩色阶梯仅 600 米，站在教堂正中央仰拍四色天梯穹顶极具科幻感。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-22.9108,-43.1806", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-22.9108&dropoff[longitude]=-43.1806&dropoff[nickname]=Metropolitan%20Cathedral%20of%20Saint%20Sebastian&dropoff[formatted_address]=Av.%20Chile%2C%20245%20-%20Centro%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%2020031-170%2C%20Brasil", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E9%87%8C%E7%BA%A6%E7%83%AD%E5%86%85%E5%8D%A2%E4%B8%BB%E6%95%99%E5%BA%A7%E5%A0%82", "wikiEn": "https://en.wikipedia.org/wiki/Rio_de_Janeiro_Cathedral", "wikiLocal": "https://pt.wikipedia.org/wiki/Catedral_Metropolitana_do_Rio_de_Janeiro"}}, {"id": 36, "layer": "rio", "country": "BR", "city": "Jardim Botânico, Rio de Janeiro", "uberAvailable": true, "layerZh": "L5 里约热内卢 (D11–D14)", "layerEn": "L5 Rio de Janeiro (D11–D14)", "day": "D13 (10/13)", "dayNum": [13], "cat": "attraction", "catZh": "景点", "catEn": "Botanical Garden", "nameZh": "里约热内卢皇家植物园 (百米帝王棕榈大道)", "nameEn": "Rio de Janeiro Botanical Garden", "nameEs": "Jardín Botánico de Río de Janeiro", "namePt": "Jardim Botânico do Rio de Janeiro", "wikiZh": "里约热内卢植物园", "wikiEn": "Rio_de_Janeiro_Botanical_Garden", "wikiLocal": "pt:Jardim_Botânico_do_Rio_de_Janeiro", "storyZh": "1808 年由葡萄牙摄政王若昂六世创立，最初用于引种东方香料。园内最标志性的是由 134 棵高达 30 多米的百年「帝王棕榈 (Palmeira Imperial)」组成的皇家大道，抬头还能望见山顶的救世基督像。", "lat": -22.9675, "lng": -43.225, "address": "R. Jardim Botânico, 1008 - Jardim Botânico, Rio de Janeiro - RJ, 22460-030, Brasil", "hours": "周四至周二 08:00–17:00；周三 11:00–17:00", "note": "园内还有亚马逊巨型王莲池、兰花温室，经常能看到野生巨嘴鸟和绒猴在树冠跳跃。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-22.9675,-43.225", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-22.9675&dropoff[longitude]=-43.225&dropoff[nickname]=Rio%20de%20Janeiro%20Botanical%20Garden&dropoff[formatted_address]=R.%20Jardim%20Bot%C3%A2nico%2C%201008%20-%20Jardim%20Bot%C3%A2nico%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%2022460-030%2C%20Brasil", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E9%87%8C%E7%BA%A6%E7%83%AD%E5%86%85%E5%8D%A2%E6%A4%8D%E7%89%A9%E5%9B%AD", "wikiEn": "https://en.wikipedia.org/wiki/Rio_de_Janeiro_Botanical_Garden", "wikiLocal": "https://pt.wikipedia.org/wiki/Jardim_Bot%C3%A2nico_do_Rio_de_Janeiro"}}, {"id": 37, "layer": "rio", "country": "BR", "city": "São Conrado, Rio de Janeiro", "uberAvailable": true, "layerZh": "L5 里约热内卢 (D11–D14)", "layerEn": "L5 Rio de Janeiro (D11–D14)", "day": "D13 选玩 (10/13)", "dayNum": [13], "cat": "attraction", "catZh": "体验", "catEn": "Hang Gliding Beach", "nameZh": "佩皮诺海滩 (滑翔伞降落海滩)", "nameEn": "Pepino Beach (São Conrado Hang Gliding Landing)", "nameEs": "Playa de Pepino (Vuelo Libre)", "namePt": "Praia do Pepino (Pouso de Asa Delta e Parapente)", "wikiZh": "里约热内卢", "wikiEn": "S%C3%A3o_Conrado", "wikiLocal": "pt:São_Conrado_(bairro_do_Rio_de_Janeiro)", "storyZh": "全球最著名的城市山海滑翔胜地：滑翔翼与滑翔伞从蒂茹卡森林海拔 510 米的美丽石跳台 (Pedra Bonita) 跃出，掠过森系海岸与巨型花岗岩加维亚石山，最终降落在洁白松软的佩皮诺沙滩上。", "lat": -22.9994, "lng": -43.2664, "address": "Av. Prefeito Mendes de Morais - São Conrado, Rio de Janeiro - RJ, Brasil", "hours": "08:00–17:00（视当日风向与云层高度开放）", "note": "即使不亲自飞，坐在海滩边看漫天滑翔翼沿着加维亚巨石盘旋降落也极具视觉冲击力。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-22.9994,-43.2664", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-22.9994&dropoff[longitude]=-43.2664&dropoff[nickname]=Pepino%20Beach%20%28S%C3%A3o%20Conrado%20Hang%20Gliding%20Landing%29&dropoff[formatted_address]=Av.%20Prefeito%20Mendes%20de%20Morais%20-%20S%C3%A3o%20Conrado%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%20Brasil", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E9%87%8C%E7%BA%A6%E7%83%AD%E5%86%85%E5%8D%A2", "wikiEn": "https://en.wikipedia.org/wiki/S%25C3%25A3o_Conrado", "wikiLocal": "https://pt.wikipedia.org/wiki/S%C3%A3o_Conrado_%28bairro_do_Rio_de_Janeiro%29"}}, {"id": 38, "layer": "rio", "country": "BR", "city": "Centro, Rio de Janeiro", "uberAvailable": true, "layerZh": "L5 里约热内卢 (D11–D14)", "layerEn": "L5 Rio de Janeiro (D11–D14)", "day": "D14 上午 (10/14)", "dayNum": [14], "cat": "attraction", "catZh": "景点", "catEn": "Historic Library", "nameZh": "皇家葡萄牙语阅览室 (全球最美图书馆)", "nameEn": "Royal Portuguese Cabinet of Reading", "nameEs": "Real Gabinete Portugués de Lectura", "namePt": "Real Gabinete Português de Leitura", "wikiZh": "皇家葡萄牙语阅览室", "wikiEn": "Royal_Portuguese_Cabinet_of_Reading", "wikiLocal": "pt:Real_Gabinete_Português_de_Leitura", "storyZh": "落成于 1887 年，采用繁复瑰丽的葡萄牙「新曼努埃尔式 (Neo-Manuelino)」建筑风格，致敬大航海时代。三层高的雕花木制书架直达彩绘玻璃天窗，藏有 35 万册古籍善本，宛如现实版《哈利·波特》魔法图书馆。", "lat": -22.9054, "lng": -43.1822, "address": "R. Luís de Camões, 30 - Centro, Rio de Janeiro - RJ, 20051-020, Brasil", "hours": "⚠️ 周一至周五 10:00–17:00（周六、周日及节假日闭馆！免费入内）", "note": "⚠️ D14 (10月14日周三) 是工作日正常开放！参观完可顺道去步行 5 分钟的百年哥伦布咖啡馆 (Confeitaria Colombo) 喝下午茶。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-22.9054,-43.1822", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-22.9054&dropoff[longitude]=-43.1822&dropoff[nickname]=Royal%20Portuguese%20Cabinet%20of%20Reading&dropoff[formatted_address]=R.%20Lu%C3%ADs%20de%20Cam%C3%B5es%2C%2030%20-%20Centro%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%2020051-020%2C%20Brasil", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E7%9A%87%E5%AE%B6%E8%91%A1%E8%90%84%E7%89%99%E8%AF%AD%E9%98%85%E8%A7%88%E5%AE%A4", "wikiEn": "https://en.wikipedia.org/wiki/Royal_Portuguese_Cabinet_of_Reading", "wikiLocal": "https://pt.wikipedia.org/wiki/Real_Gabinete_Portugu%C3%AAs_de_Leitura"}}, {"id": 39, "layer": "rio", "country": "BR", "city": "Porto Maravilha, Rio de Janeiro", "uberAvailable": true, "layerZh": "L5 里约热内卢 (D11–D14)", "layerEn": "L5 Rio de Janeiro (D11–D14)", "day": "D14 下午 (10/14)", "dayNum": [14], "cat": "attraction", "catZh": "景点", "catEn": "Museum", "nameZh": "明日博物馆 (卡拉特拉瓦科幻建筑)", "nameEn": "Museum of Tomorrow (Museu do Amanhã)", "nameEs": "Museo del Mañana", "namePt": "Museu do Amanhã", "wikiZh": "明日博物馆", "wikiEn": "Museum_of_Tomorrow", "wikiLocal": "pt:Museu_do_Amanhã", "storyZh": "2016 年里约奥运老港区复兴计划的核心地标，由西班牙结构主义建筑大师圣地亚哥·卡拉特拉瓦 (Santiago Calatrava) 设计。纯白色的悬臂钢结构灵感源自植物园的凤梨科植物，伸向瓜纳巴拉湾，屋顶太阳能翼板会随太阳角度自动旋转。", "lat": -22.894, "lng": -43.1794, "address": "Praça Mauá, 1 - Centro, Rio de Janeiro - RJ, 20081-240, Brasil", "hours": "周二至周日 10:00–18:00（周一闭馆）", "note": "博物馆右侧的奥林匹克大道还有吉尼斯纪录认证的巨型街头涂鸦墙《民族 (Etnias)》，非常适合返程前下午游览。", "navUrl": "https://www.google.com/maps/dir/?api=1&destination=-22.894,-43.1794", "rideInfo": {"type": "uber", "available": true, "label": "一键 Uber", "url": "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=-22.894&dropoff[longitude]=-43.1794&dropoff[nickname]=Museum%20of%20Tomorrow%20%28Museu%20do%20Amanh%C3%A3%29&dropoff[formatted_address]=Pra%C3%A7a%20Mau%C3%A1%2C%201%20-%20Centro%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%2020081-240%2C%20Brasil", "fallbackNote": "该目的地无 Uber 服务，建议出示随附酒店/西语葡语司机问路卡"}, "knowledgeLinks": {"wikiZh": "https://zh.wikipedia.org/wiki/%E6%98%8E%E6%97%A5%E5%8D%9A%E7%89%A9%E9%A6%86", "wikiEn": "https://en.wikipedia.org/wiki/Museum_of_Tomorrow", "wikiLocal": "https://pt.wikipedia.org/wiki/Museu_do_Amanh%C3%A3"}}], "survivalPhrases": {"AR": [{"zh": "请带我去这个地址", "local": "Por favor, ¿me lleva a esta dirección?", "lang": "es-AR"}, {"zh": "请问这个多少钱？", "local": "Disculpe, ¿cuánto cuesta esto?", "lang": "es-AR"}, {"zh": "买单，谢谢 (餐厅结账)", "local": "La cuenta, por favor. ¡Muchas gracias!", "lang": "es-AR"}, {"zh": "有什么招牌菜/牛排推荐吗？", "local": "¿Qué plato o corte de carne me recomienda?", "lang": "es-AR"}, {"zh": "请问洗手间在哪里？", "local": "Disculpe, ¿dónde está el baño?", "lang": "es-AR"}, {"zh": "可以刷信用卡吗？", "local": "¿Aceptan tarjeta de crédito?", "lang": "es-AR"}], "BR": [{"zh": "请带我去这个地址", "local": "Por favor, pode me levar para este endereço?", "lang": "pt-BR"}, {"zh": "请问这个多少钱？", "local": "Com licença, quanto custa isso?", "lang": "pt-BR"}, {"zh": "买单，谢谢 (餐厅结账)", "local": "A conta, por favor. Muito obrigado!", "lang": "pt-BR"}, {"zh": "有什么特色菜推荐吗？", "local": "Qual prato típico você recomenda?", "lang": "pt-BR"}, {"zh": "请问洗手间在哪里？", "local": "Por favor, onde fica o banheiro?", "lang": "pt-BR"}, {"zh": "可以刷信用卡吗 (Crédito)？", "local": "Aceita cartão de crédito?", "lang": "pt-BR"}]}, "photos": [{"id": "calafate-20261003-nimez-goose", "placeId": 13, "relatedPlaceIds": [10, 11, 12, 13, 14], "layer": "calafate", "day": "D3 · 10/03", "date": "2026-10-03", "city": "El Calafate, Patagonia", "country": "AR", "titleZh": "巴塔哥尼亚破云晚霞与野生麦哲伦雁", "titleEn": "Upland Goose & Andean Sunset in El Calafate", "locationZh": "#13 埃尔卡拉法特 · 尼梅兹泻湖湿地 & 安第斯雪山", "locationLocal": "Reserva Laguna Nimez & Cordillera de los Andes", "captionZh": "黄昏时分的 El Calafate 湖畔草甸，一只巴塔哥尼亚野生雌性麦哲伦雁（Upland Goose / 西语 Cauquén común）在静谧水湾前侧首回望；中景是依坡散落的小镇屋舍与苍茫的巴塔哥尼亚高原阶地，远处皑皑白雪的安第斯山脉在厚云间裂开一道暖金色晚霞。", "url": "https://youngapple.github.io/south-america-2026/photos/el_calafate_nimez_sunset.jpg", "fullUrl": "https://youngapple.github.io/south-america-2026/photos/el_calafate_nimez_sunset_orig.jpg", "tags": ["El Calafate", "Patagonia", "野生动物", "安第斯雪山", "晚霞"]}]};
+    const TILE_CONFIGS = [{"id": "carto_voyager", "name": "Carto 精选", "url": "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", "subdomains": "abcd", "attribution": "© CARTO, © OpenStreetMap", "maxZoom": "19"}, {"id": "osm", "name": "OpenStreetMap", "url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png", "subdomains": "abc", "attribution": "© OpenStreetMap contributors", "maxZoom": "19"}, {"id": "carto_dark", "name": "夜间模式", "url": "https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png", "subdomains": "abcd", "attribution": "© CARTO", "maxZoom": "19"}];
+    const PLACES = TRIP_DATA.places;
+    const NETWORK_PROFILE = TRIP_DATA.networkProfile;
+
+    let map = null;
+    let markers = [];
+    let tileLayers = {};
+    let currentTileId = TILE_CONFIGS[0]?.id || 'default';
+    let activePlace = null;
+    let currentFilteredPlaces = [...PLACES];
+
+    // Initialize Map
+    function initMap() {
+      // Calculate initial center
+      const avgLat = PLACES.reduce((sum, p) => sum + p.lat, 0) / PLACES.length;
+      const avgLng = PLACES.reduce((sum, p) => sum + p.lng, 0) / PLACES.length;
+
+      map = L.map('map', {
+        zoomControl: false,
+        attributionControl: false
+      }).setView([avgLat, avgLng], 6);
+
+      L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+      // Register Tile Layers
+      TILE_CONFIGS.forEach((tc, idx) => {
+        const sub = tc.subdomains ? tc.subdomains.split('') : ['a', 'b', 'c'];
+        const layer = L.tileLayer(tc.url, {
+          subdomains: sub,
+          maxZoom: parseInt(tc.maxZoom) || 18,
+          attribution: tc.attribution
+        });
+        tileLayers[tc.id] = layer;
+        if (idx === 0) layer.addTo(map);
+      });
+
+      renderMarkers(PLACES);
+      fitAllBounds();
+    }
+
+    function switchTileLayer(tileId) {
+      if (!tileLayers[tileId]) return;
+      Object.keys(tileLayers).forEach(k => map.removeLayer(tileLayers[k]));
+      tileLayers[tileId].addTo(map);
+      currentTileId = tileId;
+
+      document.querySelectorAll('.tile-btn').forEach(btn => {
+        btn.classList.remove('bg-slate-900', 'text-white', 'dark:bg-white', 'dark:text-slate-900');
+        btn.classList.add('text-slate-600', 'dark:text-slate-400');
+      });
+      const activeBtn = document.getElementById(`tileBtn-${tileId}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('text-slate-600', 'dark:text-slate-400');
+        activeBtn.classList.add('bg-slate-900', 'text-white', 'dark:bg-white', 'dark:text-slate-900');
+      }
+    }
+
+    function getCatColor(cat) {
+      const colors = {
+        airport: '#2563eb',
+        hotel: '#d97706',
+        sight: '#059669',
+        food: '#dc2626',
+        show: '#e11d48'
+      };
+      return colors[cat] || '#0284c7';
+    }
+
+    function renderMarkers(places) {
+      markers.forEach(m => map.removeLayer(m));
+      markers = [];
+
+      places.forEach(p => {
+        const color = getCatColor(p.cat);
+        const icon = L.divIcon({
+          className: 'custom-div-icon',
+          html: `<div id="pin-${p.id}" class="custom-pin w-7 h-7" style="background-color: ${color}">#${p.id}</div>`,
+          iconSize: [28, 28],
+          iconAnchor: [14, 14]
+        });
+
+        const marker = L.marker([p.lat, p.lng], { icon }).addTo(map);
+        marker.on('click', () => selectPlace(p.id, true));
+        markers.push(marker);
+      });
+    }
+
+    function fitAllBounds() {
+      if (!markers.length) return;
+      const group = new L.featureGroup(markers);
+      map.fitBounds(group.getBounds().pad(0.15));
+    }
+
+    function renderPlacesList(places) {
+      const container = document.getElementById('placesList');
+      container.innerHTML = '';
+      document.getElementById('placeCountBadge').innerText = places.length;
+
+      places.forEach(p => {
+        const color = getCatColor(p.cat);
+        const div = document.createElement('div');
+        div.id = `place-item-${p.id}`;
+        div.className = 'p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700/80 hover:border-primary/60 cursor-pointer transition flex items-center justify-between gap-3 group';
+        div.onclick = () => selectPlace(p.id, true);
+
+        div.innerHTML = `
+          <div class="flex items-center gap-3 min-w-0">
+            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-white text-[10px] font-black shrink-0 font-mono shadow-sm" style="background-color: ${color}">
+              #${p.id}
+            </span>
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5 mb-0.5">
+                <span class="text-[10px] font-bold text-slate-400">${p.day}</span>
+                <span class="text-[10px] px-1.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-semibold">${p.catZh}</span>
+                ${p.altitudeMeters ? `<span class="text-[9px] font-bold font-mono px-1 rounded bg-amber-500/20 text-amber-600">⛰️ ${p.altitudeMeters}m</span>` : ''}
+              </div>
+              <h4 class="text-xs font-black text-slate-900 dark:text-white truncate group-hover:text-primary transition">${p.nameZh}</h4>
+              <p class="text-[11px] text-slate-500 truncate">${p.nameLocal || p.nameEn || p.address}</p>
+            </div>
+          </div>
+          <button onclick="event.stopPropagation(); speakItem('${p.nameLocal || p.nameEn || p.nameZh}', '${p.country === 'CN' ? 'zh-CN' : (p.country === 'BR' ? 'pt-BR' : 'es-AR')}')" class="w-8 h-8 rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 hover:text-primary transition shrink-0" title="语音发音">
+            🔊
+          </button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function selectPlace(placeId, pan = true) {
+      const place = PLACES.find(p => p.id === placeId);
+      if (!place) return;
+      activePlace = place;
+
+      // Update Pin styling
+      document.querySelectorAll('.custom-pin').forEach(pin => pin.classList.remove('active'));
+      const activePin = document.getElementById(`pin-${place.id}`);
+      if (activePin) activePin.classList.add('active');
+
+      // Update List selection highlight
+      document.querySelectorAll('#placesList > div').forEach(d => d.classList.remove('ring-2', 'ring-primary', 'bg-primary/5'));
+      const listItem = document.getElementById(`place-item-${place.id}`);
+      if (listItem) {
+        listItem.classList.add('ring-2', 'ring-primary', 'bg-primary/5');
+        listItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      // Populate Active Place Card
+      const card = document.getElementById('activePlaceCard');
+      card.classList.remove('hidden');
+
+      document.getElementById('activePlaceBadge').innerText = `#${place.id}`;
+      document.getElementById('activePlaceDay').innerText = place.day;
+      document.getElementById('activePlaceCat').innerText = place.catZh;
+
+      const altBadge = document.getElementById('activePlaceAltitude');
+      if (place.altitudeMeters) {
+        altBadge.classList.remove('hidden');
+        altBadge.innerText = `⛰️ ${place.altitudeMeters}m`;
+      } else {
+        altBadge.classList.add('hidden');
+      }
+
+      document.getElementById('activePlaceNameZh').innerText = place.nameZh;
+      document.getElementById('activePlaceNameEn').innerText = place.nameEn || '';
+      document.getElementById('activePlaceLocalName').innerText = place.nameLocal || place.nameEs || place.namePt || place.nameZh;
+      document.getElementById('activePlaceLangCode').innerText = place.country || 'LOC';
+      document.getElementById('activePlaceStory').innerText = place.storyZh;
+
+      // Warning Box
+      const warnBox = document.getElementById('activePlaceWarningBox');
+      const warnText = document.getElementById('activePlaceWarningText');
+      if (place.note) {
+        warnBox.classList.remove('hidden');
+        warnText.innerText = place.note;
+      } else {
+        warnBox.classList.add('hidden');
+      }
+
+      // Setup 3 Primary CTAs
+      const navBtn = document.getElementById('activeNavBtn');
+      const rideBtn = document.getElementById('activeRideBtn');
+      const rideLabel = document.getElementById('activeRideLabel');
+
+      if (NETWORK_PROFILE === 'cn_domestic') {
+        navBtn.href = `https://uri.amap.com/marker?position=${place.lng},${place.lat}&name=${encodeURIComponent(place.nameZh)}&coordinate=wgs84&callnative=1`;
+        rideBtn.href = `https://common.diditaxi.com.cn/general/webLBSNavigation?lat=${place.lat}&lng=${place.lng}&name=${encodeURIComponent(place.nameZh)}`;
+        rideLabel.innerText = '🚕 滴滴打车';
+      } else {
+        navBtn.href = `https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}`;
+        rideBtn.href = `https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=${place.lat}&dropoff[longitude]=${place.lng}&dropoff[nickname]=${encodeURIComponent(place.nameEn || place.nameZh)}&dropoff[formatted_address]=${encodeURIComponent(place.address || '')}`;
+        rideLabel.innerText = '🚗 一键 Uber';
+      }
+
+      // Populate Knowledge & Review Chips
+      const chipStrip = document.getElementById('activePlaceKnowledgeStrip');
+      chipStrip.innerHTML = '';
+
+      if (NETWORK_PROFILE === 'cn_domestic') {
+        const baikeKey = place.baikeZh || place.nameZh;
+        const xhsKey = place.xhsSearch || place.nameZh;
+        const ctripKey = place.ctripSearch || place.nameZh;
+
+        chipStrip.innerHTML = `
+          <a href="https://baike.baidu.com/item/${encodeURIComponent(baikeKey)}" target="_blank" class="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[11px] font-bold hover:bg-blue-500/20 transition flex items-center gap-1">
+            <span>📖</span> 百度百科
+          </a>
+          <a href="https://www.xiaohongshu.com/search_result?keyword=${encodeURIComponent(xhsKey)}" target="_blank" class="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 text-[11px] font-bold hover:bg-red-500/20 transition flex items-center gap-1">
+            <span>📕</span> 小红书实拍
+          </a>
+          <a href="https://m.ctrip.com/webapp/you/search/result.html?keyword=${encodeURIComponent(ctripKey)}" target="_blank" class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[11px] font-bold hover:bg-emerald-500/20 transition flex items-center gap-1">
+            <span>🐬</span> 携程攻略
+          </a>
+        `;
+      } else {
+        if (place.wikiZh) {
+          chipStrip.innerHTML += `<a href="https://zh.wikipedia.org/wiki/${encodeURIComponent(place.wikiZh)}" target="_blank" class="px-2.5 py-1 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-[11px] font-bold hover:bg-slate-300 transition">🇨🇳 维基百科</a>`;
+        }
+        if (place.wikiEn) {
+          chipStrip.innerHTML += `<a href="https://en.wikipedia.org/wiki/${encodeURIComponent(place.wikiEn)}" target="_blank" class="px-2.5 py-1 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-[11px] font-bold hover:bg-slate-300 transition">🇬🇧 Wikipedia</a>`;
+        }
+      }
+
+      if (pan) {
+        map.flyTo([place.lat, place.lng], 14, { duration: 0.8 });
+      }
+    }
+
+    function closeActivePlace() {
+      document.getElementById('activePlaceCard').classList.add('hidden');
+      document.querySelectorAll('.custom-pin').forEach(pin => pin.classList.remove('active'));
+      activePlace = null;
+    }
+
+    function filterLayer(layerId) {
+      document.querySelectorAll('.layer-pill').forEach(btn => {
+        if (btn.dataset.layer === layerId) {
+          btn.classList.add('active', 'bg-slate-900', 'text-white', 'dark:bg-white', 'dark:text-slate-900');
+          btn.classList.remove('bg-white', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
+        } else {
+          btn.classList.remove('active', 'bg-slate-900', 'text-white', 'dark:bg-white', 'dark:text-slate-900');
+          btn.classList.add('bg-white', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
+        }
+      });
+
+      if (layerId === 'all') {
+        currentFilteredPlaces = [...PLACES];
+      } else {
+        currentFilteredPlaces = PLACES.filter(p => p.layer === layerId);
+      }
+
+      renderMarkers(currentFilteredPlaces);
+      renderPlacesList(currentFilteredPlaces);
+      if (currentFilteredPlaces.length) fitAllBounds();
+    }
+
+    // Search Filtering
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const query = e.target.value.trim().toLowerCase();
+      if (!query) {
+        renderPlacesList(currentFilteredPlaces);
+        renderMarkers(currentFilteredPlaces);
+        return;
+      }
+      const matched = currentFilteredPlaces.filter(p => 
+        p.nameZh.toLowerCase().includes(query) ||
+        (p.nameEn && p.nameEn.toLowerCase().includes(query)) ||
+        (p.nameLocal && p.nameLocal.toLowerCase().includes(query)) ||
+        p.address.toLowerCase().includes(query) ||
+        p.storyZh.toLowerCase().includes(query)
+      );
+      renderPlacesList(matched);
+      renderMarkers(matched);
+      if (matched.length) selectPlace(matched[0].id, true);
+    });
+
+    // Web Speech API Voice Pronunciation
+    function speakCurrent(rate = 1.0) {
+      if (!activePlace) return;
+      const text = activePlace.nameLocal || activePlace.nameEs || activePlace.namePt || activePlace.nameZh;
+      const lang = activePlace.country === 'CN' ? 'zh-CN' : (activePlace.country === 'BR' ? 'pt-BR' : 'es-AR');
+      speakPhrase(text, lang, rate);
+    }
+
+    function speakItem(text, lang, rate = 1.0) {
+      speakPhrase(text, lang, rate);
+    }
+
+    function speakPhrase(text, lang = 'zh-CN', rate = 1.0) {
+      if (!('speechSynthesis' in window)) {
+        alert('当前浏览器暂不支持语音合成');
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang;
+      utterance.rate = rate;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    // Modal Control
+    function toggleModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) modal.classList.toggle('hidden');
+    }
+
+    function showDriverCard() {
+      if (!activePlace) return;
+      document.getElementById('driverCardTitle').innerText = activePlace.nameLocal || activePlace.nameZh;
+      document.getElementById('driverCardSub').innerText = activePlace.nameZh !== activePlace.nameLocal ? activePlace.nameZh : (activePlace.nameEn || '');
+      document.getElementById('driverCardAddress').innerText = activePlace.address || '';
+      toggleModal('driverModal');
+    }
+
+    function speakDriverCard() {
+      if (!activePlace) return;
+      const text = activePlace.nameLocal || activePlace.nameZh;
+      const lang = activePlace.country === 'CN' ? 'zh-CN' : (activePlace.country === 'BR' ? 'pt-BR' : 'es-AR');
+      speakPhrase(text, lang, 0.9);
+    }
+
+    // Tab Switching
+    function switchTab(tabId) {
+      ['itinerary', 'altitude', 'phrases', 'photos'].forEach(t => {
+        const content = document.getElementById(`tab-${t}`);
+        const btn = document.getElementById(`tabBtn-${t}`);
+        if (content) {
+          if (t === tabId) {
+            content.classList.remove('hidden');
+            if (btn) {
+              btn.classList.add('active', 'bg-white', 'dark:bg-slate-800', 'shadow-sm', 'text-slate-900', 'dark:text-white', 'border', 'border-slate-200', 'dark:border-slate-700');
+              btn.classList.remove('text-slate-600', 'dark:text-slate-400');
+            }
+          } else {
+            content.classList.add('hidden');
+            if (btn) {
+              btn.classList.remove('active', 'bg-white', 'dark:bg-slate-800', 'shadow-sm', 'text-slate-900', 'dark:text-white', 'border', 'border-slate-200', 'dark:border-slate-700');
+              btn.classList.add('text-slate-600', 'dark:text-slate-400');
+            }
+          }
+        }
+      });
+    }
+
+    // Offline Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('[Travel Studio] SW registered successfully:', reg.scope))
+          .catch(err => console.warn('[Travel Studio] SW registration failed:', err));
+      });
+    }
+
+    // Offline Status Monitoring
+    function updateOnlineStatus() {
+      const banner = document.getElementById('offlineBanner');
+      if (!navigator.onLine) {
+        banner.classList.remove('hidden');
+      } else {
+        banner.classList.add('hidden');
+      }
+    }
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+
+    // Boot
+    window.addEventListener('DOMContentLoaded', () => {
+      initMap();
+      renderPlacesList(PLACES);
+      updateOnlineStatus();
+      if (PLACES.length > 0) {
+        selectPlace(PLACES[0].id, false);
+      }
+    });
+  </script>
+</body>
+</html>

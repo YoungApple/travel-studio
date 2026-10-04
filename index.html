@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Travel Studio | 高定私家团离线随行 Web App 生成器平台</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230284c7'/%3E%3Cpath d='M32 11c-9.4 0-17 7.6-17 17 0 12.8 17 25 17 25s17-12.2 17-25c0-9.4-7.6-17-17-17zm0 23.5a6.5 6.5 0 1 1 0-13 6.5 6.5 0 0 1 0 13z' fill='%23fff'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Noto+Sans+SC:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    :root {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans SC', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen antialiased flex flex-col selection:bg-sky-500 selection:text-white">
+
+  <!-- Hero Header -->
+  <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-600 to-emerald-500 flex items-center justify-center text-xl shadow-lg shadow-sky-500/20">
+          🧭
+        </div>
+        <div>
+          <span class="text-xs font-black tracking-widest uppercase text-sky-400">Travel Studio</span>
+          <h1 class="text-base sm:text-lg font-black tracking-tight text-white leading-tight">高定私家团离线随行 Web App 生成器</h1>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="https://github.com/YoungApple/south-america-2026" target="_blank" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">
+          GitHub
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="flex-1 max-w-6xl mx-auto px-4 py-12 w-full space-y-16">
+    <div class="text-center max-w-3xl mx-auto space-y-4">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-black">
+        <span>🚀</span> The Shopify for Ultra-Luxury Private Expeditions
+      </div>
+      <h2 class="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
+        告别传统死板 PDF 路书<br />
+        <span class="bg-clip-text text-transparent bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400">
+          一键生成商业级离线随身 Travel Web App
+        </span>
+      </h2>
+      <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+        专为高定私家团、高端定制游旅行社及远征探险打造。内置双网络区域引擎（国内直连高德/百度/小红书 vs 全球 Carto/Google/Uber）、离线 Service Worker 缓存底座与 10-Star 触觉跟读随行体验。
+      </p>
+    </div>
+
+    <!-- Flagship Case Studies Showcase -->
+    <div class="space-y-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-xl font-black text-white flex items-center gap-2">
+            <span>🏆</span> 标杆旗舰案例 (Flagship Case Studies)
+          </h3>
+          <p class="text-xs text-slate-400 mt-0.5">两套已部署在 GitHub Pages 的真实生产级 Web App</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Card 1: South America 2026 -->
+        <div class="rounded-3xl bg-slate-900/80 border border-slate-800 p-6 flex flex-col justify-between hover:border-sky-500/50 transition group shadow-2xl relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-48 h-48 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div>
+            <div class="flex items-center justify-between text-xs mb-3">
+              <span class="px-2.5 py-1 rounded-full bg-sky-500/10 text-sky-400 font-extrabold border border-sky-500/20">
+                🌐 Global Stack (出境版)
+              </span>
+              <span class="text-slate-400 font-mono">15 Days · 39 Stops</span>
+            </div>
+            <h4 class="text-xl font-black text-white group-hover:text-sky-400 transition mb-2">
+              South America 2026 · 南美四语随行伴侣
+            </h4>
+            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+              布宜诺斯艾利斯 · 巴塔哥尼亚莫雷诺冰川破冰 · 伊瓜苏双瀑 · 亚马逊热带雨林 · 里约热内卢。全流程 Google Maps 导航、西葡双语触觉发音示范、一键 Uber 叫车、离线矢量地图与旅途实拍集锦。
+            </p>
+            <div class="flex flex-wrap gap-1.5 mb-6 text-[11px] font-mono">
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">Carto / Google</span>
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">Uber DeepLink</span>
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">Web Speech TTS</span>
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">Wikipedia Zh/En/Es/Pt</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 pt-4 border-t border-slate-800/80">
+            <a href="https://youngapple.github.io/south-america-2026/" target="_blank" class="flex-1 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-extrabold text-xs text-center shadow-lg shadow-sky-500/20 active:scale-95 transition">
+              🚀 打开南美线上 Web App
+            </a>
+            <a href="./south-america-2026/index.html" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-slate-700 transition">
+              本地预览
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 2: Yunnan 2026 -->
+        <div class="rounded-3xl bg-slate-900/80 border border-slate-800 p-6 flex flex-col justify-between hover:border-emerald-500/50 transition group shadow-2xl relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div>
+            <div class="flex items-center justify-between text-xs mb-3">
+              <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 font-extrabold border border-emerald-500/20">
+                🇨🇳 cn_domestic Stack (国内直连)
+              </span>
+              <span class="text-slate-400 font-mono">11 Days · 17 Stops</span>
+            </div>
+            <h4 class="text-xl font-black text-white group-hover:text-emerald-400 transition mb-2">
+              Yunnan 2026 · 滇西北秘境巅峰穿越
+            </h4>
+            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+              丽江古城 · 玉龙雪山 · 虎跳峡高路徒步 · 哈巴雪山黑海湖 · 香格里拉松赞林 · 无底湖秘境 · 德钦梅里日照金山 · 南极洛九神湖。100% 中国本土直连无墙，高德地图瓦片、百度百科、小红书实拍机位、海拔高反血氧监控台与紧急医院一键拨号。
+            </p>
+            <div class="flex flex-wrap gap-1.5 mb-6 text-[11px] font-mono">
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">高德 AutoNavi</span>
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">百度百科</span>
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">小红书检索</span>
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">海拔剖面阶梯</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 pt-4 border-t border-slate-800/80">
+            <a href="https://youngapple.github.io/yunnan-2026/" target="_blank" class="flex-1 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs text-center shadow-lg shadow-emerald-500/20 active:scale-95 transition">
+              🏔️ 打开云南线上 Web App
+            </a>
+            <a href="./yunnan-2026/index.html" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-slate-700 transition">
+              本地预览
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dual-Network Architecture Highlights -->
+    <div class="rounded-3xl bg-slate-900 border border-slate-800 p-8 space-y-6">
+      <h3 class="text-xl font-black text-white flex items-center gap-2">
+        <span>⚡</span> 架构核心：Dual-Network 区域协议栈
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-300 leading-relaxed">
+        <div class="p-5 rounded-2xl bg-slate-950/60 border border-slate-800/80 space-y-3">
+          <div class="text-sky-400 font-extrabold text-sm flex items-center gap-2">
+            <span>🌐</span> Global Profile (出境游 / 涉外团)
+          </div>
+          <ul class="space-y-1.5 list-disc pl-4 text-slate-400">
+            <li><strong>地图底图</strong>：Carto Voyager 极简矢量、OpenStreetMap、Google Maps 卫星图层。</li>
+            <li><strong>百科与知识</strong>：Wikipedia 维基百科（Zh/En/Local 自动路由当地语种）。</li>
+            <li><strong>出行叫车</strong>：Uber Universal DeepLink（自动填入经纬度与英文目的地名）。</li>
+            <li><strong>发音跟读</strong>：Web Speech API 西班牙语 (`es-AR`)、葡萄牙语 (`pt-BR`) 慢速朗读。</li>
+          </ul>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-slate-950/60 border border-slate-800/80 space-y-3">
+          <div class="text-emerald-400 font-extrabold text-sm flex items-center gap-2">
+            <span>🇨🇳</span> cn_domestic Profile (国内游 / 无墙版)
+          </div>
+          <ul class="space-y-1.5 list-disc pl-4 text-slate-400">
+            <li><strong>地图底图</strong>：高德地图 AutoNavi 瓦片服务（国内 CDN 加速，支持卫星与街道）。</li>
+            <li><strong>百科与知识</strong>：百度百科深度词条 + 小红书实拍拍照打卡检索。</li>
+            <li><strong>出行叫车</strong>：高德地图一键导航唤醒、滴滴出行 Web 直达及包车向导调度。</li>
+            <li><strong>高海拔保障</strong>：动态海拔阶梯 (2000m~4292m)、血氧监控红黄绿提示与定点医院直拨。</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800 py-6 text-center text-xs text-slate-500">
+    <p>© 2026 Travel Studio Platform. Built with Love & Precision by Shuguo Yang.</p>
+  </footer>
+</body>
+</html>
