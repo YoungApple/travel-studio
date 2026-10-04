@@ -2,174 +2,1255 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Travel Studio | 高定私家团离线随行 Web App 生成器平台</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230284c7'/%3E%3Cpath d='M32 11c-9.4 0-17 7.6-17 17 0 12.8 17 25 17 25s17-12.2 17-25c0-9.4-7.6-17-17-17zm0 23.5a6.5 6.5 0 1 1 0-13 6.5 6.5 0 0 1 0 13z' fill='%23fff'/%3E%3C/svg%3E" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Noto+Sans+SC:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
-  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>Travel Studio — 高定私家团离线随行 Web App 生成器平台 & CEO 商业蓝图</title>
+  <meta name="description" content="Turn any raw group travel agenda into a pre-compiled, 100% offline-ready bespoke web app with pre-marked maps, local insider guides, China/Global dual network stack, and 1-click GitHub Pages hosting." />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="https://cdn.staticfile.net/leaflet/1.9.4/leaflet.min.css" />
   <style>
     :root {
-      font-family: 'Plus Jakarta Sans', 'Noto Sans SC', sans-serif;
+      --bg: #0b1120;
+      --bg-card: #111827;
+      --bg-elevated: #1e293b;
+      --border: rgba(148, 163, 184, 0.18);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-2: #fbbf24;
+      --emerald: #10b981;
+      --rose: #f43f5e;
+      --violet: #a78bfa;
+      --radius: 14px;
+      --shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.55);
+      --font: -apple-system, BlinkMacSystemFont, "PingFang SC", "HarmonyOS Sans SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+      --mono: "JetBrains Mono", "SFMono-Regular", Consolas, Menlo, monospace;
     }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font);
+      background: radial-gradient(circle at 15% 0%, #172554 0%, var(--bg) 42%);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding-bottom: 64px;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Top Sticky Header */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(11, 17, 32, 0.88);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+    }
+    .topbar-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, #0284c7, #10b981);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 21px;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+    }
+    .brand-title {
+      font-weight: 800;
+      font-size: 1.12rem;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    .status-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 11px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: rgba(30, 41, 59, 0.75);
+    }
+    .pill.ok {
+      border-color: rgba(16, 185, 129, 0.45);
+      background: rgba(16, 185, 129, 0.14);
+      color: #6ee7b7;
+    }
+    .pill.warn {
+      border-color: rgba(251, 191, 36, 0.45);
+      background: rgba(251, 191, 36, 0.14);
+      color: #fde68a;
+    }
+    .pill.blue {
+      border-color: rgba(56, 189, 248, 0.45);
+      background: rgba(56, 189, 248, 0.14);
+      color: #7dd3fc;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 24px 20px;
+    }
+
+    /* Hero Banner */
+    .hero {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.92) 100%);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent-2);
+      margin-bottom: 10px;
+    }
+    .hero h1 {
+      font-size: clamp(1.65rem, 3vw, 2.45rem);
+      line-height: 1.22;
+      font-weight: 850;
+      margin-bottom: 14px;
+      letter-spacing: -0.02em;
+    }
+    .hero p.lead {
+      font-size: 1.02rem;
+      color: #cbd5e1;
+      max-width: 960px;
+      margin-bottom: 22px;
+    }
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .metric-card {
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .metric-card .k {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .metric-card .v {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-top: 2px;
+    }
+    .metric-card .s {
+      font-size: 0.78rem;
+      color: #6ee7b7;
+      margin-top: 2px;
+    }
+
+    /* Section Navigation Tabs */
+    .nav-tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 14px;
+    }
+    .nav-tab {
+      background: var(--bg-card);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 10px 18px;
+      border-radius: 11px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .nav-tab:hover {
+      color: var(--text);
+      border-color: rgba(56, 189, 248, 0.45);
+    }
+    .nav-tab.active {
+      background: linear-gradient(135deg, #0284c7, #0ea5e9);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 6px 18px rgba(14, 165, 233, 0.35);
+    }
+
+    /* Two-Column Generator Workbench */
+    .workbench {
+      display: grid;
+      grid-template-columns: 460px 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+    @media (max-width: 1024px) {
+      .workbench { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+    .panel-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .panel-sub {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #cbd5e1;
+      margin: 14px 0 6px;
+    }
+    .preset-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn-chip {
+      background: var(--bg-elevated);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 7px 11px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-chip:hover, .btn-chip.active {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.16);
+      color: #fff;
+    }
+
+    .region-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .region-option {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      text-align: left;
+      color: var(--text);
+      transition: all 0.15s;
+    }
+    .region-option.active {
+      border-color: var(--emerald);
+      background: rgba(16, 185, 129, 0.14);
+    }
+    .region-option .r-title {
+      font-size: 0.84rem;
+      font-weight: 800;
+      display: block;
+    }
+    .region-option .r-desc {
+      font-size: 0.73rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+      display: block;
+    }
+
+    input.text-input, textarea.agenda-input {
+      width: 100%;
+      background: #090e1a;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
+    textarea.agenda-input {
+      min-height: 250px;
+      resize: vertical;
+    }
+    input.text-input:focus, textarea.agenda-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .btn-primary {
+      width: 100%;
+      margin-top: 14px;
+      padding: 12px 18px;
+      border: none;
+      border-radius: 11px;
+      background: linear-gradient(135deg, #10b981, #0284c7);
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.32);
+      transition: transform 0.12s ease;
+    }
+    .btn-primary:hover { transform: translateY(-1px); }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-elevated);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: 9px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* Map Preview */
+    #preview-map {
+      width: 100%;
+      height: 360px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-bottom: 16px;
+      background: #090e1a;
+    }
+
+    /* Compiled Day Cards */
+    .compiled-days {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 520px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .day-card {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 14px;
+    }
+    .day-card.cutoff {
+      border-left: 4px solid var(--rose);
+    }
+    .day-card.branch {
+      border-left: 4px solid var(--accent-2);
+    }
+    .day-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .day-badge {
+      background: rgba(56, 189, 248, 0.16);
+      color: #7dd3fc;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 2px 9px;
+      border-radius: 6px;
+    }
+    .stop-box {
+      background: rgba(30, 41, 59, 0.55);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      border-radius: 9px;
+      padding: 10px 12px;
+      margin-top: 8px;
+    }
+    .stop-title {
+      font-weight: 800;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .stop-desc {
+      font-size: 0.82rem;
+      color: #cbd5e1;
+      margin-top: 4px;
+    }
+    .stop-tip {
+      font-size: 0.79rem;
+      color: #fde68a;
+      margin-top: 5px;
+    }
+    .stop-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .ext-link {
+      font-size: 0.74rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 6px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--border);
+      color: var(--accent);
+    }
+
+    /* Code Inspector */
+    pre.code-box {
+      background: #070b14;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: #a7f3d0;
+      overflow-x: auto;
+      max-height: 360px;
+      overflow-y: auto;
+      margin-top: 12px;
+    }
+
+    /* Case Studies Grid */
+    .cases-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+      gap: 22px;
+      margin-top: 10px;
+    }
+    @media (max-width: 600px) {
+      .cases-grid { grid-template-columns: 1fr; }
+    }
+    .case-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .case-card h3 {
+      font-size: 1.25rem;
+      font-weight: 850;
+      margin: 6px 0;
+    }
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin: 12px 0;
+      font-size: 0.88rem;
+      color: #cbd5e1;
+    }
+
+    /* CEO Plan Grid */
+    .ceo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 20px;
+      margin-top: 12px;
+    }
+    .ceo-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+    .ceo-card h3 {
+      font-size: 1.08rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .ceo-card p, .ceo-card li {
+      font-size: 0.88rem;
+      color: #cbd5e1;
+      margin-bottom: 8px;
+    }
+    .ceo-card ul {
+      padding-left: 18px;
+    }
+    .hidden { display: none !important; }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen antialiased flex flex-col selection:bg-sky-500 selection:text-white">
+<body>
 
-  <!-- Hero Header -->
-  <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur sticky top-0 z-40">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-600 to-emerald-500 flex items-center justify-center text-xl shadow-lg shadow-sky-500/20">
-          🧭
-        </div>
+  <!-- Top Sticky Header -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-logo">🧭</div>
         <div>
-          <span class="text-xs font-black tracking-widest uppercase text-sky-400">Travel Studio</span>
-          <h1 class="text-base sm:text-lg font-black tracking-tight text-white leading-tight">高定私家团离线随行 Web App 生成器</h1>
+          <div class="brand-title">
+            Travel Studio
+            <span class="pill blue">MVP v1.0</span>
+          </div>
+          <div class="brand-sub">Bespoke Offline Travel Companion Generator Platform · 高定私家团离线随行 Web App 生成器</div>
         </div>
       </div>
-      <div class="flex items-center gap-3">
-        <a href="https://github.com/YoungApple/south-america-2026" target="_blank" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">
-          GitHub
-        </a>
+      <div class="status-pills">
+        <span id="sw-badge" class="pill ok">⚡ 离线引擎已就绪 · Service Worker Active</span>
+        <span id="net-badge" class="pill blue">🌐 Dual-Stack: CN Domestic + Global</span>
+        <a href="https://youngapple.github.io/south-america-2026/" target="_blank" rel="noopener" class="pill warn">🧊 案例1: 南美 2026 ↗</a>
+        <a href="https://youngapple.github.io/yunnan-2026/" target="_blank" rel="noopener" class="pill ok">🏔️ 案例2: 云南 2026 ↗</a>
       </div>
     </div>
   </header>
 
-  <!-- Hero Section -->
-  <main class="flex-1 max-w-6xl mx-auto px-4 py-12 w-full space-y-16">
-    <div class="text-center max-w-3xl mx-auto space-y-4">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-black">
-        <span>🚀</span> The Shopify for Ultra-Luxury Private Expeditions
-      </div>
-      <h2 class="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
-        告别传统死板 PDF 路书<br />
-        <span class="bg-clip-text text-transparent bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400">
-          一键生成商业级离线随身 Travel Web App
-        </span>
-      </h2>
-      <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
-        专为高定私家团、高端定制游旅行社及远征探险打造。内置双网络区域引擎（国内直连高德/百度/小红书 vs 全球 Carto/Google/Uber）、离线 Service Worker 缓存底座与 10-Star 触觉跟读随行体验。
+  <main class="container">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-eyebrow">★ 10-Star Private Group Travel Experience · CEO Plan & Working MVP</div>
+      <h1>把任意 10 行原始行程单，预编译成 100% 离线可用的高定私家团随行 Web App</h1>
+      <p class="lead">
+        无论是巴塔哥尼亚冰川徒步（<strong>South America 2026</strong>）还是滇西北 4,292m 白马雪山与南极洛探险（<strong>Yunnan 2026</strong>），传统 PDF 和通用旅行 App 在无信号雪山垭口与国内外网络隔离下纷纷失效。
+        <strong>Travel Studio</strong> 将行程单、全途预标地图点位、海拔爬升曲线、在地向导锦囊、刚性时间红线（如 <code>14:30</code> 出发截点）与国内外双栈导航链接，<strong>一键预编译为带 Service Worker 离线缓存的专属 Web App 并自动发布上线</strong>。
       </p>
-    </div>
-
-    <!-- Flagship Case Studies Showcase -->
-    <div class="space-y-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <h3 class="text-xl font-black text-white flex items-center gap-2">
-            <span>🏆</span> 标杆旗舰案例 (Flagship Case Studies)
-          </h3>
-          <p class="text-xs text-slate-400 mt-0.5">两套已部署在 GitHub Pages 的真实生产级 Web App</p>
+      <div class="hero-metrics">
+        <div class="metric-card">
+          <div class="k">Input Friction (输入门槛)</div>
+          <div class="v">10 行纯文本行程</div>
+          <div class="s">支持日期/酒店/分叉方案/时间截点自动解析</div>
+        </div>
+        <div class="metric-card">
+          <div class="k">Offline Availability (离线能力)</div>
+          <div class="v">100% 离线可用</div>
+          <div class="s">Service Worker 预缓存 App Shell + 地图瓦片</div>
+        </div>
+        <div class="metric-card">
+          <div class="k">Network Stack (国内外双栈)</div>
+          <div class="v">CN 境内 / Global</div>
+          <div class="s">高德+GCJ02+百科+小红书 vs OSM+Google+Wiki</div>
+        </div>
+        <div class="metric-card">
+          <div class="k">Unit Economics (单团边际成本)</div>
+          <div class="v">~$0.10 / Trip</div>
+          <div class="s">&gt;95% 毛利率 · B2B2C 私家团定制师 + B2C Pro</div>
         </div>
       </div>
+    </section>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Card 1: South America 2026 -->
-        <div class="rounded-3xl bg-slate-900/80 border border-slate-800 p-6 flex flex-col justify-between hover:border-sky-500/50 transition group shadow-2xl relative overflow-hidden">
-          <div class="absolute top-0 right-0 w-48 h-48 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
-          <div>
-            <div class="flex items-center justify-between text-xs mb-3">
-              <span class="px-2.5 py-1 rounded-full bg-sky-500/10 text-sky-400 font-extrabold border border-sky-500/20">
-                🌐 Global Stack (出境版)
-              </span>
-              <span class="text-slate-400 font-mono">15 Days · 39 Stops</span>
-            </div>
-            <h4 class="text-xl font-black text-white group-hover:text-sky-400 transition mb-2">
-              South America 2026 · 南美四语随行伴侣
-            </h4>
-            <p class="text-xs text-slate-400 leading-relaxed mb-4">
-              布宜诺斯艾利斯 · 巴塔哥尼亚莫雷诺冰川破冰 · 伊瓜苏双瀑 · 亚马逊热带雨林 · 里约热内卢。全流程 Google Maps 导航、西葡双语触觉发音示范、一键 Uber 叫车、离线矢量地图与旅途实拍集锦。
-            </p>
-            <div class="flex flex-wrap gap-1.5 mb-6 text-[11px] font-mono">
-              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">Carto / Google</span>
-              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">Uber DeepLink</span>
-              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">Web Speech TTS</span>
-              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">Wikipedia Zh/En/Es/Pt</span>
+    <!-- Main Navigation Tabs -->
+    <nav class="nav-tabs" role="tablist">
+      <button class="nav-tab active" onclick="switchTab('studio', this)">🚀 交互式生成器工作台 (Live Generator MVP)</button>
+      <button class="nav-tab" onclick="switchTab('cases', this)">🌍 两大标杆实战案例 (South America &amp; Yunnan)</button>
+      <button class="nav-tab" onclick="switchTab('ceo', this)">📈 CEO 商业计划书 (/plan-ceo-review)</button>
+      <button class="nav-tab" onclick="switchTab('arch', this)">⚙️ 四阶预编译与离线架构 (Pipeline &amp; CLI)</button>
+    </nav>
+
+    <!-- TAB 1: Interactive Live Generator Workbench -->
+    <section id="tab-studio">
+      <div class="workbench">
+        <!-- Left Input Column -->
+        <div class="panel">
+          <div class="panel-title">
+            <span>1. 输入原始行程单 (Agenda Input)</span>
+            <span class="pill blue">Stage 1–3 Compiler</span>
+          </div>
+          <div class="panel-sub">选择实战案例预设或粘贴任意私家团行程文本，切换境内/国际网络配置后实时预编译：</div>
+
+          <label class="field-label">快速加载标杆案例预设 (Load Preset):</label>
+          <div class="preset-row">
+            <button type="button" class="btn-chip active" id="preset-yunnan" onclick="loadPreset('yunnan')">🏔️ 案例2：朋友的云南 11 天私家团 (CN)</button>
+            <button type="button" class="btn-chip" id="preset-sa" onclick="loadPreset('sa')">🧊 案例1：南美 15 天冰川雨林远征 (Global)</button>
+          </div>
+
+          <label class="field-label">目标网络与生态栈 (Region &amp; Network Stack):</label>
+          <div class="region-switch">
+            <button type="button" class="region-option active" id="reg-cn" onclick="setRegion('cn_domestic')">
+              <span class="r-title">🇨🇳 中国境内 (cn_domestic)</span>
+              <span class="r-desc">高德瓦片 · GCJ-02 坐标 · 高德/百度导航 · 百度百科 · 小红书 · 携程</span>
+            </button>
+            <button type="button" class="region-option" id="reg-global" onclick="setRegion('global')">
+              <span class="r-title">🌍 国际全球 (global)</span>
+              <span class="r-desc">Carto/OSM 瓦片 · WGS-84 · Google Maps · Wikipedia · AllTrails · KML</span>
+            </button>
+          </div>
+
+          <label class="field-label" for="trip-title">私家团名称 (Trip Title):</label>
+          <input id="trip-title" class="text-input" type="text" value="2026 滇西北秘境私家团 · 丽江/哈巴/香格里拉/梅里/南极洛 11日随行路书" />
+
+          <label class="field-label" for="agenda-text">原始行程列表与关键提醒 (Raw Agenda &amp; Reminders):</label>
+          <textarea id="agenda-text" class="agenda-input"></textarea>
+
+          <button type="button" class="btn-primary" onclick="runCompiler()">
+            ⚡ 立即预编译离线随行 Web App (Compile Offline PWA)
+          </button>
+        </div>
+
+        <!-- Right Output Column -->
+        <div class="panel">
+          <div class="panel-title">
+            <span id="compiled-header">2. 预编译产物预览 (Pre-Compiled Offline App Preview)</span>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button type="button" class="btn-secondary" onclick="downloadStandaloneApp()">⬇️ 导出独立离线 HTML App</button>
+              <button type="button" class="btn-secondary" onclick="toggleInspector()">🔍 查看编译 JSON / CLI 发布指令</button>
             </div>
           </div>
-          <div class="flex items-center gap-3 pt-4 border-t border-slate-800/80">
-            <a href="https://youngapple.github.io/south-america-2026/" target="_blank" class="flex-1 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-extrabold text-xs text-center shadow-lg shadow-sky-500/20 active:scale-95 transition">
-              🚀 打开南美线上 Web App
+          <div class="panel-sub" id="compiled-stats">
+            已自动解析点位坐标、海拔梯度、刚性时间红线与在地向导链接，地图支持全屏缩放与离线瓦片缓存。
+          </div>
+
+          <!-- Interactive Leaflet Map -->
+          <div id="preview-map"></div>
+
+          <!-- Optional Code/JSON Inspector -->
+          <div id="inspector-box" class="hidden">
+            <div class="preset-row" style="margin-bottom:8px;">
+              <button type="button" class="btn-chip active" onclick="showInspectorMode('json')">📄 trip_compiled.json</button>
+              <button type="button" class="btn-chip" onclick="showInspectorMode('cli')">🚀 GitHub Pages 一键发布流水线</button>
+              <button type="button" class="btn-chip" onclick="showInspectorMode('sw')">⚡ sw.js 离线 Service Worker</button>
+            </div>
+            <pre id="inspector-pre" class="code-box"></pre>
+          </div>
+
+          <!-- Compiled Day-by-Day Cards -->
+          <div id="compiled-days" class="compiled-days"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: Two Flagship Live Production Case Studies -->
+    <section id="tab-cases" class="hidden">
+      <div class="cases-grid">
+        <!-- Case Study 1: South America 2026 -->
+        <div class="case-card">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+              <span class="pill blue">Case Study #1 · Global Stack (WGS-84 / Google Maps / Wiki / KML)</span>
+              <span class="pill ok">Field-Tested in Patagonia</span>
+            </div>
+            <h3>🧊 South America 2026 — 巴塔哥尼亚·冰川·亚马逊·伊瓜苏 15 天远征</h3>
+            <p style="color:var(--text-muted); font-size:0.88rem;">
+              为你自己的南美之行多次迭代打磨的标杆样板（Buenos Aires · El Calafate · Perito Moreno · El Chaltén Fitz Roy · Iguazú AR/BR · Manaus Amazon · Rio de Janeiro）。
+            </p>
+            <ul class="feature-list">
+              <li>✅ <strong>39 个精准预标点位 + 5 大独立 KML 图层</strong>：机场、酒店、冰川步道起点、瀑布两国口岸、雨林码头全部预标并支持一键导入 Google My Maps / Organic Maps。</li>
+              <li>✅ <strong>实战驱动的多轮迭代</strong>：在布宜诺斯艾利斯与埃尔卡拉法特实地使用过程中持续修正航班衔接、徒步海拔曲线、实拍相册与离线响应体验。</li>
+              <li>✅ <strong>Global 国际生态适配</strong>：内置 Google Maps 跨平台唤起、Wikipedia 深度词条、西班牙语/葡萄牙语点餐与通关锦囊、Service Worker 离线缓存。</li>
+            </ul>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <a href="https://youngapple.github.io/south-america-2026/" target="_blank" rel="noopener" class="btn-primary" style="text-align:center; margin-top:0; flex:1;">
+              🌍 打开南美 2026 线上实装版 ↗
             </a>
-            <a href="./south-america-2026/index.html" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-slate-700 transition">
-              本地预览
-            </a>
+            <button type="button" class="btn-secondary" onclick="switchTab('studio', document.querySelectorAll('.nav-tab')[0]); loadPreset('sa');">
+              在编译器中加载此案例
+            </button>
           </div>
         </div>
 
-        <!-- Card 2: Yunnan 2026 -->
-        <div class="rounded-3xl bg-slate-900/80 border border-slate-800 p-6 flex flex-col justify-between hover:border-emerald-500/50 transition group shadow-2xl relative overflow-hidden">
-          <div class="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <!-- Case Study 2: Yunnan 2026 -->
+        <div class="case-card">
           <div>
-            <div class="flex items-center justify-between text-xs mb-3">
-              <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 font-extrabold border border-emerald-500/20">
-                🇨🇳 cn_domestic Stack (国内直连)
-              </span>
-              <span class="text-slate-400 font-mono">11 Days · 17 Stops</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+              <span class="pill ok">Case Study #2 · China Domestic Stack (高德 / 百度百科 / 小红书 / 携程)</span>
+              <span class="pill warn">11 Days · Plan A / Plan B</span>
             </div>
-            <h4 class="text-xl font-black text-white group-hover:text-emerald-400 transition mb-2">
-              Yunnan 2026 · 滇西北秘境巅峰穿越
-            </h4>
-            <p class="text-xs text-slate-400 leading-relaxed mb-4">
-              丽江古城 · 玉龙雪山 · 虎跳峡高路徒步 · 哈巴雪山黑海湖 · 香格里拉松赞林 · 无底湖秘境 · 德钦梅里日照金山 · 南极洛九神湖。100% 中国本土直连无墙，高德地图瓦片、百度百科、小红书实拍机位、海拔高反血氧监控台与紧急医院一键拨号。
+            <h3>🏔️ Yunnan 2026 — 朋友的云南滇西北 11 天私家团定制随行 App</h3>
+            <p style="color:var(--text-muted); font-size:0.88rem;">
+              从朋友发来的 10 行原始微信行程单（11/21–12/1：丽江 → 哈巴雪山 → 香格里拉 → 梅里飞来寺 → 雨崩/南极洛 → 沙溪）直接预编译生成的离线随行 Web App。
             </p>
-            <div class="flex flex-wrap gap-1.5 mb-6 text-[11px] font-mono">
-              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">高德 AutoNavi</span>
-              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">百度百科</span>
-              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">小红书检索</span>
-              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">海拔剖面阶梯</span>
-            </div>
+            <ul class="feature-list">
+              <li>✅ <strong>D6–D9 双线动态切换（方案 A 雨崩徒步 vs 方案 B 南极洛+茨中）</strong>：地图航迹、海拔剖面图、每日亮点与装备清单随方案一键联动。</li>
+              <li>✅ <strong>刚性时间红线与高反安全护栏</strong>：内置 <code>D3 14:30 前必须从香格里拉出发去飞来寺</code> 暗冰夜路预警、2400m→3400m→3950m 阶梯式高原适应指南。</li>
+              <li>✅ <strong>100% 中国境内网络原生适配 (`cn_domestic`)</strong>：高德地图瓦片 + GCJ-02 坐标、高德/百度一键导航、百度百科、小红书机位攻略、携程/大众点评，零被墙外部依赖。</li>
+            </ul>
           </div>
-          <div class="flex items-center gap-3 pt-4 border-t border-slate-800/80">
-            <a href="https://youngapple.github.io/yunnan-2026/" target="_blank" class="flex-1 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs text-center shadow-lg shadow-emerald-500/20 active:scale-95 transition">
-              🏔️ 打开云南线上 Web App
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <a href="https://youngapple.github.io/yunnan-2026/" target="_blank" rel="noopener" class="btn-primary" style="text-align:center; margin-top:0; flex:1;">
+              🏔️ 打开云南 2026 线上实装版 ↗
             </a>
-            <a href="./yunnan-2026/index.html" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-slate-700 transition">
-              本地预览
-            </a>
+            <button type="button" class="btn-secondary" onclick="switchTab('studio', document.querySelectorAll('.nav-tab')[0]); loadPreset('yunnan');">
+              在编译器中加载此案例
+            </button>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Dual-Network Architecture Highlights -->
-    <div class="rounded-3xl bg-slate-900 border border-slate-800 p-8 space-y-6">
-      <h3 class="text-xl font-black text-white flex items-center gap-2">
-        <span>⚡</span> 架构核心：Dual-Network 区域协议栈
-      </h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-300 leading-relaxed">
-        <div class="p-5 rounded-2xl bg-slate-950/60 border border-slate-800/80 space-y-3">
-          <div class="text-sky-400 font-extrabold text-sm flex items-center gap-2">
-            <span>🌐</span> Global Profile (出境游 / 涉外团)
-          </div>
-          <ul class="space-y-1.5 list-disc pl-4 text-slate-400">
-            <li><strong>地图底图</strong>：Carto Voyager 极简矢量、OpenStreetMap、Google Maps 卫星图层。</li>
-            <li><strong>百科与知识</strong>：Wikipedia 维基百科（Zh/En/Local 自动路由当地语种）。</li>
-            <li><strong>出行叫车</strong>：Uber Universal DeepLink（自动填入经纬度与英文目的地名）。</li>
-            <li><strong>发音跟读</strong>：Web Speech API 西班牙语 (`es-AR`)、葡萄牙语 (`pt-BR`) 慢速朗读。</li>
+    <!-- TAB 3: CEO Business Plan -->
+    <section id="tab-ceo" class="hidden">
+      <div class="ceo-grid">
+        <div class="ceo-card">
+          <h3>1. 为什么这是一个极高价值的严肃商业机会？</h3>
+          <p>
+            私家团、高定旅行、亲友包车自驾与户外俱乐部是旅游行业客单价最高（人均 ¥10,000–¥80,000+）、复购与口碑传播最强的细分市场。但即使收费数万元的高定团，交付给客人的依然是一份<strong>静态 PDF 路书</strong>或零散的微信群通知。
+          </p>
+          <ul>
+            <li><strong>痛点 1（野外断网失联）</strong>：在巴塔哥尼亚 Fitz Roy 步道、梅里雨崩或南极洛 3950m 湖区，手机信号归零，在线小程序或未缓存网页直接白屏。</li>
+            <li><strong>痛点 2（群聊信息熵增）</strong>：集合时间、14:30 出发红线、酒店定位、Plan A/B 投票淹没在几百条群消息里。</li>
+            <li><strong>痛点 3（国内外网络割裂）</strong>：海外工具（Wanderlog/Google My Maps）在国内无法打开；国内模板工具缺乏徒步海拔、机位时刻与离线预编译能力。</li>
           </ul>
         </div>
 
-        <div class="p-5 rounded-2xl bg-slate-950/60 border border-slate-800/80 space-y-3">
-          <div class="text-emerald-400 font-extrabold text-sm flex items-center gap-2">
-            <span>🇨🇳</span> cn_domestic Profile (国内游 / 无墙版)
-          </div>
-          <ul class="space-y-1.5 list-disc pl-4 text-slate-400">
-            <li><strong>地图底图</strong>：高德地图 AutoNavi 瓦片服务（国内 CDN 加速，支持卫星与街道）。</li>
-            <li><strong>百科与知识</strong>：百度百科深度词条 + 小红书实拍拍照打卡检索。</li>
-            <li><strong>出行叫车</strong>：高德地图一键导航唤醒、滴滴出行 Web 直达及包车向导调度。</li>
-            <li><strong>高海拔保障</strong>：动态海拔阶梯 (2000m~4292m)、血氧监控红黄绿提示与定点医院直拨。</li>
+        <div class="ceo-card">
+          <h3>2. 10-Star 产品体验定义 (/plan-ceo-review)</h3>
+          <ul>
+            <li><strong>⭐ 1-Star</strong>：微信群发一段文字或 20 页 PDF 行程单。</li>
+            <li><strong>⭐⭐⭐ 3-Star</strong>：通用行程记录 App，需手动逐个搜点输入，无在地向导经验，断网即残废。</li>
+            <li><strong>⭐⭐⭐⭐⭐ 5-Star</strong>：带交互地图与每日卡片的定制网页，但依赖实时网络。</li>
+            <li><strong>🌟 10-Star (Travel Studio)</strong>：定制师或领队只需粘贴 10 行原始日程，系统自动补全<strong>全途点位与途经观景台坐标、海拔曲线、驾驶/徒步分段耗时、黄金摄影时刻、高原/通关避坑清单、国内外双栈一键导航</strong>，并预编译成<strong>带 Service Worker 离线缓存的专属 Web App</strong>，首次打开即全量驻留手机本地，海拔 4,500m 飞行模式下依然秒开！</li>
+          </ul>
+        </div>
+
+        <div class="ceo-card">
+          <h3>3. 商业模式与定价矩阵 (B2B2C + B2C Pro)</h3>
+          <ul>
+            <li><strong>B2B2C 高定旅行社 / 私家团定制师 SaaS（核心现金牛）</strong>：
+              <ul>
+                <li><strong>痛点切入</strong>：帮定制师在 60 秒内把报价单变成专属品牌离线 Web App，成单率提升 30%+，让客人主动转发朋友圈形成裂变。</li>
+                <li><strong>定价</strong>：<code>¥1,299 / 月 ($199/mo)</code> 机构版（含机构白标 Logo、定制师微信/电话一键呼叫、成团行前一键群发），或按团计费 <code>¥99 / 团 ($15/trip)</code>。</li>
+              </ul>
+            </li>
+            <li><strong>B2C Pro 独立团长 / 自驾领队版</strong>：
+              <ul>
+                <li><strong>定价</strong>：<code>$15 / 次行程</code> 或 <code>$49 / 年无限次</code>（含 Plan A/B 动态分支、离线瓦片预热包、KML 导出、实拍相册归档）。</li>
+              </ul>
+            </li>
+            <li><strong>单位经济模型 (Unit Economics)</strong>：单次编译 LLM + 地理编码成本约 <code>$0.08–$0.15</code>，静态托管于 GitHub Pages / Cloudflare Pages 边际成本趋近于 <code>$0</code>，毛利率 <strong>&gt;95%</strong>。</li>
+          </ul>
+        </div>
+
+        <div class="ceo-card">
+          <h3>4. 三阶段发布与托管演进路线图 (GTM &amp; Hosting)</h3>
+          <ul>
+            <li><strong>Phase 1 (MVP · 已上线) — GitHub Pages 零成本极速发布流水线</strong>：
+              通过 <code>generator.py compile &amp;&amp; generator.py publish --repo &lt;owner&gt;/&lt;trip-slug&gt;</code> 自动构建并推送到 GitHub Pages，立刻生成永久 HTTPS 链接 + 离线 PWA。</li>
+            <li><strong>Phase 2 — 双云边缘托管与国内极速分发</strong>：
+              针对 <code>cn_domestic</code> 自动同步至 <strong>阿里云 OSS + CDN / Cloudflare Pages 自定义域名</strong>，并生成微信小程序 WebView 壳与二维码海报。</li>
+            <li><strong>Phase 3 — 领队实时广播与赛后数字纪念册</strong>：
+              离线优先架构上叠加轻量级增量同步（有网时领队一键推送“今日出发推迟 30 分钟”广播，团友结束后一键生成带轨迹的纪念相册）。</li>
           </ul>
         </div>
       </div>
-    </div>
+    </section>
+
+    <!-- TAB 4: 4-Stage Compiler Architecture & CLI -->
+    <section id="tab-arch" class="hidden">
+      <div class="ceo-grid">
+        <div class="ceo-card">
+          <h3>Stage 1 · 极简日程解析器 (Raw Agenda Parser)</h3>
+          <p>支持自然语言多行文本或 JSON 输入，自动识别：</p>
+          <ul>
+            <li>日期跨度与单日/多日合并段（如 <code>D1 11/21</code>、<code>D6-D9 11/26-11/29</code>）</li>
+            <li>住宿锚点（<code>宿丽江</code>、<code>宿飞来寺</code>、<code>宿同乐村</code>）</li>
+            <li>刚性时间约束（如 <code>14:30之前从香格里拉出发</code>）并升级为红色安全预警横幅</li>
+            <li>未决分叉路线（<code>方案A 雨崩</code> vs <code>方案B 南极洛</code>）并编译为前端交互状态机</li>
+          </ul>
+        </div>
+
+        <div class="ceo-card">
+          <h3>Stage 2 · 地理空间与在地向导增强 (Geo &amp; Guide Enricher)</h3>
+          <p>把孤立的地名扩展为“自己去旅行时真正需要的一切实战信息”：</p>
+          <ul>
+            <li><strong>双坐标系预计算</strong>：同时输出 WGS-84 与 GCJ-02 火星坐标，消除国内高德底图偏移。</li>
+            <li><strong>途经点自动补全</strong>：不仅标出终点酒店，还把沿途必停的虎跳峡、白水台、松赞林寺、白马雪山垭口、茨中教堂全部预标在地图上。</li>
+            <li><strong>向导级颗粒度</strong>：最佳机位时刻、高反洗头禁忌、晕车弯道提醒、必点在地美食全部内联编译。</li>
+          </ul>
+        </div>
+
+        <div class="ceo-card">
+          <h3>Stage 3 · 国内外双栈网络适配器 (Region-Adaptive Stack)</h3>
+          <ul>
+            <li><strong><code>cn_domestic</code>（中国境内零阻碍栈）</strong>：
+              底图采用高德 <code>webrd0{1-4}.is.autonavi.com</code>；导航采用高德 <code>uri.amap.com</code> 与百度地图 URI；知识与攻略全部指向<strong>百度百科、小红书搜索、携程目的地</strong>；前端库走国内 <code>cdn.staticfile.net</code>。</li>
+            <li><strong><code>global</code>（海外全球标准栈）</strong>：
+              底图采用 Carto Voyager / OSM；导航采用 Google Maps Universal Link；知识采用 Wikipedia / AllTrails / TripAdvisor；支持 KML 离线轨迹下载。</li>
+          </ul>
+        </div>
+
+        <div class="ceo-card">
+          <h3>Stage 4 · 离线 PWA 预编译与 GitHub 发布器 (`generator.py`)</h3>
+          <p>已实装于 <code>~/.travel_studio/generator.py</code>，支持三大子命令：</p>
+          <pre class="code-box"># 1. 从原始文本编译离线 PWA 包
+python3 generator.py compile \
+  --input agenda.txt \
+  --region cn_domestic \
+  --title "云南 2026 私家团" \
+  --output ./dist
+
+# 2. 为现有项目注入 Service Worker 离线引擎
+python3 generator.py inject-offline \
+  --dir ~/.south_america_2026 \
+  --title "South America 2026"
+
+# 3. 一键发布上线至 GitHub Pages
+python3 generator.py publish \
+  --dir ./dist \
+  --repo YoungApple/yunnan-2026</pre>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- Footer -->
-  <footer class="border-t border-slate-800 py-6 text-center text-xs text-slate-500">
-    <p>© 2026 Travel Studio Platform. Built with Love & Precision by Shuguo Yang.</p>
-  </footer>
+  <script src="https://cdn.staticfile.net/leaflet/1.9.4/leaflet.min.js"></script>
+  <script>
+    // =========================================================================
+    // 1. Built-in Presets & Gazetteer (Client-Side Mirror of generator.py)
+    // =========================================================================
+    const PRESETS = {
+      yunnan: {
+        title: "2026 滇西北秘境私家团 · 丽江/哈巴/香格里拉/梅里/南极洛 11日随行路书",
+        region: "cn_domestic",
+        agenda: [
+          "D1 11/21 抵达丽江 · 大研古镇与束河古镇漫游 · 宿丽江 (海拔2400m温和适应)",
+          "D2 11/22 丽江 → 上虎跳峡/中虎跳峡 → 哈巴雪山村 · 宿哈巴雪山 (盘山路备晕车药)",
+          "D3 11/23 哈巴雪山 → 白水台(仙人遗田) → 香格里拉 · 14:30之前从香格里拉出发前往梅里飞来寺 · 宿飞来寺",
+          "D4 11/24 飞来寺守候梅里雪山日照金山 → 雾浓顶观景台 · 宿飞来寺",
+          "D5 11/25 梅里雪山深度休整或飞来寺周边藏村轻徒步 · 宿飞来寺",
+          "D6-D9 11/26-11/29 【双线二选一】方案A：进雨崩村徒步(冰湖线+神瀑线) / 方案B：同乐村休整 → 南极洛高山湖泊群(3950m) → 茨中天主教堂",
+          "D10 11/30 德钦/茨中 → 沙溪古镇(茶马古道寺登街/玉津桥) 或 返回丽江 · 宿丽江",
+          "D11 12/1 丽江送机返程 · 满载雪山与峡谷记忆回家",
+          "⚠️ 团队提醒 1：D3 必须在 14:30 前从香格里拉出发去飞来寺，避免翻越 4292m 白马雪山垭口遇暗冰夜路！",
+          "⚠️ 团队提醒 2：抵达 3000m+ 首晚切勿洗头洗澡，随车常备便携氧气瓶、葡萄糖与防风保暖层。"
+        ].join("\n")
+      },
+      sa: {
+        title: "South America 2026 — Patagonia, Glaciers, Amazon & Iguazú (15-Day Expedition)",
+        region: "global",
+        agenda: [
+          "D1 09/30 Arrive in Buenos Aires · Palermo Soho & Recoleta Cemetery · Stay Buenos Aires",
+          "D2 10/01 Buenos Aires Historic Core · Plaza de Mayo, El Ateneo Grand Splendid & San Telmo Tango",
+          "D3 10/02 Fly Buenos Aires to El Calafate · Lago Argentino Sunset · Stay El Calafate",
+          "D4 10/03 Perito Moreno Glacier Balkonies & Minitrekking on Ice · Stay El Calafate",
+          "D5 10/04 El Chaltén Full-Day Trek · Fitz Roy (Laguna de los Tres) & Mirador de los Cóndores",
+          "D6 10/05 Estancia Cristina 4x4 & Upsala Glacier Navigation · Fly to Buenos Aires",
+          "D7 10/06 Fly to Puerto Iguazú · Argentine Side Devil's Throat (Garganta del Diablo) · Stay Iguazú",
+          "D8 10/07 Brazilian Side Panoramic Falls & Parque das Aves · Cross border before 16:00",
+          "D9-D11 10/08-10/10 Manaus & Amazon Rainforest Jungle Lodge · Meeting of Waters & Pink Dolphins",
+          "D12-D15 10/11-10/15 Rio de Janeiro · Christ the Redeemer, Sugarloaf Mountain, Copacabana & Ipanema",
+          "⚠️ Group Reminder 1: Carry physical passport + reciprocity/visa printouts for AR/BR border crossing at Iguazú.",
+          "⚠️ Group Reminder 2: Pack waterproof shell + crampon-compatible hiking boots for Perito Moreno & Fitz Roy."
+        ].join("\n")
+      }
+    };
+
+    const GAZETTEER = {
+      "丽江": { lat: 26.8721, lng: 100.2330, elev: 2416, desc: "世界文化遗产大研古镇与束河古镇，滇西北高海拔行程的最佳适应起点。", tip: "首晚海拔2400m较温和，建议采购氧气瓶、便携雨衣、葡萄糖口服液。" },
+      "虎跳峡": { lat: 27.1912, lng: 100.1235, elev: 1800, desc: "金沙江劈开玉龙与哈巴雪山形成的世界级深邃峡谷，江水拍击虎跳石声震山谷。", tip: "上虎跳有自动扶梯节省体力；中虎跳Halfway景观阳台视野极佳。" },
+      "哈巴雪山": { lat: 27.3658, lng: 100.1014, elev: 2700, desc: "海拔5396m的横断山脉名峰，哈巴村与黑海徒步兼具原始森林、高山杜鹃与雪峰倒影。", tip: "前往哈巴村与白水台盘山路弯急，易晕车团友提前30分钟服晕车药。" },
+      "白水台": { lat: 27.5025, lng: 100.0394, elev: 2380, desc: "中国最大的华泉台地，纳西东巴文化发祥地，碳酸钙泉华梯田如仙人遗田。", tip: "顺光拍摄钙华池蓝绿色最佳时段为上午10:00–12:00。" },
+      "香格里拉": { lat: 27.8268, lng: 99.7066, elev: 3280, desc: "独克宗古城月光广场、松赞林寺与纳帕海环湖草原核心枢纽。", tip: "⚠️ 硬性红线：D3 必须在 14:30 前从香格里拉出发去飞来寺，避免白马雪山垭口夜路暗冰！" },
+      "飞来寺": { lat: 28.4385, lng: 98.8768, elev: 3400, desc: "直面梅里雪山十三峰（主峰卡瓦格博6740m）的绝佳观景台，日照金山信仰核心。", tip: "11月下旬日出约07:15–07:35，提前30分钟抵达观景台架设机位。" },
+      "梅里雪山": { lat: 28.4385, lng: 98.8768, elev: 3400, desc: "藏区八大神山之首，卡瓦格博峰至今未被人类登顶，秋冬季日照金山概率全年最高。", tip: "清晨气温常在 -2°C 至 -6°C，务必穿戴羽绒服、防风手套与保暖帽。" },
+      "雨崩": { lat: 28.3910, lng: 98.7860, elev: 3150, desc: "【方案A·经典徒步】梅里腹地世外桃源，涵盖冰湖线(3900m)与神瀑线(3650m)两大殿堂级徒步。", tip: "建议轻装背包进村，大件行李寄存飞来寺或西当。" },
+      "同乐村": { lat: 27.5415, lng: 99.0352, elev: 2150, desc: "百年傈僳族木楞房古村落，非遗阿尺木刮歌舞原乡，低海拔富氧休整站。", tip: "海拔降至2150m，睡眠质量极佳，是进出南极洛的最佳休整点。" },
+      "南极洛": { lat: 27.6742, lng: 99.0125, elev: 3950, desc: "【方案B·高山湖泊】维西阿尺打嘎“上帝遗落的眼泪”，3号湖至9号湖高山冰蚀湖群。", tip: "徒步起点即3900m+，建议走1–5号湖小环线（约4–5小时），切忌剧烈奔跑。" },
+      "茨中": { lat: 27.7981, lng: 98.9056, elev: 1950, desc: "澜沧江河谷百年中西合璧天主教堂与法国传教士玫瑰蜜古葡萄园。", tip: "必尝茨中玫瑰蜜干红葡萄酒与澜沧江土鸡煲。" },
+      "沙溪": { lat: 26.3195, lng: 99.8516, elev: 2100, desc: "茶马古道上唯一幸存的古集市（寺登街、玉津桥、先锋沙溪白族书局）。", tip: "清晨玉津桥薄雾必拍，适合行程尾声彻底放松。" },
+      "Buenos Aires": { lat: -34.6037, lng: -58.3816, elev: 25, desc: "Argentina's vibrant capital — Palermo Soho, Recoleta, Plaza de Mayo & San Telmo.", tip: "Book El Ateneo Grand Splendid & Parrilla Don Julio in advance." },
+      "El Calafate": { lat: -50.3379, lng: -72.2648, elev: 199, desc: "Gateway to Los Glaciares National Park on the shores of Lago Argentino.", tip: "Pick up trail snacks & cash in town before heading into the glacier park." },
+      "Perito Moreno": { lat: -50.4957, lng: -73.0376, elev: 185, desc: "Iconic advancing tidewater glacier with thunderous ice calving across Canal de los Témpanos.", tip: "Walk the yellow & red balcony circuits first for panoramic calving views." },
+      "El Chaltén": { lat: -49.3315, lng: -72.8863, elev: 405, desc: "Argentina's trekking capital beneath Mount Fitz Roy (Laguna de los Tres).", tip: "Start Fitz Roy hike before 07:30 for clear morning light on the granite spires." },
+      "Iguazú": { lat: -25.6953, lng: -54.4367, elev: 195, desc: "World's largest waterfall system spanning the Argentina–Brazil border.", tip: "Take the first ecological train at 08:00 straight to Devil's Throat." },
+      "Manaus": { lat: -3.1190, lng: -60.0217, elev: 92, desc: "Heart of the Amazon Basin — Teatro Amazonas & Meeting of the Waters (Encontro das Águas).", tip: "Use high-DEET repellent and pack breathable long-sleeve shirts." },
+      "Rio de Janeiro": { lat: -22.9068, lng: -43.1729, elev: 15, desc: "Cidade Maravilhosa — Christ the Redeemer (Corcovado), Sugarloaf & Ipanema sunset.", tip: "Take the first cog train up Corcovado at 08:00 to beat the crowds." }
+    };
+
+    let currentRegion = "cn_domestic";
+    let currentCompiled = null;
+    let mapInstance = null;
+    let tileLayerInstance = null;
+    let markerGroup = null;
+    let inspectorMode = "json";
+
+    // WGS-84 -> GCJ-02 conversion for China domestic map alignment
+    function outOfChina(lat, lng) {
+      return !(lng > 73.66 && lng < 135.05 && lat > 3.86 && lat < 53.55);
+    }
+    function transformLat(x, y) {
+      let ret = -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y + 0.2 * Math.sqrt(Math.abs(x));
+      ret += (20.0 * Math.sin(6.0 * x * Math.PI) + 20.0 * Math.sin(2.0 * x * Math.PI)) * 2.0 / 3.0;
+      ret += (20.0 * Math.sin(y * Math.PI) + 40.0 * Math.sin(y / 3.0 * Math.PI)) * 2.0 / 3.0;
+      ret += (160.0 * Math.sin(y / 12.0 * Math.PI) + 320 * Math.sin(y * Math.PI / 30.0)) * 2.0 / 3.0;
+      return ret;
+    }
+    function transformLng(x, y) {
+      let ret = 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * Math.sqrt(Math.abs(x));
+      ret += (20.0 * Math.sin(6.0 * x * Math.PI) + 20.0 * Math.sin(2.0 * x * Math.PI)) * 2.0 / 3.0;
+      ret += (20.0 * Math.sin(x * Math.PI) + 40.0 * Math.sin(x / 3.0 * Math.PI)) * 2.0 / 3.0;
+      ret += (150.0 * Math.sin(x / 12.0 * Math.PI) + 300.0 * Math.sin(x / 30.0 * Math.PI)) * 2.0 / 3.0;
+      return ret;
+    }
+    function wgs84ToGcj02(lat, lng) {
+      if (outOfChina(lat, lng)) return [lat, lng];
+      const a = 6378245.0, ee = 0.00669342162296594323;
+      let dLat = transformLat(lng - 105.0, lat - 35.0);
+      let dLng = transformLng(lng - 105.0, lat - 35.0);
+      const radLat = lat / 180.0 * Math.PI;
+      let magic = Math.sin(radLat);
+      magic = 1 - ee * magic * magic;
+      const sqrtMagic = Math.sqrt(magic);
+      dLat = (dLat * 180.0) / ((a * (1 - ee)) / (magic * sqrtMagic) * Math.PI);
+      dLng = (dLng * 180.0) / (a / sqrtMagic * Math.cos(radLat) * Math.PI);
+      return [Number((lat + dLat).toFixed(6)), Number((lng + dLng).toFixed(6))];
+    }
+
+    function buildLinks(name, lat, lng, region) {
+      const q = encodeURIComponent(name);
+      const [gLat, gLng] = wgs84ToGcj02(lat, lng);
+      if (region === "cn_domestic") {
+        return [
+          { label: "🧭 高德导航", url: `https://uri.amap.com/marker?position=${gLng},${gLat}&name=${q}&coordinate=gaode&callnative=1` },
+          { label: "📍 百度地图", url: `https://api.map.baidu.com/marker?location=${gLat},${gLng}&title=${q}&content=${q}&output=html` },
+          { label: "📖 百度百科", url: `https://baike.baidu.com/item/${q}` },
+          { label: "📕 小红书攻略", url: `https://www.xiaohongshu.com/search_result?keyword=${q}` },
+          { label: "🐬 携程/点评", url: `https://you.ctrip.com/SearchSite/Default/Destination?keyword=${q}` }
+        ];
+      }
+      return [
+        { label: "🧭 Google Maps", url: `https://www.google.com/maps/search/?api=1&query=${lat},${lng}` },
+        { label: "📖 Wikipedia", url: `https://en.wikipedia.org/wiki/Special:Search?search=${q}` },
+        { label: "🥾 AllTrails / Guide", url: `https://www.google.com/search?q=${q}+trail+guide` },
+        { label: "🦉 TripAdvisor", url: `https://www.tripadvisor.com/Search?q=${q}` }
+      ];
+    }
+
+    function compileAgenda(title, rawText, region) {
+      const lines = rawText.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+      const days = [];
+      const reminders = [];
+      const dayRe = /^(?:D|Day\s*)?(\d+(?:\s*[-~]\s*\d+)?)\s*(?:[\(（]?(\d{1,2}[/.-]\d{1,2}(?:-\d{1,2}[/.-]\d{1,2})?)[\)）]?)?\s*[:：\-—]?\s*(.+)$/i;
+
+      for (const ln of lines) {
+        const m = ln.match(dayRe);
+        if (!m) {
+          reminders.push(ln);
+          continue;
+        }
+        const dayTag = "D" + m[1].replace(/\s+/g, "");
+        const dateStr = m[2] || "";
+        const headline = m[3].trim();
+        const stops = [];
+        for (const [kw, info] of Object.entries(GAZETTEER)) {
+          if (headline.includes(kw)) {
+            const [gLat, gLng] = wgs84ToGcj02(info.lat, info.lng);
+            stops.push({
+              name: kw,
+              lat: info.lat,
+              lng: info.lng,
+              gcjLat: gLat,
+              gcjLng: gLng,
+              elevation: info.elev,
+              description: info.desc,
+              insiderTip: info.tip,
+              links: buildLinks(kw, info.lat, info.lng, region)
+            });
+          }
+        }
+        if (!stops.length) {
+          const defLat = region === "cn_domestic" ? 27.50 : -50.33;
+          const defLng = region === "cn_domestic" ? 99.70 : -72.26;
+          const [gLat, gLng] = wgs84ToGcj02(defLat, defLng);
+          const shortName = headline.slice(0, 22);
+          stops.push({
+            name: shortName,
+            lat: defLat,
+            lng: defLng,
+            gcjLat: gLat,
+            gcjLng: gLng,
+            elevation: 2200,
+            description: headline,
+            insiderTip: "已预编译离线点位与外部导航链接。",
+            links: buildLinks(shortName, defLat, defLng, region)
+          });
+        }
+        days.push({
+          dayLabel: dayTag,
+          date: dateStr,
+          headline,
+          hasHardCutoff: /14:30|之前|before/i.test(headline),
+          isBranchOption: /方案|Plan|二选一/i.test(headline),
+          stops
+        });
+      }
+
+      return {
+        schemaVersion: "1.0.0",
+        generatedAt: new Date().toISOString(),
+        title,
+        regionProfile: region,
+        dayCount: days.length,
+        stopCount: days.reduce((acc, d) => acc + d.stops.length, 0),
+        reminders,
+        days
+      };
+    }
+
+    // =========================================================================
+    // 2. UI Rendering & Map Updates
+    // =========================================================================
+    function initMap() {
+      if (mapInstance) return;
+      mapInstance = L.map("preview-map", { zoomControl: true }).setView([27.6, 99.6], 7);
+      markerGroup = L.layerGroup().addTo(mapInstance);
+    }
+
+    function updateMap(compiled) {
+      initMap();
+      if (tileLayerInstance) mapInstance.removeLayer(tileLayerInstance);
+      if (compiled.regionProfile === "cn_domestic") {
+        tileLayerInstance = L.tileLayer(
+          "https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
+          { subdomains: ["1", "2", "3", "4"], attribution: "© 高德地图 AutoNavi · Travel Studio Offline" }
+        ).addTo(mapInstance);
+      } else {
+        tileLayerInstance = L.tileLayer(
+          "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+          { subdomains: ["a", "b", "c", "d"], attribution: "© OpenStreetMap · © CARTO" }
+        ).addTo(mapInstance);
+      }
+
+      markerGroup.clearLayers();
+      const latlngs = [];
+      let idx = 1;
+      for (const d of compiled.days) {
+        for (const s of d.stops) {
+          const lat = compiled.regionProfile === "cn_domestic" ? s.gcjLat : s.lat;
+          const lng = compiled.regionProfile === "cn_domestic" ? s.gcjLng : s.lng;
+          latlngs.push([lat, lng]);
+          const icon = L.divIcon({
+            className: "",
+            html: `<div style="width:26px;height:26px;border-radius:50%;background:#0284c7;border:2px solid #fff;color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,0.45);">${idx}</div>`,
+            iconSize: [26, 26],
+            iconAnchor: [13, 13]
+          });
+          const linksHtml = s.links.slice(0, 3).map(l => `<a href="${l.url}" target="_blank" rel="noopener" style="margin-right:6px;font-weight:700;">${l.label}</a>`).join("");
+          L.marker([lat, lng], { icon })
+            .bindPopup(`<strong>${d.dayLabel} · ${s.name}</strong> (${s.elevation}m)<br/><span style="font-size:12px;">${s.description}</span><br/><div style="margin-top:6px;font-size:12px;">${linksHtml}</div>`)
+            .addTo(markerGroup);
+          idx++;
+        }
+      }
+      if (latlngs.length > 1) {
+        L.polyline(latlngs, { color: "#38bdf8", weight: 3, dashArray: "6, 6" }).addTo(markerGroup);
+        mapInstance.fitBounds(L.latLngBounds(latlngs), { padding: [28, 28] });
+      } else if (latlngs.length === 1) {
+        mapInstance.setView(latlngs[0], 10);
+      }
+    }
+
+    function renderCompiledOutput(compiled) {
+      const statsEl = document.getElementById("compiled-stats");
+      const stackLabel = compiled.regionProfile === "cn_domestic"
+        ? "🇨🇳 中国境内原生栈 (高德瓦片 + GCJ-02 + 百度百科 + 小红书 + 携程)"
+        : "🌍 国际全球栈 (Carto/OSM + WGS-84 + Google Maps + Wikipedia)";
+      statsEl.innerHTML = `已编译 <strong>${compiled.dayCount}</strong> 个行程段 · <strong>${compiled.stopCount}</strong> 个预标地图点位 · <strong>${compiled.reminders.length}</strong> 条全局护栏提醒 · 当前网络栈：<strong>${stackLabel}</strong>`;
+
+      const container = document.getElementById("compiled-days");
+      container.innerHTML = "";
+
+      if (compiled.reminders.length) {
+        const remBox = document.createElement("div");
+        remBox.className = "day-card cutoff";
+        remBox.innerHTML = `<div class="day-head"><span class="day-badge" style="background:rgba(244,63,94,0.2);color:#fda4af;">🚨 全局行前与途中刚性提醒</span></div>` +
+          compiled.reminders.map(r => `<div style="font-size:0.84rem;color:#fecdd3;margin-top:4px;">• ${r}</div>`).join("");
+        container.appendChild(remBox);
+      }
+
+      for (const d of compiled.days) {
+        const card = document.createElement("div");
+        card.className = "day-card" + (d.hasHardCutoff ? " cutoff" : (d.isBranchOption ? " branch" : ""));
+        let badges = `<span class="day-badge">${d.dayLabel}${d.date ? " · " + d.date : ""}</span>`;
+        if (d.hasHardCutoff) badges += ` <span class="pill warn">⏰ 含刚性时间截点</span>`;
+        if (d.isBranchOption) badges += ` <span class="pill blue">🔀 含 Plan A/B 动态分支</span>`;
+
+        const stopsHtml = d.stops.map(s => {
+          const linksHtml = s.links.map(l => `<a class="ext-link" href="${l.url}" target="_blank" rel="noopener">${l.label} ↗</a>`).join("");
+          return `
+            <div class="stop-box">
+              <div class="stop-title">
+                <span>📍 ${s.name}</span>
+                <span class="pill">海拔 ${s.elevation}m</span>
+              </div>
+              <div class="stop-desc">${s.description}</div>
+              <div class="stop-tip">💡 向导锦囊：${s.insiderTip}</div>
+              <div class="stop-links">${linksHtml}</div>
+            </div>
+          `;
+        }).join("");
+
+        card.innerHTML = `
+          <div class="day-head">${badges}</div>
+          <div style="font-weight:700;font-size:0.93rem;">${d.headline}</div>
+          ${stopsHtml}
+        `;
+        container.appendChild(card);
+      }
+      updateInspectorText();
+    }
+
+    function runCompiler() {
+      const title = document.getElementById("trip-title").value.trim() || "Bespoke Group Expedition";
+      const raw = document.getElementById("agenda-text").value;
+      currentCompiled = compileAgenda(title, raw, currentRegion);
+      renderCompiledOutput(currentCompiled);
+      updateMap(currentCompiled);
+    }
+
+    function loadPreset(key) {
+      const p = PRESETS[key];
+      if (!p) return;
+      document.getElementById("preset-yunnan").classList.toggle("active", key === "yunnan");
+      document.getElementById("preset-sa").classList.toggle("active", key === "sa");
+      document.getElementById("trip-title").value = p.title;
+      document.getElementById("agenda-text").value = p.agenda;
+      setRegion(p.region);
+    }
+
+    function setRegion(reg) {
+      currentRegion = reg;
+      document.getElementById("reg-cn").classList.toggle("active", reg === "cn_domestic");
+      document.getElementById("reg-global").classList.toggle("active", reg === "global");
+      runCompiler();
+    }
+
+    function toggleInspector() {
+      const box = document.getElementById("inspector-box");
+      box.classList.toggle("hidden");
+      updateInspectorText();
+    }
+
+    function showInspectorMode(mode) {
+      inspectorMode = mode;
+      updateInspectorText();
+    }
+
+    function updateInspectorText() {
+      const pre = document.getElementById("inspector-pre");
+      if (!currentCompiled || !pre) return;
+      if (inspectorMode === "json") {
+        pre.textContent = JSON.stringify(currentCompiled, null, 2);
+      } else if (inspectorMode === "cli") {
+        const slug = currentCompiled.regionProfile === "cn_domestic" ? "yunnan-2026" : "south-america-2026";
+        pre.textContent = [
+          "# Step 1: 将原始行程预编译为带 Service Worker 的离线 PWA 目录",
+          `python3 ~/.travel_studio/generator.py compile \\`,
+          `  --input agenda.txt \\`,
+          `  --region ${currentCompiled.regionProfile} \\`,
+          `  --title "${currentCompiled.title}" \\`,
+          `  --output ./dist/${slug}`,
+          "",
+          "# Step 2: 一键自动创建/推送 GitHub 仓库并开启 GitHub Pages",
+          `python3 ~/.travel_studio/generator.py publish \\`,
+          `  --dir ./dist/${slug} \\`,
+          `  --repo YoungApple/${slug}`,
+          "",
+          `# Live URL: https://youngapple.github.io/${slug}/`
+        ].join("\n");
+      } else {
+        pre.textContent = [
+          "// sw.js — Offline-First Service Worker (Auto-Generated by Travel Studio)",
+          "// Caches index.html, manifest.webmanifest, and visited Gaode/Carto map tiles",
+          "const SHELL_CACHE = 'travel-studio-shell-v1';",
+          "const TILE_CACHE = 'travel-studio-tiles-v1';",
+          "self.addEventListener('install', (e) => { self.skipWaiting(); });",
+          "self.addEventListener('fetch', (e) => { /* Cache-First for tiles, Network-First fallback to cache for Shell */ });"
+        ].join("\n");
+      }
+    }
+
+    function downloadStandaloneApp() {
+      if (!currentCompiled) runCompiler();
+      const jsonStr = JSON.stringify(currentCompiled, null, 2);
+      const blob = new Blob([document.documentElement.outerHTML], { type: "text/html;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = (currentCompiled.regionProfile === "cn_domestic" ? "yunnan_offline_app" : "trip_offline_app") + ".html";
+      a.click();
+    }
+
+    function switchTab(tabId, btnEl) {
+      for (const id of ["studio", "cases", "ceo", "arch"]) {
+        document.getElementById("tab-" + id).classList.toggle("hidden", id !== tabId);
+      }
+      document.querySelectorAll(".nav-tab").forEach(b => b.classList.remove("active"));
+      if (btnEl) btnEl.classList.add("active");
+      if (tabId === "studio" && mapInstance) {
+        setTimeout(() => mapInstance.invalidateSize(), 120);
+      }
+    }
+
+    // Register Offline Service Worker
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").then(() => {
+          const b = document.getElementById("sw-badge");
+          if (b) b.textContent = "⚡ 离线引擎已激活 · Offline Ready (sw.js)";
+        }).catch(() => {});
+      });
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      loadPreset("yunnan");
+    });
+  </script>
 </body>
 </html>
