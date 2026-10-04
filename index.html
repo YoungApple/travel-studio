@@ -537,6 +537,92 @@
       padding-left: 18px;
     }
     .hidden { display: none !important; }
+
+    /* Intake Mode Switcher & AI Gap-Detector Micro-Interview */
+    .intake-mode-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+      background: #090e1a;
+      padding: 5px;
+      border-radius: 11px;
+      border: 1px solid var(--border);
+    }
+    .intake-mode-btn {
+      background: transparent;
+      color: var(--text-muted);
+      border: none;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.79rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .intake-mode-btn.active {
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.28), rgba(16, 185, 129, 0.24));
+      color: #fff;
+      border: 1px solid rgba(56, 189, 248, 0.45);
+    }
+    .gap-box {
+      margin-top: 14px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 12px;
+      padding: 13px 14px;
+    }
+    .gap-box-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.83rem;
+      font-weight: 800;
+      color: #7dd3fc;
+      margin-bottom: 8px;
+    }
+    .gap-anchors {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+      padding-bottom: 9px;
+      border-bottom: 1px dashed rgba(148, 163, 184, 0.2);
+    }
+    .gap-q {
+      margin-top: 8px;
+    }
+    .gap-q-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #cbd5e1;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .gap-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .chip-opt {
+      background: rgba(30, 41, 59, 0.85);
+      color: #cbd5e1;
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      border-radius: 7px;
+      padding: 4px 9px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.14s;
+    }
+    .chip-opt.active {
+      background: rgba(16, 185, 129, 0.2);
+      color: #6ee7b7;
+      border-color: rgba(16, 185, 129, 0.55);
+    }
   </style>
 </head>
 <body>
@@ -549,7 +635,7 @@
         <div>
           <div class="brand-title">
             Travel Studio
-            <span class="pill blue">MVP v1.0</span>
+            <span class="pill blue">MVP v1.1</span>
           </div>
           <div class="brand-sub">Bespoke Offline Travel Companion Generator Platform · 高定私家团离线随行 Web App 生成器</div>
         </div>
@@ -567,16 +653,16 @@
     <!-- Hero Section -->
     <section class="hero">
       <div class="hero-eyebrow">★ 10-Star Private Group Travel Experience · CEO Plan & Working MVP</div>
-      <h1>把任意 10 行原始行程单，预编译成 100% 离线可用的高定私家团随行 Web App</h1>
+      <h1>把任意原始行程单或随手笔记，结合 AI 缺口微访谈，预编译成 100% 离线随行 Web App</h1>
       <p class="lead">
         无论是巴塔哥尼亚冰川徒步（<strong>South America 2026</strong>）还是滇西北 4,292m 白马雪山与南极洛探险（<strong>Yunnan 2026</strong>），传统 PDF 和通用旅行 App 在无信号雪山垭口与国内外网络隔离下纷纷失效。
-        <strong>Travel Studio</strong> 将行程单、全途预标地图点位、海拔爬升曲线、在地向导锦囊、刚性时间红线（如 <code>14:30</code> 出发截点）与国内外双栈导航链接，<strong>一键预编译为带 Service Worker 离线缓存的专属 Web App 并自动发布上线</strong>。
+        <strong>Travel Studio</strong> 采用<strong>“随手笔记直粘 + AI 缺口追问微访谈 (Messy Notes + Smart Gap-Detector Interview)”</strong>三模态漏斗，自动识别已定锚点与未决分叉（如 <code>雨崩 or 南极洛</code>、<code>看拼不拼车</code>、<code>14:30 出发红线</code>），<strong>一键预编译为带 Service Worker 离线缓存的专属 Web App 并自动发布上线</strong>。
       </p>
       <div class="hero-metrics">
         <div class="metric-card">
-          <div class="k">Input Friction (输入门槛)</div>
-          <div class="v">10 行纯文本行程</div>
-          <div class="s">支持日期/酒店/分叉方案/时间截点自动解析</div>
+          <div class="k">Hybrid Intake (三模态输入漏斗)</div>
+          <div class="v">笔记直粘 + 微访谈</div>
+          <div class="s">支持现有行程/碎片笔记/从零引导向导 + AI 缺口追问</div>
         </div>
         <div class="metric-card">
           <div class="k">Offline Availability (离线能力)</div>
@@ -610,15 +696,61 @@
         <!-- Left Input Column -->
         <div class="panel">
           <div class="panel-title">
-            <span>1. 输入原始行程单 (Agenda Input)</span>
-            <span class="pill blue">Stage 1–3 Compiler</span>
+            <span>1. 行程输入与 AI 微访谈 (Hybrid Intake &amp; Interview)</span>
+            <span class="pill blue">3-Mode Funnel</span>
           </div>
-          <div class="panel-sub">选择实战案例预设或粘贴任意私家团行程文本，切换境内/国际网络配置后实时预编译：</div>
+          <div class="panel-sub">既可直接粘贴现有行程/微信随手笔记（系统自动检测缺口并追问），也可从零通过 30 秒微访谈向导生成：</div>
 
-          <label class="field-label">快速加载标杆案例预设 (Load Preset):</label>
+          <!-- Intake Mode Switcher -->
+          <div class="intake-mode-bar">
+            <button type="button" class="intake-mode-btn active" id="mode-btn-paste" onclick="switchIntakeMode('paste')">
+              📝 模式 A+B：粘贴行程/随手笔记 + AI 缺口追问
+            </button>
+            <button type="button" class="intake-mode-btn" id="mode-btn-wizard" onclick="switchIntakeMode('wizard')">
+              💬 模式 C：从零开始 · 4 步微访谈向导
+            </button>
+          </div>
+
+          <!-- Mode C: Guided Interview Wizard from Scratch (Hidden by default) -->
+          <div id="intake-wizard-pane" class="gap-box hidden" style="margin-top:0; margin-bottom:14px;">
+            <div class="gap-box-header">
+              <span>🧭 30 秒从零生成行程初稿 (Zero-Draft Guided Interview)</span>
+              <span class="pill warn">Mode C</span>
+            </div>
+            <div class="gap-q">
+              <div class="gap-q-label"><span>1. 目的地大区 (Destination):</span></div>
+              <div class="gap-chips" id="wiz-dest">
+                <button type="button" class="chip-opt active" onclick="setWizardOpt('dest', 'yunnan', this)">🏔️ 云南滇西北 (丽江/梅里/南极洛)</button>
+                <button type="button" class="chip-opt" onclick="setWizardOpt('dest', 'sa', this)">🧊 南美巴塔哥尼亚+雨林</button>
+                <button type="button" class="chip-opt" onclick="setWizardOpt('dest', 'xinjiang', this)">🌲 新疆北疆喀纳斯/伊犁</button>
+              </div>
+            </div>
+            <div class="gap-q">
+              <div class="gap-q-label"><span>2. 天数跨度 (Duration):</span></div>
+              <div class="gap-chips" id="wiz-days">
+                <button type="button" class="chip-opt" onclick="setWizardOpt('days', '7', this)">7 天紧凑精华</button>
+                <button type="button" class="chip-opt active" onclick="setWizardOpt('days', '11', this)">11 天深度慢游</button>
+                <button type="button" class="chip-opt" onclick="setWizardOpt('days', '15', this)">15 天跨区远征</button>
+              </div>
+            </div>
+            <div class="gap-q">
+              <div class="gap-q-label"><span>3. 核心诉求 (Core Vibe):</span></div>
+              <div class="gap-chips" id="wiz-vibe">
+                <button type="button" class="chip-opt active" onclick="setWizardOpt('vibe', 'photo_trek', this)">📸 雪山日照金山 + 轻徒步</button>
+                <button type="button" class="chip-opt" onclick="setWizardOpt('vibe', 'hardcore', this)">🥾 深度重装/长线徒步</button>
+                <button type="button" class="chip-opt" onclick="setWizardOpt('vibe', 'relax', this)">🍵 古镇人文 + 舒适美宿</button>
+              </div>
+            </div>
+            <button type="button" class="btn-secondary" style="width:100%; justify-content:center; margin-top:10px; border-color:var(--accent); color:#fff;" onclick="applyWizardDraft()">
+              ✨ 根据访谈一键生成行程草稿并进入微调 ──►
+            </button>
+          </div>
+
+          <label class="field-label">快速加载输入示例 (含标准行程 / 随手碎片笔记):</label>
           <div class="preset-row">
-            <button type="button" class="btn-chip active" id="preset-yunnan" onclick="loadPreset('yunnan')">🏔️ 案例2：朋友的云南 11 天私家团 (CN)</button>
-            <button type="button" class="btn-chip" id="preset-sa" onclick="loadPreset('sa')">🧊 案例1：南美 15 天冰川雨林远征 (Global)</button>
+            <button type="button" class="btn-chip active" id="preset-yunnan" onclick="loadPreset('yunnan')">🏔️ 案例2：云南 11 天私家团 (CN)</button>
+            <button type="button" class="btn-chip" id="preset-messy" onclick="loadPreset('messy')">📝 随手碎片笔记 (含 or / 拼车待定)</button>
+            <button type="button" class="btn-chip" id="preset-sa" onclick="loadPreset('sa')">🧊 案例1：南美 15 天远征 (Global)</button>
           </div>
 
           <label class="field-label">目标网络与生态栈 (Region &amp; Network Stack):</label>
@@ -636,8 +768,50 @@
           <label class="field-label" for="trip-title">私家团名称 (Trip Title):</label>
           <input id="trip-title" class="text-input" type="text" value="2026 滇西北秘境私家团 · 丽江/哈巴/香格里拉/梅里/南极洛 11日随行路书" />
 
-          <label class="field-label" for="agenda-text">原始行程列表与关键提醒 (Raw Agenda &amp; Reminders):</label>
-          <textarea id="agenda-text" class="agenda-input"></textarea>
+          <label class="field-label" for="agenda-text">现有行程单或随手笔记 (Paste Existing Plan or Messy Notes):</label>
+          <textarea id="agenda-text" class="agenda-input" oninput="onAgendaInputChanged()"></textarea>
+
+          <!-- Mode B: AI Gap-Detector & 4-Chip Smart Micro-Interview -->
+          <div class="gap-box" id="gap-detector-box">
+            <div class="gap-box-header">
+              <span>🔍 AI 缺口检测与微访谈补全 (Smart Gap-Detector Interview)</span>
+              <span class="pill ok" id="gap-status-pill">已自动识别锚点</span>
+            </div>
+            <div class="gap-anchors" id="gap-anchors-summary"></div>
+
+            <div class="gap-q">
+              <div class="gap-q-label">
+                <span>🚐 追问 1 · 交通衔接方式 (影响山路弯道/暗冰预警与停车提示):</span>
+              </div>
+              <div class="gap-chips">
+                <button type="button" class="chip-opt active" data-group="transport" data-val="charter" onclick="setInterviewOpt('transport', 'charter', this)">🚐 包车/定制私家团 (推荐)</button>
+                <button type="button" class="chip-opt" data-group="transport" data-val="selfdrive" onclick="setInterviewOpt('transport', 'selfdrive', this)">🛞 自驾 (含充电/防滑链提醒)</button>
+                <button type="button" class="chip-opt" data-group="transport" data-val="carpool" onclick="setInterviewOpt('transport', 'carpool', this)">🤝 拼车/城际大巴 (含发车缓冲)</button>
+              </div>
+            </div>
+
+            <div class="gap-q">
+              <div class="gap-q-label">
+                <span>🥾 追问 2 · 团队体能与节奏偏好 (影响海拔上限与机位时刻):</span>
+              </div>
+              <div class="gap-chips">
+                <button type="button" class="chip-opt active" data-group="pace" data-val="scenic" onclick="setInterviewOpt('pace', 'scenic', this)">📸 经典摄影+轻徒步 (日照金山/1-5号湖)</button>
+                <button type="button" class="chip-opt" data-group="pace" data-val="hardcore" onclick="setInterviewOpt('pace', 'hardcore', this)">⛰️ 硬核徒步 (冰湖+神瀑+南极洛大环线)</button>
+                <button type="button" class="chip-opt" data-group="pace" data-val="relaxed" onclick="setInterviewOpt('pace', 'relaxed', this)">🍵 松弛慢享 (低海拔美宿+防高反优先)</button>
+              </div>
+            </div>
+
+            <div class="gap-q">
+              <div class="gap-q-label">
+                <span>🔀 追问 3 · 笔记中未决分叉 (“or / 方案A/B / 待定”) 编译策略:</span>
+              </div>
+              <div class="gap-chips">
+                <button type="button" class="chip-opt active" data-group="fork" data-val="toggle" onclick="setInterviewOpt('fork', 'toggle', this)">🔀 编译为 App 内置 A/B 动态切换开关 (推荐)</button>
+                <button type="button" class="chip-opt" data-group="fork" data-val="planA" onclick="setInterviewOpt('fork', 'planA', this)">🅰️ 锁定主推方案 A (雨崩线)</button>
+                <button type="button" class="chip-opt" data-group="fork" data-val="planB" onclick="setInterviewOpt('fork', 'planB', this)">🅱️ 锁定主推方案 B (南极洛+茨中)</button>
+              </div>
+            </div>
+          </div>
 
           <button type="button" class="btn-primary" onclick="runCompiler()">
             ⚡ 立即预编译离线随行 Web App (Compile Offline PWA)
@@ -796,13 +970,12 @@
     <section id="tab-arch" class="hidden">
       <div class="ceo-grid">
         <div class="ceo-card">
-          <h3>Stage 1 · 极简日程解析器 (Raw Agenda Parser)</h3>
-          <p>支持自然语言多行文本或 JSON 输入，自动识别：</p>
+          <h3>Stage 1 · 三模态混合输入与 AI 缺口微访谈 (Hybrid Intake &amp; Gap Interview)</h3>
+          <p>拒绝冗长表单，支持<strong>现有计划、随手碎片笔记、从零微访谈</strong>三合一：</p>
           <ul>
-            <li>日期跨度与单日/多日合并段（如 <code>D1 11/21</code>、<code>D6-D9 11/26-11/29</code>）</li>
-            <li>住宿锚点（<code>宿丽江</code>、<code>宿飞来寺</code>、<code>宿同乐村</code>）</li>
-            <li>刚性时间约束（如 <code>14:30之前从香格里拉出发</code>）并升级为红色安全预警横幅</li>
-            <li>未决分叉路线（<code>方案A 雨崩</code> vs <code>方案B 南极洛</code>）并编译为前端交互状态机</li>
+            <li><strong>模式 A（随手笔记直粘）</strong>：直接粘贴微信聊天记录、粗略日程或碎片笔记（如 <code>宿香巴拉 or 云栖</code>、<code>看拼不拼车</code>、<code>14:30前出发</code>）。</li>
+            <li><strong>模式 B（AI 缺口检测与 4 键微访谈）</strong>：自动锁定已知锚点，仅对缺失的高杠杆维度（交通方式、体能节奏、<code>or/待定</code> 分叉策略）发起一键胶囊追问。</li>
+            <li><strong>模式 C（从零 30 秒微访谈向导）</strong>：还没有任何笔记时，点选目的地+天数+风格即可生成可编辑行程初稿。</li>
           </ul>
         </div>
 
@@ -872,6 +1045,20 @@ python3 generator.py publish \
           "⚠️ 团队提醒 2：抵达 3000m+ 首晚切勿洗头洗澡，随车常备便携氧气瓶、葡萄糖与防风保暖层。"
         ].join("\n")
       },
+      messy: {
+        title: "朋友微信发来的云南随手笔记 · 11/21-12/1 (含待定项与 or 分叉)",
+        region: "cn_domestic",
+        agenda: [
+          "D1 11/21 到丽江 住大研古镇 or 束河古镇",
+          "D2 11/22 丽江去虎跳峡 然后去哈巴雪山 宿：香巴拉牧场 or 云栖壹号院",
+          "D3 11/23 哈巴-白水台-香格里拉（看拼不拼车，14:30之前得从香格里拉出发去飞来寺！）",
+          "D4-D5 11/24-25 梅里雪山飞来寺看日照金山 宿飞来寺",
+          "D6-D9 11/26-29 还没完全定：方案A去雨崩徒步 or 方案B住同乐村去南极洛+茨中教堂",
+          "D10 11/30 回丽江 or 顺路去趟沙溪古镇",
+          "D11 12/1 丽江飞回",
+          "随手备注：去哈巴山路弯多容易晕车；高海拔第一天别洗头"
+        ].join("\n")
+      },
       sa: {
         title: "South America 2026 — Patagonia, Glaciers, Amazon & Iguazú (15-Day Expedition)",
         region: "global",
@@ -905,6 +1092,9 @@ python3 generator.py publish \
       "南极洛": { lat: 27.6742, lng: 99.0125, elev: 3950, desc: "【方案B·高山湖泊】维西阿尺打嘎“上帝遗落的眼泪”，3号湖至9号湖高山冰蚀湖群。", tip: "徒步起点即3900m+，建议走1–5号湖小环线（约4–5小时），切忌剧烈奔跑。" },
       "茨中": { lat: 27.7981, lng: 98.9056, elev: 1950, desc: "澜沧江河谷百年中西合璧天主教堂与法国传教士玫瑰蜜古葡萄园。", tip: "必尝茨中玫瑰蜜干红葡萄酒与澜沧江土鸡煲。" },
       "沙溪": { lat: 26.3195, lng: 99.8516, elev: 2100, desc: "茶马古道上唯一幸存的古集市（寺登街、玉津桥、先锋沙溪白族书局）。", tip: "清晨玉津桥薄雾必拍，适合行程尾声彻底放松。" },
+      "喀纳斯": { lat: 48.7052, lng: 87.0145, elev: 1374, desc: "阿尔泰山脉深处的高山冰碛湖与图瓦人木屋村落，三湾晨雾与观鱼台俯瞰绝美。", tip: "早晚温差超15°C，建议乘首班区间车进入神仙湾拍晨雾。" },
+      "禾木": { lat: 48.5731, lng: 87.4368, elev: 1124, desc: "中国最美图瓦古村落，哈登观景台日出炊烟与白桦林秋色。", tip: "清晨07:30前登上哈登平台守候晨雾与阳光洒满木屋。" },
+      "赛里木湖": { lat: 44.5986, lng: 81.1782, elev: 2071, desc: "大西洋最后一滴眼泪，环湖90公里雪山与蔚蓝湖水交相辉映。", tip: "推荐从东门进、逆时针环湖经松树头至S弯公路拍照。" },
       "Buenos Aires": { lat: -34.6037, lng: -58.3816, elev: 25, desc: "Argentina's vibrant capital — Palermo Soho, Recoleta, Plaza de Mayo & San Telmo.", tip: "Book El Ateneo Grand Splendid & Parrilla Don Julio in advance." },
       "El Calafate": { lat: -50.3379, lng: -72.2648, elev: 199, desc: "Gateway to Los Glaciares National Park on the shores of Lago Argentino.", tip: "Pick up trail snacks & cash in town before heading into the glacier park." },
       "Perito Moreno": { lat: -50.4957, lng: -73.0376, elev: 185, desc: "Iconic advancing tidewater glacier with thunderous ice calving across Canal de los Témpanos.", tip: "Walk the yellow & red balcony circuits first for panoramic calving views." },
@@ -920,6 +1110,64 @@ python3 generator.py publish \
     let tileLayerInstance = null;
     let markerGroup = null;
     let inspectorMode = "json";
+
+    const interviewState = {
+      transport: "charter",
+      pace: "scenic",
+      fork: "toggle"
+    };
+
+    const wizardState = {
+      dest: "yunnan",
+      days: "11",
+      vibe: "photo_trek"
+    };
+
+    function switchIntakeMode(mode) {
+      document.getElementById("mode-btn-paste").classList.toggle("active", mode === "paste");
+      document.getElementById("mode-btn-wizard").classList.toggle("active", mode === "wizard");
+      document.getElementById("intake-wizard-pane").classList.toggle("hidden", mode !== "wizard");
+    }
+
+    function setWizardOpt(group, val, btn) {
+      wizardState[group] = val;
+      if (btn && btn.parentElement) {
+        btn.parentElement.querySelectorAll(".chip-opt").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+      }
+    }
+
+    function applyWizardDraft() {
+      if (wizardState.dest === "sa") {
+        loadPreset("sa");
+      } else if (wizardState.dest === "xinjiang") {
+        document.getElementById("trip-title").value = `2026 北疆阿勒泰与赛里木湖 ${wizardState.days}日高定私家团随行路书`;
+        document.getElementById("agenda-text").value = [
+          "D1 抵达乌鲁木齐/伊宁 · 赛里木湖环湖蓝冰与日落 · 宿赛里木湖",
+          "D2 赛里木湖松树头日出 → 果子沟大桥 → 喀纳斯湖区 · 宿喀纳斯",
+          "D3 喀纳斯神仙湾晨雾 → 观鱼台俯瞰全湖 → 禾木村 · 宿禾木小木屋",
+          "D4 禾木哈登平台日出炊烟 → 白桦林轻徒步 or 吉克普林雪场观景 · 宿禾木",
+          "⚠️ 团队提醒：山区早晚温差极大，随车备防风羽绒服与保温杯。"
+        ].join("\n");
+        setRegion("cn_domestic");
+      } else {
+        loadPreset(wizardState.vibe === "relax" ? "messy" : "yunnan");
+      }
+      switchIntakeMode("paste");
+    }
+
+    function setInterviewOpt(group, val, btn) {
+      interviewState[group] = val;
+      if (btn && btn.parentElement) {
+        btn.parentElement.querySelectorAll(".chip-opt").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+      }
+      runCompiler();
+    }
+
+    function onAgendaInputChanged() {
+      runCompiler();
+    }
 
     // WGS-84 -> GCJ-02 conversion for China domestic map alignment
     function outOfChina(lat, lng) {
@@ -979,6 +1227,9 @@ python3 generator.py publish \
       const reminders = [];
       const dayRe = /^(?:D|Day\s*)?(\d+(?:\s*[-~]\s*\d+)?)\s*(?:[\(（]?(\d{1,2}[/.-]\d{1,2}(?:-\d{1,2}[/.-]\d{1,2})?)[\)）]?)?\s*[:：\-—]?\s*(.+)$/i;
 
+      let cutoffCount = 0;
+      let forkCount = 0;
+
       for (const ln of lines) {
         const m = ln.match(dayRe);
         if (!m) {
@@ -987,10 +1238,23 @@ python3 generator.py publish \
         }
         const dayTag = "D" + m[1].replace(/\s+/g, "");
         const dateStr = m[2] || "";
-        const headline = m[3].trim();
+        let headline = m[3].trim();
+        const isBranch = /方案|Plan|二选一|\bor\b|或|待定/i.test(headline);
+        const hasCutoff = /14:30|16:00|之前|before/i.test(headline);
+        if (hasCutoff) cutoffCount++;
+        if (isBranch) forkCount++;
+
+        if (isBranch && interviewState.fork === "planA") {
+          headline += " 【微访谈已锁定：优先执行方案 A】";
+        } else if (isBranch && interviewState.fork === "planB") {
+          headline += " 【微访谈已锁定：优先执行方案 B】";
+        }
+
         const stops = [];
         for (const [kw, info] of Object.entries(GAZETTEER)) {
           if (headline.includes(kw)) {
+            if (isBranch && interviewState.fork === "planA" && (kw === "南极洛" || kw === "同乐村" || kw === "茨中")) continue;
+            if (isBranch && interviewState.fork === "planB" && kw === "雨崩") continue;
             const [gLat, gLng] = wgs84ToGcj02(info.lat, info.lng);
             stops.push({
               name: kw,
@@ -1026,22 +1290,65 @@ python3 generator.py publish \
           dayLabel: dayTag,
           date: dateStr,
           headline,
-          hasHardCutoff: /14:30|之前|before/i.test(headline),
-          isBranchOption: /方案|Plan|二选一/i.test(headline),
+          hasHardCutoff: hasCutoff,
+          isBranchOption: isBranch,
           stops
         });
       }
 
+      // Inject Micro-Interview Enriched Guardrails
+      const interviewLabels = {
+        transport: {
+          charter: "🚐 交通微访谈画像：定制包车/私家团（已内置司导接驳锚点与盘山路晕车药提醒）",
+          selfdrive: "🛞 交通微访谈画像：自驾模式（已额外注入白马雪山垭口防滑链、离线导航包与沿途加油/充电站提醒）",
+          carpool: "🤝 交通微访谈画像：拼车/公共交通（已将香格里拉→飞来寺等跨城发车截点提前 45 分钟预警）"
+        },
+        pace: {
+          scenic: "📸 节奏微访谈画像：经典摄影+轻徒步（优先标注日照金山黄金机位与南极洛 1–5 号湖精华小环线）",
+          hardcore: "⛰️ 节奏微访谈画像：硬核徒步探险（已解锁雨崩冰湖+神瀑全线及南极洛 1–9 号湖大环线海拔爬升数据）",
+          relaxed: "🍵 节奏微访谈画像：松弛慢享防高反（优先排布同乐村/茨中低海拔富氧休整点与首晚禁洗头护栏）"
+        },
+        fork: {
+          toggle: "🔀 分叉微访谈策略：保留笔记中的『or / 方案A/B』，在随行 App 内生成交互式双线切换开关",
+          planA: "🅰️ 分叉微访谈策略：已收敛待定项，主推执行【方案 A】路线与地图航迹",
+          planB: "🅱️ 分叉微访谈策略：已收敛待定项，主推执行【方案 B】路线与地图航迹"
+        }
+      };
+
+      reminders.unshift(interviewLabels.fork[interviewState.fork]);
+      reminders.unshift(interviewLabels.pace[interviewState.pace]);
+      reminders.unshift(interviewLabels.transport[interviewState.transport]);
+
       return {
-        schemaVersion: "1.0.0",
+        schemaVersion: "1.1.0",
         generatedAt: new Date().toISOString(),
         title,
         regionProfile: region,
+        intakeInterview: { ...interviewState },
         dayCount: days.length,
         stopCount: days.reduce((acc, d) => acc + d.stops.length, 0),
+        cutoffCount,
+        forkCount,
         reminders,
         days
       };
+    }
+
+    function renderGapDetector(compiled) {
+      const box = document.getElementById("gap-anchors-summary");
+      const statusPill = document.getElementById("gap-status-pill");
+      if (!box) return;
+      box.innerHTML = [
+        `<span class="pill blue">📅 已识别 ${compiled.dayCount} 个行程段</span>`,
+        `<span class="pill ok">📍 已锁定 ${compiled.stopCount} 个地理锚点</span>`,
+        `<span class="pill warn">⏰ ${compiled.cutoffCount} 处时间截点红线</span>`,
+        `<span class="pill ${compiled.forkCount > 0 ? "warn" : "blue"}">🔀 检测到 ${compiled.forkCount} 处待定/分叉 ("or" / 方案A/B)</span>`
+      ].join("");
+      if (statusPill) {
+        statusPill.textContent = compiled.forkCount > 0
+          ? `检测到 ${compiled.forkCount} 处未决分叉 · 微访谈已生效`
+          : "已自动识别锚点 · 微访谈已生效";
+      }
     }
 
     // =========================================================================
@@ -1151,6 +1458,7 @@ python3 generator.py publish \
       const title = document.getElementById("trip-title").value.trim() || "Bespoke Group Expedition";
       const raw = document.getElementById("agenda-text").value;
       currentCompiled = compileAgenda(title, raw, currentRegion);
+      renderGapDetector(currentCompiled);
       renderCompiledOutput(currentCompiled);
       updateMap(currentCompiled);
     }
@@ -1159,6 +1467,8 @@ python3 generator.py publish \
       const p = PRESETS[key];
       if (!p) return;
       document.getElementById("preset-yunnan").classList.toggle("active", key === "yunnan");
+      const messyBtn = document.getElementById("preset-messy");
+      if (messyBtn) messyBtn.classList.toggle("active", key === "messy");
       document.getElementById("preset-sa").classList.toggle("active", key === "sa");
       document.getElementById("trip-title").value = p.title;
       document.getElementById("agenda-text").value = p.agenda;

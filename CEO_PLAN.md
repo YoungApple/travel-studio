@@ -62,24 +62,33 @@ Given a simple 10–20 line raw itinerary (dates, stops, hotels, key constraints
 
 ---
 
-## 4. Technical Architecture: The 4-Stage Compiler Pipeline
+## 4. Technical Architecture: The 4-Stage Compiler Pipeline & 3-Mode Intake Funnel
 
 ```
-┌────────────────────────┐    ┌──────────────────────────┐    ┌────────────────────────────┐    ┌────────────────────────────┐
-│ Stage 1: Agenda Parser │───►│ Stage 2: Geo & Guide     │───►│ Stage 3: Region-Adaptive   │───►│ Stage 4: Offline PWA       │
-│ (Raw Text / JSON / MD) │    │ Enrichment Engine        │    │ Compiler (CN vs. Global)   │    │ Packager & GitHub Publisher│
-└────────────────────────┘    └──────────────────────────┘    └────────────────────────────┘    └────────────────────────────┘
+┌──────────────────────────────┐    ┌──────────────────────────┐    ┌────────────────────────────┐    ┌────────────────────────────┐
+│ Stage 1: Hybrid Intake &     │───►│ Stage 2: Geo & Guide     │───►│ Stage 3: Region-Adaptive   │───►│ Stage 4: Offline PWA       │
+│ AI Gap-Detector Interview    │    │ Enrichment Engine        │    │ Compiler (CN vs. Global)   │    │ Packager & GitHub Publisher│
+└──────────────────────────────┘    └────────────────────────────┘    └────────────────────────────┘    └────────────────────────────┘
 ```
 
-### Stage 1: Multi-Format Agenda Parser (`generator.py`)
-- Accepts either:
-  1. **Raw human-written agenda text** (e.g., `D1 11/21 丽江 宿丽江`, `D3 11/23 14:30前从香格里拉出发去飞来寺`, `D6-D9 方案A雨崩 / 方案B南极洛`), or
-  2. **Structured Trip Spec JSON** (`trip_spec.json`).
-- Extracts:
-  - Day index, date, title, region/hub, overnight hotel;
-  - Hard time constraints (`14:30` cutoff, sunrise windows, flight check-ins);
-  - Route forks (`Plan A` vs. `Plan B` alternative tracks);
-  - Group reminders (altitude sickness protocol, border/visa rules, cash/gear checklists).
+### Stage 1: Hybrid Input & Intake Funnel ("Messy Notes First + Smart Gap-Detector Micro-Interview")
+In real life, trip organizers rarely start with a clean JSON schema—and they hate filling out 20-field forms before seeing value. Travel Studio implements a **Progressive 3-Mode Intake Funnel** where **existing plans, messy notes, and lightweight interviews work together seamlessly**:
+
+1. **Mode A — Existing Plan or Messy Notes Direct Paste (*Primary Entry, ~80% of Trips*)**:
+   - Accepts **any freeform text** the user already has:
+     - A 10-line WeChat/WhatsApp itinerary forwarded by a friend (e.g., `11/21 丽江`, `11/23 香格里拉 14:30前出发去飞来寺`, `11/26-29 雨崩 or 南极洛`);
+     - Unstructured scratch notes with tentative options (`宿：香巴拉牧场 or 云栖壹号院`, `看拼不拼车`, `想拍日照金山但怕高反`);
+     - Travel agency quotation sheets, flight/hotel confirmation snippets, or Markdown/JSON specs.
+2. **Mode B — AI Gap-Detector & 4-Chip Micro-Interview (*Automatic Post-Paste Enrichment*)**:
+   - Immediately after the user pastes their rough plan or notes, the **Gap-Detector Engine** parses what is already known (`Confirmed Anchors`: day count, stops, hotels, hard time cutoffs like `14:30`) and flags only the **high-leverage missing context or unresolved ambiguities** (`Detected Gaps & Forks`).
+   - Instead of an open-ended chat interrogation, it surfaces **4 One-Tap Micro-Interview Chips** (with smart defaults so the user can also compile immediately with zero clicks):
+     - **Q1 · Transport Mode (`交通与衔接方式`)**: *Private Charter (`包车/私家团`) / Self-Drive (`自驾`) / Carpool & Transit (`拼车/公共交通`)* — dynamically injects mountain-pass driving alerts, parking/charging tips, or carpool cutoff buffers.
+     - **Q2 · Group Pace & Profile (`团队画像与体能节奏`)**: *Scenic & Photo (`经典摄影轻徒步`) / Hardcore Trek (`硬核徒步探险`) / Relaxed Family (`亲友松弛度假`)* — calibrates daily elevation ceilings, golden-hour camera callouts, and altitude acclimatization guardrails.
+     - **Q3 · Unresolved `"A or B"` Fork Strategy (`未决分叉与待定项处理`)**: When the parser spots `"or"`, `"或"`, `"方案A/B"`, or `"待定"`, asks whether to **compile both into an interactive in-app Plan A / Plan B toggle switch** (recommended!), or lock in Option A / Option B.
+     - **Q4 · Region & Network Stack (`目标网络生态栈`)**: Auto-detects `cn_domestic` (Gaode + GCJ-02 + Baidu Baike + Xiaohongshu + Ctrip) vs. `global` (Carto/OSM + WGS-84 + Google Maps + Wikipedia + AllTrails).
+3. **Mode C — Guided Interview Wizard from Scratch (*For Zero-Draft Explorers, ~20% of Trips*)**:
+   - If the user has **no existing notes yet**, a 30-second **Guided Interview Wizard** asks 4 structured questions (*Destination Region*, *Duration & Season*, *Must-See Anchors*, *Group Vibe*) and synthesizes a complete, editable 10–15 line itinerary draft that flows directly into Mode A + Mode B.
+
 
 ### Stage 2: Spatial, Elevation & Local Guide Enrichment
 - Resolves every destination and intermediate waypoint into:
