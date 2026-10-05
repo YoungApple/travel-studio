@@ -49,6 +49,7 @@ self.addEventListener('fetch', (event) => {
     url.hostname.includes('basemaps.cartocdn.com') ||
     url.hostname.includes('autonavi.com') ||
     url.hostname.includes('amap.com') ||
+    (url.hostname.includes('google.com') && url.pathname.includes('/vt')) ||
     url.pathname.includes('/tiles/')
   ) {
     event.respondWith(
