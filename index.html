@@ -642,12 +642,12 @@
       </div>
       <div class="status-pills">
         <button type="button" onclick="window.openPartnerModal()" class="pill warn" style="cursor:pointer; font-weight:900; background:linear-gradient(135deg,#f59e0b,#ff2442); color:#fff; border:none;">🤝 携程私家团合作 / 小红书同款</button>
-        <a href="./bp.html" class="pill ok" style="font-weight:800;">📊 携程私家团 BP &amp; 小红书套件 ↗</a>
+        <button type="button" onclick="switchTab('bp', document.getElementById('nav-tab-bp')); window.location.hash='bp';" class="pill ok" style="cursor:pointer; font-weight:800;">📊 携程私家团 BP &amp; 📕 小红书套件</button>
         <button type="button" onclick="window.openTsVersionHistoryModal()" class="pill blue" style="cursor:pointer;">📜 版本记录 (v2.1)</button>
         <button type="button" onclick="window.openTsVibeFeedbackModal()" class="pill warn" style="cursor:pointer; font-weight:800;">✨ Vibe & 轨迹上传舱 (🔒 applefriend)</button>
         <span id="sw-badge" class="pill ok">⚡ 离线引擎已就绪 · Service Worker Active</span>
         <a href="https://youngapple.github.io/south-america-2026/" target="_blank" rel="noopener" class="pill warn">🧊 案例1: 南美 2026 (v2.7 · 口令 sa26) ↗</a>
-        <a href="https://youngapple.github.io/yunnan-2026/" target="_blank" rel="noopener" class="pill ok">🏔️ 案例2: 云南 2026 (v2.0 · 口令 applefriend) ↗</a>
+        <a href="https://youngapple.github.io/yunnan-2026/" target="_blank" rel="noopener" class="pill ok">🏔️ 案例2: 云南 2026 (v2.1 · 口令 applefriend) ↗</a>
       </div>
     </div>
   </header>
@@ -661,7 +661,7 @@
       </div>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
         <button type="button" onclick="window.openPartnerModal()" style="background:linear-gradient(135deg,#f59e0b,#ea580c);color:#020617;border:none;padding:7px 14px;border-radius:10px;font-size:0.8rem;font-weight:900;cursor:pointer;">🎁 立即登记合作 / 领免费样板</button>
-        <a href="./bp.html" style="background:rgba(15,23,42,0.85);color:#fde68a;border:1px solid rgba(245,158,11,0.45);padding:7px 13px;border-radius:10px;font-size:0.8rem;font-weight:800;text-decoration:none;">📊 查看一页式 BP &amp; 小红书文案 ↗</a>
+        <button type="button" onclick="switchTab('bp', document.getElementById('nav-tab-bp')); window.location.hash='bp';" style="background:rgba(15,23,42,0.85);color:#fde68a;border:1px solid rgba(245,158,11,0.45);padding:7px 13px;border-radius:10px;font-size:0.8rem;font-weight:800;cursor:pointer;">📊 查看一页式 BP &amp; 3篇小红书即发套件 ➔</button>
       </div>
     </div>
 
@@ -699,10 +699,11 @@
 
     <!-- Main Navigation Tabs -->
     <nav class="nav-tabs" role="tablist">
-      <button class="nav-tab active" onclick="switchTab('studio', this)">🚀 交互式生成器工作台 (Live Generator MVP)</button>
-      <button class="nav-tab" onclick="switchTab('cases', this)">🌍 两大标杆实战案例 (South America &amp; Yunnan)</button>
-      <button class="nav-tab" onclick="switchTab('ceo', this)">📈 CEO 商业计划书 (/plan-ceo-review)</button>
-      <button class="nav-tab" onclick="switchTab('arch', this)">⚙️ 四阶预编译与离线架构 (Pipeline &amp; CLI)</button>
+      <button class="nav-tab active" id="nav-tab-studio" onclick="switchTab('studio', this)">🚀 交互式生成器工作台 (Live Generator MVP)</button>
+      <button class="nav-tab" id="nav-tab-bp" onclick="switchTab('bp', this)" style="border-color:rgba(245,158,11,0.55);color:#fde68a;">📊 携程私家团 BP &amp; 📕 小红书运营包 (含一键复制+3:4封面)</button>
+      <button class="nav-tab" id="nav-tab-cases" onclick="switchTab('cases', this)">🌍 两大标杆实战案例 (South America &amp; Yunnan)</button>
+      <button class="nav-tab" id="nav-tab-ceo" onclick="switchTab('ceo', this)">📈 CEO 商业计划书 (/plan-ceo-review)</button>
+      <button class="nav-tab" id="nav-tab-arch" onclick="switchTab('arch', this)">⚙️ 四阶预编译与离线架构 (Pipeline &amp; CLI)</button>
     </nav>
 
     <!-- TAB 1: Interactive Live Generator Workbench -->
@@ -1049,6 +1050,201 @@ python3 generator.py inject-offline \
 python3 generator.py publish \
   --dir ./dist \
   --repo YoungApple/yunnan-2026</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: Ctrip Semi-Managed Private Tour BP & Xiaohongshu Cold-Start Kit (Single-Page Native View) -->
+    <section id="tab-bp" class="hidden">
+      <div style="background:linear-gradient(135deg,rgba(30,41,59,0.92) 0%,rgba(15,23,42,0.98) 100%);border:1px solid rgba(245,158,11,0.45);border-radius:20px;padding:26px;margin-bottom:24px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:12px;">
+          <span class="pill warn" style="font-weight:900;">🚀 B2B2C 一页式商业计划书 (Executive BP) · 携程半托管私家团 / 定制游 / 户外俱乐部</span>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="button" onclick="window.openPartnerModal()" style="background:linear-gradient(135deg,#f59e0b,#ff2442);color:#fff;border:none;padding:7px 14px;border-radius:10px;font-size:0.8rem;font-weight:900;cursor:pointer;">🤝 立即登记合作 / 申领免费样板</button>
+          </div>
+        </div>
+        <h2 style="font-size:1.55rem;font-weight:900;margin-bottom:10px;line-height:1.3;">
+          告别死板 PDF 行程单：给携程半托管私家团装上「活的 AI 交互式路书 + 两步路轨迹海拔驾驶舱」
+        </h2>
+        <p style="font-size:0.94rem;color:#cbd5e1;margin-bottom:18px;">
+          携程/飞猪半托管私家团与高端定制游（人均 ¥6,000 ~ ¥50,000+）客单价高、决策重，但 95% 的地接社与定制师仍在用千篇一律的 Word/PDF 文字表格交付。
+          <strong>Travel Studio</strong> 将任意原始行程单与两步路户外轨迹（<code>.kml / .kmz / .gpx</code>）一键预编译为<strong>冠名旅行社品牌的 100% 离线随行 Web App</strong> —— 帮旅行社把<strong>售前询单转化率提升 30%+、定制师排期改线提效 5 倍、司导行中客诉降低 50%</strong>。
+        </p>
+
+        <div class="ceo-grid" style="margin-top:16px;">
+          <div class="ceo-card">
+            <h3>💼 1. 三大核心角色痛点 vs 破局方案</h3>
+            <ul>
+              <li><strong>获客端（旅行社老板/定制师）</strong>：收客人 3 万块却发一份死板 PDF，客人看不出高溢价 ➡️ <strong>冠名专属品牌的 3D 动态地图 + 每日高光卡片 + 四大美宿图鉴</strong>，售前秒杀竞品比价。</li>
+              <li><strong>交付端（司导/户外领队）</strong>：每天回答 50 遍坐车多久、爬升多少，遇高反临时改线易背锅 ➡️ <strong>两步路 4 格式 (.kml/.kmz/.gpx) 双向互通 + 海拔曲线预警 + Plan A/B 一键切换 + 10秒 AI 改行程</strong>。</li>
+              <li><strong>游客端（C端家庭/小红书玩家）</strong>：手机翻 PDF 字小反人类 ➡️ <strong>零 App 下载点开即用、雪山无信号 100% 离线可用</strong>，晒小红书自带「求同款」裂变留资入口。</li>
+            </ul>
+          </div>
+
+          <div class="ceo-card">
+            <h3>💰 2. 三档商业化合作模式（一单毛利覆盖全年）</h3>
+            <ul>
+              <li><strong>🌱 种子联名内测版（¥0 免费体验 · 限前 20 家）</strong>：免费将同行最畅销的 <strong>1 条王牌私家团线路</strong> 升级为冠名品牌的 AI 交互式路书（含两步路轨迹导入 + 专属获客按钮）。</li>
+              <li><strong>🚀 定制师 / 俱乐部专业版（¥99 / 团次，或 ¥1,999 / 年不限团）</strong>：无限生成出团专属链接（独立口令保护）+ 行中 AI Vibe 实时改版 + 两步路 4 格式互通 + Plan A/B 切换。</li>
+              <li><strong>💎 旅行社旗舰联名版（¥9,800 / 年 + 询单分成）</strong>：全社 20+ 条核心路线批量数字化 + 100% 品牌白标定制 + 小红书矩阵联合投流派单。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Xiaohongshu 3-Post Ready-to-Publish Kit -->
+      <div style="margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <div>
+          <h2 style="font-size:1.35rem;font-weight:900;">📕 小红书自运营冷启动武器库（3 篇即发爆款笔记 + 3:4 封面截图卡）</h2>
+          <p style="font-size:0.85rem;color:var(--text-muted);">左侧卡片按小红书黄金 3:4 比例设计，可直接手机/电脑截图作为首图；右侧支持一键复制完整标题、正文与标签</p>
+        </div>
+      </div>
+
+      <!-- XHS POST 1 -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:20px;background:var(--bg-card);border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:20px;align-items:start;">
+        <div style="max-width:300px;width:100%;aspect-ratio:3/4;border-radius:16px;padding:20px;background:linear-gradient(155deg,#0f172a 0%,#1e1b4b 48%,#831843 100%);border:2px solid rgba(251,113,133,0.45);display:flex;flex-direction:column;justify-content:space-between;margin:0 auto;box-shadow:0 14px 32px rgba(0,0,0,0.55);">
+          <div>
+            <span style="display:inline-block;padding:4px 10px;border-radius:999px;font-size:0.72rem;font-weight:900;background:rgba(255,255,255,0.15);color:#fff;">🗺️ 2026 旅行黑科技 · 实测</span>
+            <div style="font-size:1.45rem;font-weight:950;line-height:1.25;color:#fff;margin-top:12px;">
+              扔掉死板 PDF！<br/>这才是 <span style="color:#fde047;">神仙私家团路书</span> 该有的样子✨
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">✈️ 点哪天飞哪天 · 3D 路线沙盘</div>
+            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">⛰️ 实时海拔剖面 · 高反一键 B 计划</div>
+            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">✨ 输入一句话 · 10秒 AI 自动改行程</div>
+            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">🥾 两步路 GPX/KML/KMZ 无缝互通</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.7rem;font-weight:800;color:rgba(255,255,255,0.8);padding-top:8px;border-top:1px solid rgba(255,255,255,0.16);">
+            <span>🏔️ 云南11天 / 🗿 南美15天</span>
+            <span>🤝 欢迎同行合作</span>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="font-weight:900;font-size:1rem;color:#fda4af;">📌 笔记 1（C端爆款种草 + 顺带吸B端）：告别死板PDF！我把云南和南美徒步做成了3D交互路书🗺️</div>
+          <textarea id="hub-xhs-post-1" class="agenda-input" style="min-height:250px;font-family:var(--font);" readonly>告别死板PDF！我把云南15天和南美徒步做成了3D交互路书🗺️
+
+每次和家人朋友出去玩，最崩溃的就是看群里发的那几十页 PDF 行程单！😩
+字又小、地图是死的，到了高原想临时换个轻松的景点，还得全网重查攻略……
+
+这次准备【2026云南深度游（丽江-虎跳峡-哈巴黑海湖-香格里拉-梅里雪山-南极洛）】和【南美15天冰川雨林远征】，我干脆自己动手，用 AI 搓了一套「会动的交互式智能路书」！🔥
+
+✨ 用起来到底有多爽？
+1️⃣ 点哪天飞哪天：手指点 D1~D15，地图自动飞跃到当天路线，连飞机弧线、包车公路、徒步小径都分得清清楚楚！
+2️⃣ 高原防坑救命舱：内置实时海拔阶梯图！虎跳峡、哈巴黑海湖、梅里雪山、南极洛每一段爬升多少米一目了然，还自带「高反/下雨一键切换低海拔 B 计划」🛡️
+3️⃣ 一句话随心改（Vibe Change）：路上突然不想早起？直接在页面里输一句「把明天上午改成古镇喝咖啡」，10秒钟全团地图和时间表自动更新！
+4️⃣ 两步路轨迹无缝互通：支持 GPX / KML / KMZ 四大格式一键导入导出，户外党和家人休闲游终于不用看两套攻略了！
+
+💡 真实体验链接我已经放出来了（零App下载，手机浏览器点开丝滑体验）！
+👉 想要云南 / 南美同款路书的朋友，或者想把自己的旅行计划生成同款交互地图的，欢迎在评论区扣【同款】！
+🤝 特别呼叫：如果你是做【携程私家团、高端定制游、户外俱乐部、独立领队】的同行伙伴，想把你们发给客人的 PDF 行程单升级成这套高转化、零差评的专属品牌交互路书，欢迎直接私信或点击路书右上角【🤝 合作/定制】登记，前 20 家免费帮你们定制首条王牌线路！
+
+#云南旅游攻略 #携程私家团 #定制游 #户外徒步 #两步路 #虎跳峡徒步 #梅里雪山 #南美旅行 #南极洛 #AI旅行路书 #旅游从业者</textarea>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+            <button type="button" onclick="copyHubXhsPost('hub-xhs-post-1', this)" style="background:linear-gradient(135deg,#ff2442,#e11d48);color:#fff;border:none;padding:9px 16px;border-radius:10px;font-size:0.84rem;font-weight:900;cursor:pointer;">📋 一键复制笔记 1（标题+正文+标签）</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- XHS POST 2 -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:20px;background:var(--bg-card);border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:20px;align-items:start;">
+        <div style="max-width:300px;width:100%;aspect-ratio:3/4;border-radius:16px;padding:20px;background:linear-gradient(155deg,#022c22 0%,#064e3b 50%,#0f172a 100%);border:2px solid rgba(52,211,153,0.45);display:flex;flex-direction:column;justify-content:space-between;margin:0 auto;box-shadow:0 14px 32px rgba(0,0,0,0.55);">
+          <div>
+            <span style="display:inline-block;padding:4px 10px;border-radius:999px;font-size:0.72rem;font-weight:900;background:rgba(255,255,255,0.15);color:#fff;">🥾 硬核户外 × 两步路互通</span>
+            <div style="font-size:1.45rem;font-weight:950;line-height:1.25;color:#fff;margin-top:12px;">
+              两步路 GPX/KML<br/>秒变 <span style="color:#6ee7b7;">高颜值海拔交互路书</span> ⛰️
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">🔄 支持 KML(轨迹/路径) · KMZ · GPX</div>
+            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">📈 海拔阶梯图 × 地图实时联动</div>
+            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">🛡️ 红黄绿海拔预警 + 高反一键 B 计划</div>
+            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">📶 离线缓存瓦片 · 雪山垭口不断联</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.7rem;font-weight:800;color:rgba(255,255,255,0.8);padding-top:8px;border-top:1px solid rgba(255,255,255,0.16);">
+            <span>🧭 Travel Studio 户外引擎</span>
+            <span>🤝 俱乐部/领队内测中</span>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="font-weight:900;font-size:1rem;color:#6ee7b7;">📌 笔记 2（户外硬核 + 领队俱乐部向）：两步路GPX秒变交互大片！这套带高反B计划的路书太顶了🥾</div>
+          <textarea id="hub-xhs-post-2" class="agenda-input" style="min-height:250px;font-family:var(--font);" readonly>两步路GPX秒变交互大片！这套带高反B计划的路书太顶了🥾
+
+带队去高海拔徒步（虎跳峡、哈巴黑海湖、雨崩、南极洛、川西、南美巴塔哥尼亚），领队和定制师最头疼两件事：
+一是发给团友的 GPX 轨迹，小白根本不会用；发 PDF 文字吧，大家又天天在群里问「今天爬升多少？几点到营地？会高反吗？」
+二是遇到团友高反或突变天气，临时改线手忙脚乱！
+
+我们在 Travel Studio 里专门为高海拔私家团和户外小团打磨了这套「硬核轨迹 + 傻瓜式交互」二合一引擎：
+
+⛰️ 1. 海拔阶梯图 × 地图实时联动
+点选任意徒步赛段，地图自动高亮轨迹并展示起点/终点海拔、累计爬升与耗时。
+🔄 2. 两步路（2bulu）4 格式全打通
+不管是 .gpx、.kml（轨迹/路径）还是带路标照片的 .kmz 压缩包，拖进 Vibe 舱 10 秒生成带海拔色带的交互式网页路书；团友也能随时一键导出标准轨迹包进两步路离线导航！
+🛡️ 3. 独创「高反 / 天气 B 计划」一键切换
+提前在路书里埋好高反预案与 A/B 分支。万一团友出现高反或遇雨雪，点一下即可切换低海拔富氧美宿与轻徒步方案，专业度直接拉满！
+
+🔥 目前【云南滇西北环线】&【南美巴塔哥尼亚+亚马逊】两个完整样板已经上线！
+💬 评论区留【轨迹】看在线实测效果！
+🤝 欢迎全国户外俱乐部主理人、携程半托管私家团地接社、独立领队合作内测 —— 点击路书里的【🤝 合作/定制】即可一键对接，一起把户外小团的行前转化和行中体验卷出新高度！
+
+#两步路 #户外俱乐部 #徒步领队 #GPX轨迹 #高原反应 #云南徒步 #雨崩徒步 #虎跳峡 #私家团定制 #户外路书</textarea>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+            <button type="button" onclick="copyHubXhsPost('hub-xhs-post-2', this)" style="background:linear-gradient(135deg,#10b981,#059669);color:#020617;border:none;padding:9px 16px;border-radius:10px;font-size:0.84rem;font-weight:900;cursor:pointer;">📋 一键复制笔记 2（标题+正文+标签）</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- XHS POST 3 -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:20px;background:var(--bg-card);border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:20px;align-items:start;">
+        <div style="max-width:300px;width:100%;aspect-ratio:3/4;border-radius:16px;padding:20px;background:linear-gradient(155deg,#1e1b4b 0%,#451a03 52%,#0f172a 100%);border:2px solid rgba(251,191,36,0.55);display:flex;flex-direction:column;justify-content:space-between;margin:0 auto;box-shadow:0 14px 32px rgba(0,0,0,0.55);">
+          <div>
+            <span style="display:inline-block;padding:4px 10px;border-radius:999px;font-size:0.72rem;font-weight:900;background:rgba(255,255,255,0.15);color:#fff;">💎 致 携程私家团 / 定制游同行</span>
+            <div style="font-size:1.45rem;font-weight:950;line-height:1.25;color:#fff;margin-top:12px;">
+              一单收客人三万<br/>别再用 <span style="color:#fda4af;">死板 PDF</span> 丢单了！🔥
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">📈 售前 3D 交互路书 · 询单转化 +30%</div>
+            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">⚡ 10秒 AI 随心改行程 · 定制师提效 5 倍</div>
+            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">🧲 客人晒小红书自动带新客留资</div>
+            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">🎁 前 20 家同行免费定制王牌线路</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.7rem;font-weight:800;color:rgba(255,255,255,0.8);padding-top:8px;border-top:1px solid rgba(255,255,255,0.16);">
+            <span>🤝 寻找 20 位种子合伙人</span>
+            <span>Travel Studio B2B</span>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="font-weight:900;font-size:1rem;color:#fde047;">📌 笔记 3（B端直招 · 携程私家团/定制师专场）：做携程私家团/定制游的同行看过来！别让死板PDF拖垮转化率🔥</div>
+          <textarea id="hub-xhs-post-3" class="agenda-input" style="min-height:250px;font-family:var(--font);" readonly>做携程私家团/定制游的同行看过来！别让死板PDF拖垮转化率🔥
+
+跟几位做云南、新疆、南美携程半托管私家团的老板聊，大家都有一个共同的痛点：
+「我们的车队、司导和酒店明明选得比同行好得多，一单收客人两三万，但发过去的行程单还是老掉牙的 PDF 或文字表格，客人根本感知不到高价值，比完价就跑了！」
+
+更别提客人成团后：
+❌ 临出发前改三次行程，定制师加班改文档改到吐；
+❌ 路上司导每天回答 50 遍「今天坐几小时车、住哪家酒店」；
+❌ 客人玩得很开心发朋友圈，却没法顺便帮旅行社带新客留资……
+
+为此，我们把自研的【Travel Studio 智能私家团路书系统】正式开放给同行合作啦！✨
+
+💎 它能帮你的私家团解决什么？
+✅ 售前逼单利器：发给客人的不再是冷冰冰的文件，而是冠名你家品牌的 3D 动态交互地图 + 每日高光卡片 + 海拔安全提示，客单价溢价能力立竿见影。
+✅ 10 秒 AI 随心改（Vibe Change）：客人想调行程？输入一句大白话，AI 自动重排路线、地图与时间表，定制师效率翻 5 倍。
+✅ 自带转介绍留资闭环：路书内置「想要同款行程？一键联系定制师」专属入口，客人晒小红书/朋友圈就是帮你免费投流！
+
+🎁【小红书同行限时福利 · 寻找 20 位种子合伙人】
+无论你是携程/飞猪半托管私家团供应商、独立定制师工作室、精品包车司导团队，还是户外俱乐部：
+现在点击我们路书右上角的【🤝 合作/定制】登记，前 20 家我们免费帮你把 1 条王牌赚钱线路升级成专属 AI 交互式智能路书！欢迎评论区扣【合作】或直接私信交流～
+
+#携程私家团 #定制游 #旅行社转型 #旅游定制师 #地接社 #云南包车定制 #高端旅游 #旅游创业 #私家团运营 #AI赋能旅游</textarea>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+            <button type="button" onclick="copyHubXhsPost('hub-xhs-post-3', this)" style="background:linear-gradient(135deg,#f59e0b,#ea580c);color:#020617;border:none;padding:9px 16px;border-radius:10px;font-size:0.84rem;font-weight:900;cursor:pointer;">📋 一键复制笔记 3（标题+正文+标签）</button>
+            <button type="button" onclick="window.openPartnerModal()" style="background:rgba(30,41,59,0.9);color:#fde68a;border:1px solid rgba(245,158,11,0.5);padding:9px 16px;border-radius:10px;font-size:0.84rem;font-weight:800;cursor:pointer;">🤝 立即打开合作留资舱</button>
+          </div>
         </div>
       </div>
     </section>
@@ -1602,12 +1798,28 @@ python3 generator.py publish \
       a.click();
     }
 
+    function copyHubXhsPost(textareaId, btnEl) {
+      const el = document.getElementById(textareaId);
+      if (!el) return;
+      navigator.clipboard.writeText(el.value).then(() => {
+        const old = btnEl.innerHTML;
+        btnEl.innerHTML = "✅ 已复制全文！可直接打开小红书粘贴发布";
+        setTimeout(() => { btnEl.innerHTML = old; }, 2600);
+      });
+    }
+
     function switchTab(tabId, btnEl) {
-      for (const id of ["studio", "cases", "ceo", "arch"]) {
-        document.getElementById("tab-" + id).classList.toggle("hidden", id !== tabId);
+      for (const id of ["studio", "bp", "cases", "ceo", "arch"]) {
+        const el = document.getElementById("tab-" + id);
+        if (el) el.classList.toggle("hidden", id !== tabId);
       }
       document.querySelectorAll(".nav-tab").forEach(b => b.classList.remove("active"));
-      if (btnEl) btnEl.classList.add("active");
+      if (btnEl) {
+        btnEl.classList.add("active");
+      } else {
+        const autoBtn = document.getElementById("nav-tab-" + tabId);
+        if (autoBtn) autoBtn.classList.add("active");
+      }
       if (tabId === "studio" && mapInstance) {
         setTimeout(() => mapInstance.invalidateSize(), 120);
       }
@@ -1625,6 +1837,17 @@ python3 generator.py publish \
 
     window.addEventListener("DOMContentLoaded", () => {
       loadPreset("yunnan");
+      const params = new URLSearchParams(window.location.search);
+      if (window.location.hash === "#bp" || params.get("bp") === "1" || params.get("tab") === "bp") {
+        switchTab("bp", document.getElementById("nav-tab-bp"));
+      } else if (window.location.hash === "#partner" || params.get("partner") === "1") {
+        if (window.openPartnerModal) window.openPartnerModal();
+      }
+    });
+    window.addEventListener("hashchange", () => {
+      if (window.location.hash === "#bp") {
+        switchTab("bp", document.getElementById("nav-tab-bp"));
+      }
     });
   </script>
   
@@ -1856,7 +2079,7 @@ python3 generator.py publish \
       <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/35 space-y-1.5">
         <div class="font-black text-amber-400 text-xs flex items-center justify-between gap-2">
           <span>🎁 为什么选择 Travel Studio 智能私家团路书？</span>
-          <a href="https://youngapple.github.io/travel-studio/bp.html" target="_blank" rel="noopener" class="px-2 py-0.5 rounded bg-amber-500 text-slate-950 font-black text-[10px] no-underline shrink-0">📊 查看完整商业BP & 小红书文案 ↗</a>
+          <a href="https://youngapple.github.io/travel-studio/#bp" target="_blank" rel="noopener" class="px-2 py-0.5 rounded bg-amber-500 text-slate-950 font-black text-[10px] no-underline shrink-0">📊 查看完整商业BP & 小红书文案 ↗</a>
         </div>
         <p class="text-[11px] opacity-90 leading-relaxed">
           • <strong>售前逼单神器</strong>：3D级动态地图 + 每日高光卡片 + 冠名您的旅行社/俱乐部品牌，询单转化率提升 30%+<br/>
