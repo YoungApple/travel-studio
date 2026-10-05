@@ -1,8 +1,8 @@
 // Travel Studio Offline Service Worker Engine
 // Trip: 2026 南美 15 日四语随身伴侣 (south-america-2026)
-// Cache Version: travel-studio-south-america-2026-v207
+// Cache Version: travel-studio-south-america-2026-v7171ded6
 
-const CACHE_NAME = "travel-studio-south-america-2026-v207";
+const CACHE_NAME = "travel-studio-south-america-2026-v7171ded6";
 const TILE_CACHE_NAME = "travel-studio-tiles-south-america-2026";
 const PRECACHE_ASSETS = [
   "./",
@@ -42,7 +42,7 @@ self.addEventListener('activate', (event) => {
 // Fetch Event: Cache strategies
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
-  if (url.pathname.endsWith('vibe_status.json') || url.pathname.endsWith('custom_tracks.json') || url.hostname.includes('ntfy.sh')) {
+  if (url.pathname.endsWith('vibe_status.json') || url.hostname.includes('ntfy.sh')) {
     return;
   }
 

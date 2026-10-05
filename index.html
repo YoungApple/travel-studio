@@ -635,17 +635,17 @@
         <div>
           <div class="brand-title">
             Travel Studio
-            <span class="pill blue">v2.0 · Vibe Loop Pro</span>
+            <span class="pill blue">v2.1 · Vibe Loop + 两步路2bulu互通</span>
           </div>
-          <div class="brand-sub">Bespoke Offline Travel Companion Generator Platform · 高定私家团离线随行 Web App 生成器 (含口令保护 Vibe 自动迭代闭环)</div>
+          <div class="brand-sub">Bespoke Offline Travel Companion Generator Platform · 高定私家团离线随行 Web App 生成器 (含口令保护 Vibe 闭环 + 两步路4格式互通)</div>
         </div>
       </div>
       <div class="status-pills">
-        <button type="button" onclick="window.openVersionHistoryModal()" class="pill blue" style="cursor:pointer;">📜 版本记录 (v2.0)</button>
-        <button type="button" onclick="window.openVibeFeedbackModal()" class="pill warn" style="cursor:pointer; font-weight:800;">✨ Vibe 迭代舱 (🔒 applefriend)</button>
+        <button type="button" onclick="window.openTsVersionHistoryModal()" class="pill blue" style="cursor:pointer;">📜 版本记录 (v2.1)</button>
+        <button type="button" onclick="window.openTsVibeFeedbackModal()" class="pill warn" style="cursor:pointer; font-weight:800;">✨ Vibe & 轨迹上传舱 (🔒 applefriend)</button>
         <span id="sw-badge" class="pill ok">⚡ 离线引擎已就绪 · Service Worker Active</span>
-        <a href="https://youngapple.github.io/south-america-2026/" target="_blank" rel="noopener" class="pill warn">🧊 案例1: 南美 2026 (口令 sa26) ↗</a>
-        <a href="https://youngapple.github.io/yunnan-2026/" target="_blank" rel="noopener" class="pill ok">🏔️ 案例2: 云南 2026 (口令 applefriend) ↗</a>
+        <a href="https://youngapple.github.io/south-america-2026/" target="_blank" rel="noopener" class="pill warn">🧊 案例1: 南美 2026 (v2.7 · 口令 sa26) ↗</a>
+        <a href="https://youngapple.github.io/yunnan-2026/" target="_blank" rel="noopener" class="pill ok">🏔️ 案例2: 云南 2026 (v2.0 · 口令 applefriend) ↗</a>
       </div>
     </div>
   </header>
@@ -1614,13 +1614,13 @@ python3 generator.py publish \
     });
   </script>
   
-<!-- ==================== TRAVEL STUDIO PREMIUM FEATURE: PASSWORD-GATED VIBE FEEDBACK & VERSION HISTORY LOOP ==================== -->
+<!-- ==================== TRAVEL STUDIO PREMIUM VIBE LOOP + 2BULU GPX/KML/KMZ ENGINE (travel-studio) ==================== -->
 <style>
   .ts-vibe-backdrop {
     position: fixed;
     inset: 0;
     z-index: 9990;
-    background: rgba(2, 6, 23, 0.76);
+    background: rgba(2, 6, 23, 0.78);
     backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
@@ -1630,9 +1630,9 @@ python3 generator.py publish \
   .ts-vibe-backdrop.hidden { display: none !important; }
   .ts-vibe-sheet {
     width: 100%;
-    max-width: 640px;
+    max-width: 680px;
     max-height: 88vh;
-    background: var(--card, #111827);
+    background: var(--card, #0f172a);
     color: var(--foreground, #f8fafc);
     border: 1px solid rgba(245, 158, 11, 0.4);
     border-radius: 20px;
@@ -1656,76 +1656,77 @@ python3 generator.py publish \
   }
 </style>
 
-<!-- Top Auto-Upgrade Notification Bar -->
+<!-- Top Auto-Release Banner -->
 <div id="tsVibeNewReleaseBanner" class="hidden fixed top-0 inset-x-0 z-[9995] bg-emerald-500 text-slate-950 px-3 py-2 text-xs font-black flex items-center justify-between gap-2 shadow-lg">
-  <span id="tsVibeNewReleaseBannerText">🎉 新版本已编译上线！点击立即无损热更新</span>
+  <span id="tsVibeNewReleaseBannerText">🎉 新版本已根据你的 Vibe 自动编译上线！</span>
   <button onclick="window.tsForceReloadFreshVersion()" class="px-2.5 py-1 rounded-lg bg-slate-950 text-emerald-400 font-black text-[11px] cursor-pointer shrink-0">🔄 立即刷新</button>
 </div>
 
-<!-- Modal A: Password-Gated Vibe Feedback Drawer -->
-<div id="vibeFeedbackModal" class="ts-vibe-backdrop hidden" onclick="if(event.target===this) window.closeVibeFeedbackModal()">
+<!-- Modal 1: Password-Gated Vibe Feedback + 2bulu GPX/KML/KMZ Drawer -->
+<div id="tsVibeFeedbackModal" class="ts-vibe-backdrop hidden" onclick="if(event.target===this) window.closeTsVibeFeedbackModal()">
   <div class="ts-vibe-sheet">
-    <div class="px-4 py-3 border-b border-slate-700/60 flex items-center justify-between gap-2 bg-gradient-to-r from-amber-500/20 via-orange-500/10 to-sky-500/10 shrink-0">
+    <div class="px-4 py-3 border-b border-[var(--border,#1e293b)] flex items-center justify-between gap-2 bg-gradient-to-r from-amber-500/20 via-orange-500/10 to-sky-500/10 shrink-0">
       <div class="min-w-0">
         <div class="flex items-center gap-1.5">
-          <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-slate-950 shrink-0">VIBE LOOP · PRO</span>
-          <h3 class="text-xs sm:text-sm font-black truncate">✨ AI 定制师 · 实时 Vibe 反馈与自动发版舱</h3>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-slate-950">VIBE LOOP · 2BULU</span>
+          <h3 class="text-xs sm:text-base font-black truncate">✨ Travel Studio — 高定私家团离线随行 Web App 生成器平台 · 实时 Vibe 反馈 & 户外轨迹导入舱</h3>
         </div>
         <p class="text-[10px] sm:text-[11px] opacity-75 truncate mt-0.5">
-          口令保护已启用 ──► 提交后直连 Cloudtop 自动改版、写版本记录并重发 GitHub Pages
+          支持两步路 4 大导出格式 (.kml轨迹 / .kml路径 / .kmz / .gpx) ──► 直连 Cloudtop 自动迭代并重发 GitHub Pages
         </p>
       </div>
-      <button onclick="window.closeVibeFeedbackModal()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-200 font-bold cursor-pointer shrink-0">✕</button>
+      <button onclick="window.closeTsVibeFeedbackModal()" class="w-7 h-7 rounded-full bg-slate-800/70 text-white font-bold cursor-pointer shrink-0">✕</button>
     </div>
 
     <div class="p-3.5 sm:p-4 overflow-y-auto space-y-3 text-xs flex-1">
-      <!-- Live Engine Status -->
-      <div class="p-2.5 rounded-xl bg-slate-800/70 border border-slate-700 flex items-center justify-between gap-2">
+      <!-- Live Status Bar -->
+      <div class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-700/70 flex items-center justify-between gap-2">
         <div class="min-w-0 space-y-0.5">
           <div class="flex items-center gap-1.5 font-extrabold truncate">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block shrink-0"></span>
-            <span id="tsVibeLiveVersionBadge" class="truncate">📡 云端 AI 迭代引擎在线 (v2.0)</span>
+            <span id="tsVibeLiveVersionBadge" class="truncate">📡 云端 AI 迭代引擎在线 (v2.1)</span>
           </div>
           <div id="tsVibeLatestChangelog" class="text-[11px] opacity-75 truncate">
-            最近更新：口令保护 Vibe 自动反馈与新版本闭环已激活
+            支持一键导入两步路 KML/KMZ/GPX 轨迹与实时路书自动改版
           </div>
         </div>
-        <button onclick="window.tsRefreshVibeStatusJson()" class="px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-bold hover:border-amber-500 cursor-pointer shrink-0">🔄 刷新</button>
+        <button onclick="window.tsRefreshVibeStatusJson()" class="px-2 py-1 rounded-lg bg-slate-800 border border-slate-600 text-[11px] font-bold hover:border-amber-400 cursor-pointer shrink-0">🔄 刷新</button>
       </div>
 
-      <!-- Password Gate Card (Shown when locked) -->
-      <div id="tsVibePasswordGateBox" class="p-3 rounded-2xl bg-amber-500/10 border-2 border-amber-500/40 space-y-2">
+      <!-- Password Gate Box -->
+      <div id="tsVibePasswordGateBox" class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/40 space-y-2">
         <div class="flex items-center justify-between gap-2">
-          <span class="font-black text-amber-400 text-xs flex items-center gap-1">🔒 Vibe 创作口令认证 (防误触保护)</span>
+          <span class="font-black text-amber-400 text-xs">🔒 旅伴专属 Vibe 口令认证 (防误触保护)</span>
           <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold">验证一次 · 本机自动记住</span>
         </div>
         <p class="text-[11px] opacity-80 leading-relaxed">
-          为防止路书公开链接被非同行人员误触改版，请输入本行程专属 Vibe 口令解锁自动迭代权限：
+          为防止公开链接被陌生访客误触改版，请输入本行程专属 Vibe 口令解锁：
         </p>
         <div class="flex items-center gap-2">
-          <input id="tsVibePasswordInput" type="password" placeholder="输入专属 Vibe 口令..." onkeydown="if(event.key==='Enter') window.tsVerifyVibePassword()" class="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-500" />
-          <button type="button" onclick="window.tsVerifyVibePassword()" class="px-3.5 py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs cursor-pointer shrink-0 hover:opacity-95">🔓 解锁 Vibe</button>
+          <input id="tsVibePasswordInput" type="password" placeholder="请输入专属 Vibe 口令..." onkeydown="if(event.key==='Enter') window.verifyTsVibePassword()" class="flex-1 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" />
+          <button type="button" onclick="window.verifyTsVibePassword()" class="px-3.5 py-1.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs cursor-pointer shrink-0">🔓 解锁</button>
         </div>
-        <div id="tsVibePasswordError" class="text-[11px] font-bold text-rose-400 hidden"></div>
+        <div id="tsVibePasswordError" class="hidden text-[11px] font-bold text-rose-400"></div>
       </div>
 
-      <!-- Unlocked Status Pill (Shown when unlocked) -->
-      <div id="tsVibeUnlockedBar" class="hidden px-3 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/40 flex items-center justify-between gap-2">
-        <span class="text-[11px] font-extrabold text-emerald-400">🔓 已通过口令认证 · 设备已记住（随时可提交修改）</span>
-        <button type="button" onclick="window.tsLockVibeSession()" class="text-[10px] font-bold text-slate-400 hover:text-rose-400 cursor-pointer">🔒 锁定</button>
+      <!-- Unlocked Indicator -->
+      <div id="tsVibeUnlockedBar" class="hidden px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-between gap-2">
+        <span class="text-[11px] font-extrabold text-emerald-400">🔓 已通过专属口令验证 · 设备已记住</span>
+        <button type="button" onclick="window.lockTsVibePassword()" class="text-[10px] font-bold opacity-75 hover:opacity-100 cursor-pointer underline">重新锁定</button>
       </div>
 
-      <!-- Vibe Form Body (Enabled when unlocked) -->
-      <div id="tsVibeFormContainer" class="space-y-3">
+      <!-- Vibe Input Form -->
+      <div id="tsVibeFormFields" class="space-y-3">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div>
             <label class="block font-bold mb-1">👤 你的昵称 (选填)</label>
-            <input id="tsVibeAuthorInput" type="text" placeholder="如：Shuguo / 同行老友" class="w-full px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-500" />
+            <input id="tsVibeAuthorInput" type="text" placeholder="如：Shuguo / 同行老友" class="w-full px-3 py-1.5 rounded-xl bg-slate-900/70 border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" />
           </div>
           <div>
             <label class="block font-bold mb-1">🎯 针对哪个赛段？</label>
-            <select id="tsVibeScopeSelect" class="w-full px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-500">
-              <option value="🌟 整体行程 Vibe 与节奏">🌟 整体行程 Vibe 与节奏</option>
+            <select id="tsVibeScopeSelect" class="w-full px-3 py-1.5 rounded-xl bg-slate-900/70 border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
+              <option value="🌟 全行程 Vibe 与两步路轨迹互通">🌟 全行程 Vibe 与两步路轨迹互通</option>
+<option value="🥾 户外徒步轨迹上传 (.kml/.kmz/.gpx)">🥾 户外徒步轨迹上传 (.kml/.kmz/.gpx)</option>
             </select>
           </div>
         </div>
@@ -1733,403 +1734,621 @@ python3 generator.py publish \
         <div>
           <label class="block font-bold mb-1">✨ 期望调整的 Vibe 方向（可多选）：</label>
           <div class="flex flex-wrap gap-1.5" id="tsVibeTagChips">
-            <button type="button" data-vtag="🥾 导入两步路/GPX/KML/KMZ徒步轨迹" class="ts-vibe-tag px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-bold cursor-pointer">🥾 两步路轨迹</button>
-            <button type="button" data-vtag="🥾 调整徒步/节奏强度" class="ts-vibe-tag px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-bold cursor-pointer">🥾 徒步节奏</button>
-            <button type="button" data-vtag="🍽️ 补充周边口碑美食" class="ts-vibe-tag px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-bold cursor-pointer">🍽️ 周边美食</button>
-            <button type="button" data-vtag="📸 增加绝佳摄影机位" class="ts-vibe-tag px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-bold cursor-pointer">📸 摄影机位</button>
-            <button type="button" data-vtag="🏨 调整酒店或包车衔接" class="ts-vibe-tag px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-bold cursor-pointer">🏨 酒店/交通</button>
-            <button type="button" data-vtag="🎨 升级视觉插画与交互体验" class="ts-vibe-tag px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-bold cursor-pointer">🎨 视觉/交互</button>
+            <button type="button" data-vtag="🥾 两步路轨迹上传" class="ts-vibe-tag-btn px-2 py-1 rounded-lg border text-[11px] font-bold cursor-pointer transition">🥾 两步路轨迹上传</button>
+<button type="button" data-vtag="📥 KML/KMZ/GPX互通" class="ts-vibe-tag-btn px-2 py-1 rounded-lg border text-[11px] font-bold cursor-pointer transition">📥 KML/KMZ/GPX互通</button>
+<button type="button" data-vtag="🥩 周边美食" class="ts-vibe-tag-btn px-2 py-1 rounded-lg border text-[11px] font-bold cursor-pointer transition">🥩 周边美食</button>
+<button type="button" data-vtag="📸 摄影机位" class="ts-vibe-tag-btn px-2 py-1 rounded-lg border text-[11px] font-bold cursor-pointer transition">📸 摄影机位</button>
+<button type="button" data-vtag="📱 界面交互" class="ts-vibe-tag-btn px-2 py-1 rounded-lg border text-[11px] font-bold cursor-pointer transition">📱 界面交互</button>
           </div>
         </div>
 
-        <!-- 🥾 2bulu / Outdoor Track Upload Box -->
+        <!-- 🥾 2bulu / Outdoor Track File Upload & URL Box -->
         <div class="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/35 space-y-2">
           <div class="flex items-center justify-between gap-2 flex-wrap">
-            <span class="font-black text-emerald-400 text-xs">🥾 上传两步路 / 六只脚 / AllTrails 轨迹文件 (选填)</span>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300">支持 KML(轨迹/路径) · KMZ · GPX · GeoJSON</span>
+            <span class="font-black text-emerald-400 text-xs flex items-center gap-1">
+              🥾 上传两步路 / 六只脚 / AllTrails 轨迹文件 (选填)
+            </span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300">
+              支持 KML(轨迹/路径) · KMZ · GPX · GeoJSON
+            </span>
           </div>
           <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             <label class="flex-1 px-3 py-2 rounded-xl bg-slate-900/80 border border-dashed border-emerald-500/50 hover:border-emerald-400 cursor-pointer flex items-center justify-between gap-2 transition">
-              <span id="tsHubTrackFileLabel" class="text-[11px] font-bold text-emerald-300 truncate">📂 选择两步路导出文件 (.kml / .kmz / .gpx / .geojson)</span>
-              <input id="tsHubTrackFileInput" type="file" accept=".gpx,.kml,.kmz,.geojson,.json,.xml" class="hidden" onchange="window.tsHubHandleTrackSelect(this.files[0])" />
+              <span id="tsTrackFileLabel" class="text-[11px] font-bold text-emerald-300 truncate">📂 点击选择轨迹文件 (.kml / .kmz / .gpx / .geojson)</span>
+              <input id="tsTrackFileInput" type="file" accept=".gpx,.kml,.kmz,.geojson,.json,.xml" class="hidden" onchange="window.tsHandleTrackFileSelect(this.files[0])" />
               <span class="px-2 py-0.5 rounded bg-emerald-500 text-slate-950 font-black text-[10px] shrink-0">浏览文件</span>
             </label>
-            <button type="button" id="tsHubBtnClearTrack" onclick="window.tsHubClearTrack()" class="hidden px-2.5 py-2 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/30 font-bold text-[11px] cursor-pointer shrink-0">✕ 移除</button>
+            <button type="button" id="tsBtnClearTrack" onclick="window.tsClearUploadedTrack()" class="hidden px-2.5 py-2 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/30 font-bold text-[11px] cursor-pointer shrink-0">✕ 移除</button>
           </div>
-          <input id="tsHubTrackUrlInput" type="url" placeholder="🔗 或粘贴两步路 (2bulu.com) / AllTrails / Wikiloc 轨迹链接 (选填)..." class="w-full px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-[11px] font-semibold focus:outline-none focus:border-emerald-400" />
-          <div id="tsHubTrackPreview" class="hidden p-2.5 rounded-xl bg-slate-950/85 border border-emerald-500/40 space-y-1 text-[11px]"></div>
+          <input id="tsTrackUrlInput" type="url" placeholder="🔗 或粘贴两步路 (2bulu.com) / AllTrails / Wikiloc 轨迹分享链接 (选填)..." class="w-full px-3 py-1.5 rounded-xl bg-slate-900/70 border border-slate-700 text-[11px] font-semibold focus:outline-none focus:border-emerald-400" />
+          <div id="tsTrackParsedPreview" class="hidden p-2.5 rounded-xl bg-slate-950/85 border border-emerald-500/40 space-y-1 text-[11px]"></div>
         </div>
 
         <div>
           <label class="block font-bold mb-1">💬 具体想法或新 Vibe 描述：</label>
-          <textarea id="tsVibeMessageInput" rows="3" placeholder="写下你想调整的行程细节、新增餐厅/徒步线或界面优化想法，提交后 Cloudtop 将自动唤醒专属 Agent 改版并发布新版本..." class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-700 text-xs focus:outline-none focus:border-amber-500 leading-relaxed"></textarea>
+          <textarea id="tsVibeMessageInput" rows="3" placeholder="写下你想调整的行程细节、节奏偏好、新增机位或餐厅需求（若已上传轨迹文件，也可留空自动生成说明）..." class="w-full p-2.5 rounded-xl bg-slate-900/70 border border-slate-700 text-xs focus:outline-none focus:border-amber-400 leading-relaxed"></textarea>
         </div>
 
         <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 pt-0.5">
-          <button type="button" id="tsBtnSubmitVibe" onclick="window.tsSubmitVibeFeedback()" class="col-span-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-xs shadow-sm hover:opacity-95 cursor-pointer flex items-center justify-center gap-1.5">
-            <span>🚀 发送新 Vibe 并自动编译新版本</span>
+          <button type="button" id="btnSubmitTsVibe" onclick="window.submitTsVibeFeedback()" class="col-span-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-xs shadow-sm hover:opacity-95 cursor-pointer">
+            🚀 发送新 Vibe 并自动迭代
           </button>
-          <button type="button" onclick="window.openVersionHistoryModal()" class="px-3 py-2 rounded-xl bg-sky-500/15 text-sky-400 border border-sky-500/30 font-extrabold text-xs cursor-pointer text-center">
+          <button type="button" onclick="window.openTsVersionHistoryModal()" class="px-3 py-2 rounded-xl bg-sky-500/15 text-sky-400 border border-sky-500/30 font-extrabold text-xs cursor-pointer">
             📜 版本记录
           </button>
+          <button type="button" onclick="window.copyTsVibeBackup()" class="px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 font-bold text-xs cursor-pointer">
+            📋 复制口令
+          </button>
         </div>
-        <div id="tsVibeSubmitStatus" class="text-xs font-bold text-emerald-400"></div>
+        <div id="tsVibeSubmitStatusText" class="text-xs font-bold text-emerald-400"></div>
+      </div>
 
-        <div id="tsVibeAutoWatchBox" class="hidden p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
-          <div class="flex items-center justify-between gap-2">
-            <span id="tsVibeAutoWatchTitle" class="font-black text-emerald-400 text-xs">📡 1. 已投递 ──► 🧠 2. AI 正在实时编译新版本 (每8秒检测)...</span>
-            <button onclick="window.tsForceReloadFreshVersion()" id="tsBtnModalReloadFresh" class="hidden px-2.5 py-1 rounded-lg bg-emerald-500 text-slate-950 font-black text-[11px] cursor-pointer shrink-0">🔄 立即刷新</button>
-          </div>
-          <div class="text-[11px] opacity-75">当云端会话完成改版并推送到 GitHub Pages 后，此处将自动弹出升级提示。</div>
+      <!-- Post-Submit Auto-Watch Box -->
+      <div id="tsVibeAutoWatchBox" class="hidden p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
+        <div class="flex items-center justify-between gap-2">
+          <span id="tsVibeAutoWatchTitle" class="font-black text-emerald-400 text-xs">📡 1. 已投递 ──► 🧠 2. AI 正在实时编译新版本 (每8秒检测)...</span>
+          <button onclick="window.tsForceReloadFreshVersion()" id="btnTsModalReloadFresh" class="hidden px-2.5 py-1 rounded-lg bg-emerald-500 text-slate-950 font-black text-[11px] cursor-pointer shrink-0">🔄 立即刷新</button>
         </div>
+      </div>
+
+      <!-- Recent History -->
+      <div class="pt-2 border-t border-slate-800 space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-extrabold opacity-75">📜 最近提交与版本演进记录：</span>
+          <button onclick="window.openTsVersionHistoryModal()" class="text-[11px] font-bold text-sky-400 hover:underline cursor-pointer">全部版本 ➔</button>
+        </div>
+        <div id="tsVibeHistoryList" class="space-y-1.5 max-h-36 overflow-y-auto"></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Modal B: Version History Modal -->
-<div id="versionHistoryModal" class="ts-vibe-backdrop hidden" onclick="if(event.target===this) window.closeVersionHistoryModal()">
+<!-- Modal 2: Full Version History Modal -->
+<div id="tsVersionHistoryModal" class="ts-vibe-backdrop hidden" onclick="if(event.target===this) window.closeTsVersionHistoryModal()">
   <div class="ts-vibe-sheet">
-    <div class="px-4 py-3 border-b border-slate-700/60 flex items-center justify-between gap-2 bg-gradient-to-r from-sky-500/20 via-amber-500/10 to-emerald-500/10 shrink-0">
+    <div class="px-4 py-3 border-b border-slate-800 flex items-center justify-between gap-2 bg-gradient-to-r from-sky-500/20 via-amber-500/10 to-emerald-500/10 shrink-0">
       <div class="min-w-0">
         <div class="flex items-center gap-1.5">
-          <span id="tsVhCurrentVersionPill" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-sky-400 text-slate-950 shrink-0">v2.1</span>
-          <h3 class="text-xs sm:text-sm font-black truncate">📜 版本演进与 Vibe 自动迭代记录</h3>
+          <span id="tsVhCurrentVersionPill" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-sky-400 text-slate-950">v2.1</span>
+          <h3 class="text-xs sm:text-base font-black truncate">📜 Travel Studio — 高定私家团离线随行 Web App 生成器平台 · 版本演进记录</h3>
         </div>
-        <p class="text-[10px] sm:text-[11px] opacity-75 truncate mt-0.5">每次通过口令提交新 Vibe 或上传两步路轨迹，云端 AI 自动更新路书并记录完整变更</p>
       </div>
       <div class="flex items-center gap-1.5 shrink-0">
-        <button onclick="window.closeVersionHistoryModal(); window.openVibeFeedbackModal();" class="px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 font-black text-[11px] cursor-pointer">✨ 提Vibe</button>
-        <button onclick="window.closeVersionHistoryModal()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-200 font-bold cursor-pointer">✕</button>
+        <button onclick="window.closeTsVersionHistoryModal(); window.openTsVibeFeedbackModal();" class="px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 font-black text-[11px] cursor-pointer">✨ 提Vibe</button>
+        <button onclick="window.closeTsVersionHistoryModal()" class="w-7 h-7 rounded-full bg-slate-800 text-white font-bold cursor-pointer">✕</button>
       </div>
     </div>
-    <div id="tsVersionHistoryBody" class="p-3.5 sm:p-4 overflow-y-auto space-y-2.5 text-xs flex-1"></div>
+    <div id="tsVersionHistoryModalBody" class="p-3.5 sm:p-4 overflow-y-auto space-y-2.5 text-xs flex-1"></div>
   </div>
 </div>
 
 <script>
 (function() {
   const TS_APP_ID = "travel-studio";
-  const TS_EXPECTED_PW = "applefriend";
-  const TS_EXPECTED_SHA256 = "1f3216c601f6af86b37ec55f490492562306a1fe3aebe5db67fcc183f3b26e98";
-  const TS_NTFY_URL = "https://ntfy.sh/yungapple_travel_studio_vibe_9f8a7b6c";
   const TS_BUILTIN_VERSION = "v2.1";
-  const TS_STORAGE_UNLOCK_KEY = "vibe_unlocked_" + TS_APP_ID;
-  const TS_STORAGE_TOKEN_KEY = "vibe_token_" + TS_APP_ID;
-  const TS_DEFAULT_HISTORY = [
-    {
-      "version": "v2.1",
-      "title": "打通「两步路 (2bulu) / 六只脚 / AllTrails」4 大轨迹格式双向互通与 Vibe 抽屉上传闭环",
-      "timestamp": "2026-10-05 23:25 CST",
-      "author": "Shuguo & Travel Studio Architect",
-      "scope": "🥾 户外徒步轨迹互通引擎 (core/vibe_loop.py & vibe_bridge.py)",
-      "vibe_prompt": "BTW，户外徒步轨迹需要两步路等app，不知道能不能打通，找到方法，也可以支持vibe反馈时上传轨迹文件（两步路导出格式：KML格式(轨迹)、KML格式(路径)、KMZ格式、GPX格式）",
-      "changes": [
-        "全面支持两步路 4 大导出格式客户端 0 依赖解析：KML格式（轨迹 <gx:Track><gx:coord>）、KML格式（路径 <LineString><coordinates>）、KMZ格式（浏览器原生 DecompressionStream 解压 doc.kml）、GPX格式（<trkpt>/<rtept>/<wpt>）及 GeoJSON",
-        "内置中国境内 WGS-84 ⇄ GCJ-02 坐标系自动双向转换算法：两步路/GPS 轨迹导入高德地图自动纠偏对齐，路书导出 .gpx / .kml 自动还原标准 WGS-84 供两步路直接打开跟走",
-        "Vibe 反馈舱新增「🥾 上传两步路/AllTrails 轨迹文件」与分享链接输入，自动计算距离/爬升/最高海拔并通过 ntfy.sh 同步至 Cloudtop custom_tracks.json 持久化合入路书"
-      ]
-    },
-    {
-      "version": "v2.0",
-      "title": "提取「口令保护 Vibe 随身反馈 ➔ 全自动新版本闭环」为平台级旗舰特权功能",
-      "timestamp": "2026-10-05 22:55 CST",
-      "author": "Shuguo & Travel Studio Architect",
-      "scope": "🌟 平台编译器核心 (core/vibe_loop.py & vibe_bridge.py)",
-      "vibe_prompt": "Let's extract the vibe feedback-newversion-loop into a premium feature in the travel-studio, also make it in my south-americ trip side as well. Let's put some passwords before anyone can vibe the site. For yunnan: password is: applefriend, south americ: sa26, all others: applefriend",
-      "changes": [
-        "新增 core/vibe_loop.py 与多项目口令核验守护引擎 vibe_bridge.py，任何通过 Travel Studio 编译的路书自动获得「✨ 口令认证 Vibe 抽屉 + 📜 版本演进记录 + 8秒新版本自动轮询」",
-        "实装分级口令门禁（Password Gate + 设备自动记住）：云南路书口令为 applefriend，南美路书口令为 sa26，Travel Studio 平台及所有其他新建行程默认口令为 applefriend"
-      ]
-    },
-    {
-      "version": "v1.5",
-      "title": "三模态混合输入与 AI 缺口微访谈编译器上线",
-      "timestamp": "2026-10-04 16:00 CST",
-      "author": "Shuguo",
-      "scope": "🗺️ 编译器工作台与双栈适配",
-      "vibe_prompt": "支持粘贴随手碎片笔记、AI 自动识别缺口追问并编译为离线 PWA",
-      "changes": [
-        "上线中国境内 (cn_domestic 高德/GCJ-02/百科/小红书) 与国际全球 (global WGS-84/Google Maps/Wiki) 双栈编译器",
-        "收录 South America 2026 与 Yunnan 2026 两大实战标杆案例与 CEO 商业计划书"
-      ]
-    }
-  ];
+  const TS_VIBE_NTFY_URL = "https://ntfy.sh/yungapple_travel_studio_vibe_9f8a7b6c";
+  const TS_REQUIRED_PASSWORD = "applefriend";
+  const TS_PW_STORAGE_KEY = "vibe_pw_" + TS_APP_ID;
+  const TS_UNLOCK_STORAGE_KEY = "vibe_unlocked_" + TS_APP_ID;
+  const TS_DEFAULT_HISTORY = [{"version": "v2.1", "title": "平台级打通「两步路户外助手 (2bulu)」4大轨迹格式双向互通 & Vibe 轨迹上传引擎", "timestamp": "2026-10-05 23:42 CST", "author": "同行旅伴 & Travel Studio Architect", "scope": "🥾 平台编译器核心 (core/vibe_loop.py & vibe_bridge.py)", "vibe_prompt": "BTW，户外徒步轨迹需要两步路等app，不知道能不能打通，找到方法，也可以支持vibe反馈时上传轨迹文件", "changes": ["在 core/vibe_loop.py 中内置两步路 4 大官方导出格式解析器：KML格式(轨迹 gx:Track)、KML格式(路径 LineString)、KMZ格式(浏览器原生 DecompressionStream 解压 doc.kml) 与 GPX格式", "新增 WGS-84 ⇄ GCJ-02 双向坐标自动纠偏算法与一键导出 .KML / .GPX 引擎，任何由 Travel Studio 编译的路书均支持导出至「两步路户外助手」离线防迷路", "升级 vibe_bridge.py 支持接收并持久化旅伴上传的 gpx_track 轨迹数据至 custom_tracks.json，实现前端即时预览 + 云端全员同步"]}, {"version": "v2.0", "title": "提取「口令保护 Vibe 随身反馈 ➔ 全自动新版本闭环」为平台级旗舰特权功能", "timestamp": "2026-10-05 22:55 CST", "author": "Shuguo & Travel Studio Architect", "scope": "🌟 平台编译器核心 (core/vibe_loop.py & vibe_bridge.py)", "vibe_prompt": "Let's extract the vibe feedback-newversion-loop into a premium feature in the travel-studio, also make it in my south-americ trip side as well. Let's put some passwords before anyone can vibe the site. For yunnan: password is: applefriend, south americ: sa26, all others: applefriend", "changes": ["新增 core/vibe_loop.py 与多项目口令核验守护引擎 vibe_bridge.py，任何通过 Travel Studio 编译的路书自动获得「✨ 口令认证 Vibe 抽屉 + 📜 版本演进记录 + 8秒新版本自动轮询」", "实装分级口令门禁（Password Gate + 设备自动记住）：云南路书口令为 applefriend，南美路书口令为 sa26，Travel Studio 平台及所有其他新建行程默认口令为 applefriend", "左栏工作台新增「🔒 Vibe 自动迭代口令配置器」与「✨ core/vibe_loop.py 源码检视」，支持一键测试平台自身的 Vibe 自动迭代闭环"]}, {"version": "v1.5", "title": "三模态混合输入与 AI 缺口微访谈编译器上线", "timestamp": "2026-10-04 16:00 CST", "author": "Shuguo", "scope": "🗺️ 编译器工作台与双栈适配", "vibe_prompt": "支持粘贴随手碎片笔记、AI 自动识别缺口追问并编译为离线 PWA", "changes": ["上线中国境内 (cn_domestic 高德/GCJ-02/百科/小红书) 与国际全球 (global WGS-84/Google Maps/Wiki) 双栈编译器", "收录 South America 2026 与 Yunnan 2026 两大实战标杆案例与 CEO 商业计划书"]}];
 
   let tsSelectedTags = new Set();
   let tsCloudStatus = null;
   let tsWatchTimer = null;
-  let tsBaselineVersion = null;
-  let tsHubUploadedTrack = null;
+  let tsBaselineVer = null;
+  let tsUploadedTrack = null;
 
-  async function unpackKmzBuf(buffer) {
+  // ==================== WGS-84 ⇄ GCJ-02 COORDINATE CONVERTER ====================
+  const PI = Math.PI;
+  const AXIS = 6378245.0;
+  const EE = 0.00669342162296594323;
+
+  function isInChinaBbox(lat, lng) {
+    return lng >= 73.33 && lng <= 135.05 && lat >= 18.15 && lat <= 53.55;
+  }
+
+  function transformLat(x, y) {
+    let ret = -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y + 0.2 * Math.sqrt(Math.abs(x));
+    ret += (20.0 * Math.sin(6.0 * x * PI) + 20.0 * Math.sin(2.0 * x * PI)) * 2.0 / 3.0;
+    ret += (20.0 * Math.sin(y * PI) + 40.0 * Math.sin(y / 3.0 * PI)) * 2.0 / 3.0;
+    ret += (160.0 * Math.sin(y / 12.0 * PI) + 320 * Math.sin(y * PI / 30.0)) * 2.0 / 3.0;
+    return ret;
+  }
+
+  function transformLng(x, y) {
+    let ret = 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * Math.sqrt(Math.abs(x));
+    ret += (20.0 * Math.sin(6.0 * x * PI) + 20.0 * Math.sin(2.0 * x * PI)) * 2.0 / 3.0;
+    ret += (20.0 * Math.sin(x * PI) + 40.0 * Math.sin(x / 3.0 * PI)) * 2.0 / 3.0;
+    ret += (150.0 * Math.sin(x / 12.0 * PI) + 300.0 * Math.sin(x / 30.0 * PI)) * 2.0 / 3.0;
+    return ret;
+  }
+
+  window.tsWgs84ToGcj02 = function(lat, lng) {
+    if (!isInChinaBbox(lat, lng)) return [lat, lng];
+    let dLat = transformLat(lng - 105.0, lat - 35.0);
+    let dLng = transformLng(lng - 105.0, lat - 35.0);
+    const radLat = lat / 180.0 * PI;
+    let magic = Math.sin(radLat);
+    magic = 1 - EE * magic * magic;
+    const sqrtMagic = Math.sqrt(magic);
+    dLat = (dLat * 180.0) / ((AXIS * (1 - EE)) / (magic * sqrtMagic) * PI);
+    dLng = (dLng * 180.0) / (AXIS / sqrtMagic * Math.cos(radLat) * PI);
+    return [Number((lat + dLat).toFixed(6)), Number((lng + dLng).toFixed(6))];
+  };
+
+  window.tsGcj02ToWgs84 = function(lat, lng) {
+    if (!isInChinaBbox(lat, lng)) return [lat, lng];
+    const [gLat, gLng] = window.tsWgs84ToGcj02(lat, lng);
+    return [Number((lat * 2 - gLat).toFixed(6)), Number((lng * 2 - gLng).toFixed(6))];
+  };
+
+  // ==================== UNIVERSAL 2BULU / GPX / KML / KMZ / GEOJSON TRACK PARSER ====================
+  function haversineKm(lat1, lon1, lat2, lon2) {
+    const R = 6371.0;
+    const dLat = (lat2 - lat1) * PI / 180.0;
+    const dLon = (lon2 - lon1) * PI / 180.0;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(lat1 * PI / 180.0) * Math.cos(lat2 * PI / 180.0) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  function simplifyTrackPoints(pts, maxPts) {
+    if (!Array.isArray(pts) || pts.length <= maxPts) return pts;
+    const step = (pts.length - 1) / (maxPts - 1);
+    const out = [];
+    for (let i = 0; i < maxPts - 1; i++) {
+      out.push(pts[Math.round(i * step)]);
+    }
+    out.push(pts[pts.length - 1]);
+    return out;
+  }
+
+  async function unpackKmzArrayBuffer(buffer) {
     const bytes = new Uint8Array(buffer);
     const view = new DataView(buffer);
     let offset = 0;
     let kmlText = "";
+    const mediaFiles = [];
+
     while (offset + 30 <= bytes.length) {
-      if (view.getUint32(offset, true) !== 0x04034b50) break;
+      const sig = view.getUint32(offset, true);
+      if (sig !== 0x04034b50) break;
       const compression = view.getUint16(offset + 8, true);
       const compSize = view.getUint32(offset + 18, true);
       const nameLen = view.getUint16(offset + 26, true);
       const extraLen = view.getUint16(offset + 28, true);
-      const entryName = new TextDecoder("utf-8").decode(bytes.subarray(offset + 30, offset + 30 + nameLen));
+      const nameBytes = bytes.subarray(offset + 30, offset + 30 + nameLen);
+      const entryName = new TextDecoder("utf-8").decode(nameBytes);
       const dataStart = offset + 30 + nameLen + extraLen;
-      const slice = bytes.subarray(dataStart, dataStart + compSize);
+      const dataEnd = dataStart + compSize;
+      const slice = bytes.subarray(dataStart, dataEnd);
+
       if (entryName.toLowerCase().endsWith(".kml") && !kmlText) {
         if (compression === 0) {
           kmlText = new TextDecoder("utf-8").decode(slice);
         } else if (compression === 8 && typeof DecompressionStream !== "undefined") {
           const ds = new DecompressionStream("deflate-raw");
-          const w = ds.writable.getWriter();
-          w.write(slice); w.close();
-          const buf = await new Response(ds.readable).arrayBuffer();
-          kmlText = new TextDecoder("utf-8").decode(buf);
+          const writer = ds.writable.getWriter();
+          writer.write(slice);
+          writer.close();
+          const decompressedBuf = await new Response(ds.readable).arrayBuffer();
+          kmlText = new TextDecoder("utf-8").decode(decompressedBuf);
         }
+      } else if (!entryName.endsWith("/")) {
+        mediaFiles.push(entryName);
       }
-      offset = dataStart + compSize;
+      offset = dataEnd;
     }
-    return kmlText;
+    return { kmlText, mediaFiles };
   }
 
-  window.tsHubHandleTrackSelect = async function(file) {
-    if (!file) return;
-    const labelEl = document.getElementById("tsHubTrackFileLabel");
-    const previewEl = document.getElementById("tsHubTrackPreview");
-    const clearBtn = document.getElementById("tsHubBtnClearTrack");
-    try {
-      const lower = file.name.toLowerCase();
-      let text = "";
-      let fmt = "GPX";
-      if (lower.endsWith(".kmz")) {
-        text = await unpackKmzBuf(await file.arrayBuffer());
-        fmt = "KMZ (两步路完整包)";
-      } else {
-        text = await file.text();
-        fmt = lower.endsWith(".gpx") ? "GPX" : (text.includes("gx:coord") ? "KML (两步路轨迹)" : "KML (两步路路径)");
+  function parseXmlTrackText(text, fileName, detectedFormat, mediaFiles) {
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(text, "text/xml");
+    const rawPts = [];
+    const waypoints = [];
+
+    const docName =
+      xml.querySelector("trk > name, rte > name, Document > name, Folder > name, metadata > name")?.textContent?.trim() ||
+      fileName.replace(/\.(gpx|kml|kmz|geojson|json|xml)$/i, "");
+
+    // 1. GPX <trkpt> and <rtept>
+    const trkpts = Array.from(xml.querySelectorAll("trkpt, rtept"));
+    trkpts.forEach(pt => {
+      const lat = parseFloat(pt.getAttribute("lat"));
+      const lon = parseFloat(pt.getAttribute("lon"));
+      const eleText = pt.querySelector("ele")?.textContent;
+      const ele = eleText ? parseFloat(eleText) : null;
+      if (!isNaN(lat) && !isNaN(lon)) {
+        rawPts.push([lat, lon, ele !== null && !isNaN(ele) ? Math.round(ele) : 0]);
       }
-      const xml = new DOMParser().parseFromString(text, "text/xml");
-      const pts = [];
-      Array.from(xml.querySelectorAll("trkpt, rtept")).forEach(p => {
-        const lat = parseFloat(p.getAttribute("lat")), lon = parseFloat(p.getAttribute("lon"));
-        const ele = parseFloat(p.querySelector("ele")?.textContent || "0") || 0;
-        if (!isNaN(lat) && !isNaN(lon)) pts.push([lat, lon, Math.round(ele)]);
-      });
-      Array.from(xml.getElementsByTagName("*")).forEach(el => {
-        const ln = (el.localName || el.tagName || "").toLowerCase();
-        if (ln === "coord" || ln === "gx:coord") {
-          const sp = (el.textContent || "").trim().split(/\s+/);
-          if (sp.length >= 2) pts.push([parseFloat(sp[1]), parseFloat(sp[0]), Math.round(parseFloat(sp[2] || "0") || 0)]);
+    });
+
+    // 2. GPX <wpt>
+    Array.from(xml.querySelectorAll("wpt")).forEach(w => {
+      const lat = parseFloat(w.getAttribute("lat"));
+      const lon = parseFloat(w.getAttribute("lon"));
+      const name = w.querySelector("name")?.textContent?.trim() || "标注点";
+      const desc = w.querySelector("desc, cmt")?.textContent?.trim() || "";
+      const ele = parseFloat(w.querySelector("ele")?.textContent || "0") || 0;
+      if (!isNaN(lat) && !isNaN(lon)) {
+        waypoints.push({ name, desc, lat: Number(lat.toFixed(5)), lng: Number(lon.toFixed(5)), ele: Math.round(ele) });
+      }
+    });
+
+    // 3. 2bulu KML格式（轨迹）: <gx:coord>lon lat ele</gx:coord> or <coord>
+    const allElements = Array.from(xml.getElementsByTagName("*"));
+    allElements.forEach(el => {
+      const local = (el.localName || el.tagName || "").toLowerCase();
+      if (local === "coord" || local === "gx:coord") {
+        const parts = (el.textContent || "").trim().split(/\s+/);
+        if (parts.length >= 2) {
+          const lon = parseFloat(parts[0]);
+          const lat = parseFloat(parts[1]);
+          const ele = parts.length >= 3 ? parseFloat(parts[2]) : 0;
+          if (!isNaN(lat) && !isNaN(lon)) {
+            rawPts.push([lat, lon, !isNaN(ele) ? Math.round(ele) : 0]);
+          }
         }
-      });
-      if (!pts.length) {
-        Array.from(xml.querySelectorAll("coordinates")).forEach(c => {
-          (c.textContent || "").trim().split(/\s+/).forEach(tok => {
-            const sp = tok.split(",");
-            if (sp.length >= 2 && !isNaN(parseFloat(sp[1]))) pts.push([parseFloat(sp[1]), parseFloat(sp[0]), Math.round(parseFloat(sp[2] || "0") || 0)]);
-          });
+      }
+    });
+
+    // 4. 2bulu KML格式（路径）: <LineString><coordinates> & <Placemark><Point><coordinates>
+    Array.from(xml.querySelectorAll("Placemark")).forEach(pm => {
+      const pmName = pm.querySelector("name")?.textContent?.trim() || "标注点";
+      const pmDesc = pm.querySelector("description")?.textContent?.trim() || "";
+      const ptCoord = pm.querySelector("Point > coordinates")?.textContent?.trim();
+      if (ptCoord) {
+        const parts = ptCoord.split(",");
+        const lon = parseFloat(parts[0]);
+        const lat = parseFloat(parts[1]);
+        const ele = parts.length >= 3 ? parseFloat(parts[2]) : 0;
+        if (!isNaN(lat) && !isNaN(lon)) {
+          waypoints.push({ name: pmName, desc: pmDesc.slice(0, 80), lat: Number(lat.toFixed(5)), lng: Number(lon.toFixed(5)), ele: Math.round(ele || 0) });
+        }
+      }
+    });
+
+    if (rawPts.length === 0) {
+      Array.from(xml.querySelectorAll("LineString coordinates, MultiGeometry coordinates, Track coordinates")).forEach(cNode => {
+        const tokens = (cNode.textContent || "").trim().split(/\s+/);
+        tokens.forEach(tok => {
+          const parts = tok.split(",");
+          if (parts.length >= 2) {
+            const lon = parseFloat(parts[0]);
+            const lat = parseFloat(parts[1]);
+            const ele = parts.length >= 3 ? parseFloat(parts[2]) : 0;
+            if (!isNaN(lat) && !isNaN(lon)) {
+              rawPts.push([lat, lon, !isNaN(ele) ? Math.round(ele) : 0]);
+            }
+          }
         });
+      });
+    }
+
+    return buildTrackSummaryObject(docName, fileName, detectedFormat, rawPts, waypoints, mediaFiles);
+  }
+
+  function buildTrackSummaryObject(name, fileName, format, rawPts, waypoints, mediaFiles) {
+    const pts = rawPts.length > 0 ? rawPts : waypoints.map(w => [w.lat, w.lng, w.ele || 0]);
+    if (pts.length === 0) {
+      throw new Error("未在文件中检测到有效经纬度轨迹点，请确认文件为两步路 KML / KMZ / GPX 或 GeoJSON 格式");
+    }
+
+    let totalDistKm = 0;
+    let elevGainM = 0;
+    let maxElev = -99999;
+    let minElev = 99999;
+
+    for (let i = 0; i < pts.length; i++) {
+      const [lat, lng, ele] = pts[i];
+      if (ele > maxElev) maxElev = ele;
+      if (ele < minElev) minElev = ele;
+      if (i > 0) {
+        totalDistKm += haversineKm(pts[i - 1][0], pts[i - 1][1], lat, lng);
+        const dEle = ele - pts[i - 1][2];
+        if (dEle > 1.5) elevGainM += dEle;
       }
-      if (!pts.length) throw new Error("未解析到轨迹坐标点");
-      let distKm = 0, gainM = 0, maxE = -99999, minE = 99999;
-      for (let i = 0; i < pts.length; i++) {
-        const [lat, lng, ele] = pts[i];
-        if (ele > maxE) maxE = ele;
-        if (ele < minE) minE = ele;
-        if (i > 0) {
-          const dLat = (lat - pts[i-1][0]) * Math.PI / 180, dLon = (lng - pts[i-1][1]) * Math.PI / 180;
-          const a = Math.sin(dLat/2)**2 + Math.cos(pts[i-1][0]*Math.PI/180)*Math.cos(lat*Math.PI/180)*Math.sin(dLon/2)**2;
-          distKm += 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-          if (ele - pts[i-1][2] > 1.5) gainM += (ele - pts[i-1][2]);
+    }
+    if (maxElev === -99999) maxElev = 0;
+    if (minElev === 99999) minElev = 0;
+
+    const sampled = simplifyTrackPoints(pts, 110);
+    const coordsWgs84 = sampled.map(p => [Number(p[0].toFixed(5)), Number(p[1].toFixed(5)), p[2] || 0]);
+    const coordsGcj02 = sampled.map(p => {
+      const [gLat, gLng] = window.tsWgs84ToGcj02(p[0], p[1]);
+      return [Number(gLat.toFixed(5)), Number(gLng.toFixed(5)), p[2] || 0];
+    });
+
+    return {
+      id: "track-" + Date.now(),
+      name: name || fileName,
+      fileName,
+      format,
+      rawPointCount: pts.length,
+      pointCount: coordsWgs84.length,
+      distanceKm: Number(totalDistKm.toFixed(2)),
+      elevationGainM: Math.round(elevGainM),
+      maxElevM: Math.round(maxElev),
+      minElevM: Math.round(minElev),
+      coords: coordsWgs84,
+      coordsGcj02,
+      waypoints: waypoints.slice(0, 15),
+      mediaAttachments: (mediaFiles || []).slice(0, 10)
+    };
+  }
+
+  window.tsParseOutdoorTrackFile = async function(file) {
+    if (!file) throw new Error("未选择文件");
+    const fileName = file.name || "track.gpx";
+    const lower = fileName.toLowerCase();
+
+    if (lower.endsWith(".kmz")) {
+      const buf = await file.arrayBuffer();
+      const { kmlText, mediaFiles } = await unpackKmzArrayBuffer(buf);
+      if (!kmlText) throw new Error("KMZ 压缩包内未找到 doc.kml 轨迹文件");
+      return parseXmlTrackText(kmlText, fileName, "KMZ (两步路完整包)", mediaFiles);
+    }
+
+    const text = await file.text();
+    if (lower.endsWith(".geojson") || lower.endsWith(".json") || text.trim().startsWith("{")) {
+      const gj = JSON.parse(text);
+      const rawPts = [];
+      const wpts = [];
+      const features = gj.type === "FeatureCollection" ? (gj.features || []) : [gj];
+      features.forEach(f => {
+        const geom = f.geometry || f;
+        const props = f.properties || {};
+        if (geom.type === "LineString") {
+          (geom.coordinates || []).forEach(c => rawPts.push([c[1], c[0], Math.round(c[2] || 0)]));
+        } else if (geom.type === "MultiLineString") {
+          (geom.coordinates || []).flat().forEach(c => rawPts.push([c[1], c[0], Math.round(c[2] || 0)]));
+        } else if (geom.type === "Point" && Array.isArray(geom.coordinates)) {
+          wpts.push({ name: props.name || "标注点", desc: props.description || "", lat: geom.coordinates[1], lng: geom.coordinates[0], ele: Math.round(geom.coordinates[2] || 0) });
         }
-      }
-      const step = Math.max(1, Math.floor(pts.length / 100));
-      const sampled = pts.filter((_, idx) => idx % step === 0 || idx === pts.length - 1).slice(0, 110);
-      tsHubUploadedTrack = {
-        id: "track-" + Date.now(),
-        name: xml.querySelector("name")?.textContent?.trim() || file.name.replace(/\.[^.]+$/, ""),
-        fileName: file.name,
-        format: fmt,
-        distanceKm: Number(distKm.toFixed(2)),
-        elevationGainM: Math.round(gainM),
-        maxElevM: maxE === -99999 ? 0 : maxE,
-        minElevM: minE === 99999 ? 0 : minE,
-        coords: sampled,
-        waypoints: []
-      };
-      if (labelEl) labelEl.textContent = `✅ 已解析: ${file.name} (${fmt})`;
+      });
+      return buildTrackSummaryObject(gj.name || fileName.replace(/\.[^.]+$/, ""), fileName, "GeoJSON", rawPts, wpts, []);
+    }
+
+    const isGxTrack = text.includes("gx:Track") || text.includes("gx:coord");
+    const fmt = lower.endsWith(".gpx") ? "GPX (标准轨迹)" : (isGxTrack ? "KML (两步路轨迹)" : "KML (两步路路径)");
+    return parseXmlTrackText(text, fileName, fmt, []);
+  };
+
+  // ==================== 1-TAP GPX & KML EXPORTERS FOR 2BULU / ALLTRAILS ====================
+  function escapeXmlStr(s) {
+    return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  window.tsExportTrailGpx = function(trail, isGcj02Source = false) {
+    if (!trail || !Array.isArray(trail.coords)) return;
+    const title = trail.nameZh || trail.name || "Hiking Trail";
+    const desc = trail.highlightsZh || trail.desc || "";
+    const pts = trail.coords.map(c => {
+      const [lat, lng] = isGcj02Source ? window.tsGcj02ToWgs84(c[0], c[1]) : [c[0], c[1]];
+      const ele = c[2] !== undefined ? c[2] : (trail.maxElevNum || 0);
+      return { lat, lng, ele };
+    });
+    const startPt = pts[0];
+    const endPt = pts[pts.length - 1];
+    const wptsXml = [
+      startPt ? `<wpt lat="${startPt.lat}" lon="${startPt.lng}"><ele>${startPt.ele}</ele><name>🟢 起点: ${escapeXmlStr(trail.trailheadName || title)}</name></wpt>` : "",
+      endPt ? `<wpt lat="${endPt.lat}" lon="${endPt.lng}"><ele>${endPt.ele}</ele><name>🏔️ 终点: ${escapeXmlStr(trail.endPointName || title)}</name></wpt>` : ""
+    ].join("\n  ");
+    const trkptsXml = pts.map(p => `      <trkpt lat="${p.lat}" lon="${p.lng}"><ele>${p.ele}</ele></trkpt>`).join("\n");
+    const gpx = `<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="TravelStudio-2bulu-Bridge" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>${escapeXmlStr(title)}</name>
+    <desc>${escapeXmlStr(desc)}</desc>
+  </metadata>
+  ${wptsXml}
+  <trk>
+    <name>${escapeXmlStr(title)}</name>
+    <desc>${escapeXmlStr(desc)}</desc>
+    <trkseg>
+${trkptsXml}
+    </trkseg>
+  </trk>
+</gpx>`;
+    const blob = new Blob([gpx], { type: "application/gpx+xml;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `${(trail.id || "trail")}_2bulu.gpx`;
+    a.click();
+  };
+
+  window.tsExportTrailKml = function(trail, isGcj02Source = false) {
+    if (!trail || !Array.isArray(trail.coords)) return;
+    const title = trail.nameZh || trail.name || "Hiking Trail";
+    const desc = trail.highlightsZh || trail.desc || "";
+    const coordsStr = trail.coords.map(c => {
+      const [lat, lng] = isGcj02Source ? window.tsGcj02ToWgs84(c[0], c[1]) : [c[0], c[1]];
+      const ele = c[2] !== undefined ? c[2] : (trail.maxElevNum || 0);
+      return `${lng},${lat},${ele}`;
+    }).join(" ");
+    const kml = `<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>${escapeXmlStr(title)} (两步路KML路径)</name>
+    <description>${escapeXmlStr(desc)}</description>
+    <Placemark>
+      <name>${escapeXmlStr(title)}</name>
+      <description>${escapeXmlStr(desc)}</description>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>${coordsStr}</coordinates>
+      </LineString>
+    </Placemark>
+  </Document>
+</kml>`;
+    const blob = new Blob([kml], { type: "application/vnd.google-earth.kml+xml;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `${(trail.id || "trail")}_2bulu.kml`;
+    a.click();
+  };
+
+  window.tsHandleTrackFileSelect = async function(file) {
+    if (!file) return;
+    const previewEl = document.getElementById("tsTrackParsedPreview");
+    const labelEl = document.getElementById("tsTrackFileLabel");
+    const clearBtn = document.getElementById("tsBtnClearTrack");
+    try {
+      const parsed = await window.tsParseOutdoorTrackFile(file);
+      tsUploadedTrack = parsed;
+      if (labelEl) labelEl.textContent = `✅ 已解析: ${parsed.fileName} (${parsed.format})`;
       if (clearBtn) clearBtn.classList.remove("hidden");
       if (previewEl) {
         previewEl.classList.remove("hidden");
-        previewEl.innerHTML = `<div class="font-extrabold text-emerald-400">🥾 轨迹解析成功：《${tsHubUploadedTrack.name}》 (${fmt}) · ${tsHubUploadedTrack.distanceKm}km · 爬升+${tsHubUploadedTrack.elevationGainM}m · 最高${tsHubUploadedTrack.maxElevM}m</div>`;
+        previewEl.innerHTML = `
+          <div class="font-extrabold text-emerald-400">🥾 轨迹解析成功：《${parsed.name}》 (${parsed.format})</div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 pt-1 text-[11px]">
+            <div>📏 距离：<strong>${parsed.distanceKm} km</strong></div>
+            <div>⛰️ 爬升：<strong>+${parsed.elevationGainM} m</strong></div>
+            <div>🏔️ 最高：<strong>${parsed.maxElevM} m</strong></div>
+            <div>📍 采样：<strong>${parsed.pointCount} 点 (原 ${parsed.rawPointCount} 点)</strong></div>
+          </div>
+          ${parsed.waypoints.length ? `<div class="text-[10px] opacity-80 pt-0.5">🚩 含 ${parsed.waypoints.length} 个路标点：${parsed.waypoints.slice(0, 4).map(w => w.name).join("、")}</div>` : ""}
+        `;
       }
     } catch (err) {
-      tsHubUploadedTrack = null;
+      tsUploadedTrack = null;
       if (previewEl) {
         previewEl.classList.remove("hidden");
-        previewEl.innerHTML = `<div class="text-rose-400 font-bold">❌ 解析失败：${err.message || err}</div>`;
+        previewEl.innerHTML = `<div class="text-rose-400 font-bold">❌ 轨迹解析失败：${err.message || err}</div>`;
       }
     }
   };
 
-  window.tsHubClearTrack = function() {
-    tsHubUploadedTrack = null;
-    const inp = document.getElementById("tsHubTrackFileInput");
-    if (inp) inp.value = "";
-    const lbl = document.getElementById("tsHubTrackFileLabel");
-    if (lbl) lbl.textContent = "📂 选择两步路导出文件 (.kml / .kmz / .gpx / .geojson)";
-    document.getElementById("tsHubBtnClearTrack")?.classList.add("hidden");
-    document.getElementById("tsHubTrackPreview")?.classList.add("hidden");
+  window.tsClearUploadedTrack = function() {
+    tsUploadedTrack = null;
+    const input = document.getElementById("tsTrackFileInput");
+    if (input) input.value = "";
+    const labelEl = document.getElementById("tsTrackFileLabel");
+    if (labelEl) labelEl.textContent = "📂 点击选择轨迹文件 (.kml / .kmz / .gpx / .geojson)";
+    document.getElementById("tsBtnClearTrack")?.classList.add("hidden");
+    document.getElementById("tsTrackParsedPreview")?.classList.add("hidden");
   };
 
-  function isVibeUnlocked() {
-    const saved = localStorage.getItem(TS_STORAGE_TOKEN_KEY) || "";
-    return saved === TS_EXPECTED_PW || localStorage.getItem(TS_STORAGE_UNLOCK_KEY) === "1";
+  function isTsVibeUnlocked() {
+    const saved = localStorage.getItem(TS_PW_STORAGE_KEY) || "";
+    return saved === TS_REQUIRED_PASSWORD || localStorage.getItem(TS_UNLOCK_STORAGE_KEY) === "1";
   }
 
-  function syncPasswordGateUi() {
-    const unlocked = isVibeUnlocked();
+  function syncTsPasswordGateUi() {
+    const unlocked = isTsVibeUnlocked();
     const gateBox = document.getElementById("tsVibePasswordGateBox");
     const unlockedBar = document.getElementById("tsVibeUnlockedBar");
-    const formBox = document.getElementById("tsVibeFormContainer");
+    const formFields = document.getElementById("tsVibeFormFields");
     if (gateBox) gateBox.classList.toggle("hidden", unlocked);
     if (unlockedBar) unlockedBar.classList.toggle("hidden", !unlocked);
-    if (formBox) {
-      formBox.style.opacity = unlocked ? "1" : "0.42";
-      formBox.style.pointerEvents = unlocked ? "auto" : "none";
+    if (formFields) {
+      formFields.style.opacity = unlocked ? "1" : "0.45";
+      formFields.style.pointerEvents = unlocked ? "auto" : "none";
     }
   }
 
-  window.tsVerifyVibePassword = function() {
+  window.verifyTsVibePassword = function() {
     const inputEl = document.getElementById("tsVibePasswordInput");
     const errEl = document.getElementById("tsVibePasswordError");
-    const candidate = (inputEl ? inputEl.value : "").trim();
-    if (candidate === TS_EXPECTED_PW) {
-      localStorage.setItem(TS_STORAGE_UNLOCK_KEY, "1");
-      localStorage.setItem(TS_STORAGE_TOKEN_KEY, candidate);
+    const val = (inputEl?.value || "").trim();
+    if (val === TS_REQUIRED_PASSWORD) {
+      localStorage.setItem(TS_PW_STORAGE_KEY, val);
+      localStorage.setItem(TS_UNLOCK_STORAGE_KEY, "1");
       if (errEl) errEl.classList.add("hidden");
-      if (inputEl) inputEl.value = "";
-      syncPasswordGateUi();
+      syncTsPasswordGateUi();
     } else {
       if (errEl) {
-        errEl.textContent = "❌ 口令不正确，请向行程发起人确认专属 Vibe 口令后重试。";
+        errEl.textContent = "❌ 口令不正确，请向行程发起人确认专属 Vibe 口令！";
         errEl.classList.remove("hidden");
       }
     }
   };
 
-  window.tsLockVibeSession = function() {
-    localStorage.removeItem(TS_STORAGE_UNLOCK_KEY);
-    localStorage.removeItem(TS_STORAGE_TOKEN_KEY);
-    syncPasswordGateUi();
+  window.lockTsVibePassword = function() {
+    localStorage.removeItem(TS_PW_STORAGE_KEY);
+    localStorage.removeItem(TS_UNLOCK_STORAGE_KEY);
+    syncTsPasswordGateUi();
   };
 
-  window.openVibeFeedbackModal = function() {
-    document.getElementById("vibeFeedbackModal")?.classList.remove("hidden");
-    syncPasswordGateUi();
+  window.openTsVibeFeedbackModal = function() {
+    document.getElementById("tsVibeFeedbackModal")?.classList.remove("hidden");
+    syncTsPasswordGateUi();
     window.tsRefreshVibeStatusJson();
   };
+  window.openVibeFeedbackModal = window.openTsVibeFeedbackModal;
 
-  window.closeVibeFeedbackModal = function() {
-    document.getElementById("vibeFeedbackModal")?.classList.add("hidden");
+  window.closeTsVibeFeedbackModal = function() {
+    document.getElementById("tsVibeFeedbackModal")?.classList.add("hidden");
   };
+  window.closeVibeFeedbackModal = window.closeTsVibeFeedbackModal;
 
-  window.openVersionHistoryModal = function() {
-    document.getElementById("versionHistoryModal")?.classList.remove("hidden");
+  function renderTsHistoryCards() {
+    const hist = (tsCloudStatus && Array.isArray(tsCloudStatus.history) && tsCloudStatus.history.length > 0)
+      ? tsCloudStatus.history
+      : TS_DEFAULT_HISTORY;
+    const body = document.getElementById("tsVersionHistoryModalBody");
+    if (body) {
+      body.innerHTML = hist.map((entry, idx) => {
+        const isLatest = idx === 0;
+        const bullets = (entry.changes || []).map(c => `<li style="margin-bottom:4px;">• ${c}</li>`).join("");
+        return `
+          <div style="padding:12px;border-radius:14px;border:1px solid ${isLatest ? 'rgba(56,189,248,0.45)' : 'rgba(148,163,184,0.22)'};background:${isLatest ? 'rgba(14,165,233,0.1)' : 'rgba(15,23,42,0.5)'};margin-bottom:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px;">
+              <span style="font-weight:900;color:#38bdf8;">${entry.version || ''} · ${entry.title || entry.scope || ''}</span>
+              <span style="font-size:10px;opacity:0.75;">${entry.timestamp || ''}</span>
+            </div>
+            ${entry.vibe_prompt ? `<div style="font-size:11px;opacity:0.85;margin-bottom:6px;">💬 “${entry.vibe_prompt}”</div>` : ''}
+            <ul style="font-size:11px;line-height:1.5;padding-left:4px;list-style:none;">${bullets}</ul>
+          </div>
+        `;
+      }).join("");
+    }
+  }
+
+  window.openTsVersionHistoryModal = function() {
+    document.getElementById("tsVersionHistoryModal")?.classList.remove("hidden");
+    renderTsHistoryCards();
     window.tsRefreshVibeStatusJson();
-    renderTsVersionHistory();
   };
+  window.openVersionHistoryModal = window.openTsVersionHistoryModal;
 
-  window.closeVersionHistoryModal = function() {
-    document.getElementById("versionHistoryModal")?.classList.add("hidden");
+  window.closeTsVersionHistoryModal = function() {
+    document.getElementById("tsVersionHistoryModal")?.classList.add("hidden");
   };
+  window.closeVersionHistoryModal = window.closeTsVersionHistoryModal;
 
   window.tsRefreshVibeStatusJson = async function() {
     try {
       const res = await fetch("./vibe_status.json?t=" + Date.now(), { cache: "no-store" });
       if (res.ok) {
         tsCloudStatus = await res.json();
-        const badge = document.getElementById("tsVibeLiveVersionBadge");
-        const logEl = document.getElementById("tsVibeLatestChangelog");
-        const pill = document.getElementById("tsVhCurrentVersionPill");
-        if (badge && tsCloudStatus.version) {
-          badge.textContent = "📡 云端 AI 迭代引擎在线 (" + tsCloudStatus.version + " · " + (tsCloudStatus.updated_at || "刚刚") + ")";
-        }
-        if (logEl && tsCloudStatus.latest_summary) {
-          logEl.textContent = "最近已上线：" + tsCloudStatus.latest_summary;
-        }
-        if (pill && tsCloudStatus.version) pill.textContent = tsCloudStatus.version;
-        renderTsVersionHistory();
-        return tsCloudStatus;
+        renderTsHistoryCards();
       }
     } catch (e) {}
-    renderTsVersionHistory();
-    return null;
+    return tsCloudStatus;
   };
 
-  function renderTsVersionHistory() {
-    const body = document.getElementById("tsVersionHistoryBody");
-    if (!body) return;
-    const list = (tsCloudStatus && Array.isArray(tsCloudStatus.history) && tsCloudStatus.history.length)
-      ? tsCloudStatus.history
-      : TS_DEFAULT_HISTORY;
-    body.innerHTML = list.map((entry, idx) => {
-      const isLatest = idx === 0;
-      const bullets = (entry.changes || []).map(c => `<li class="flex items-start gap-1.5"><span class="text-sky-400 font-black">•</span><span>${c}</span></li>`).join("");
-      return `
-        <div class="p-3 rounded-2xl ${isLatest ? 'bg-sky-500/10 border-2 border-sky-500/40' : 'bg-slate-800/60 border border-slate-700'} space-y-1.5">
-          <div class="flex flex-wrap items-center justify-between gap-1.5">
-            <div class="flex items-center gap-1.5">
-              <span class="px-2 py-0.5 rounded-full text-[11px] font-black ${isLatest ? 'bg-sky-400 text-slate-950' : 'bg-slate-900 text-slate-200'}">${entry.version || 'v1.0'}</span>
-              <span class="font-black text-xs">${entry.title || entry.scope || '版本更新'}</span>
-            </div>
-            <span class="text-[10px] opacity-70">${entry.timestamp || ''}</span>
-          </div>
-          ${entry.vibe_prompt ? `<div class="p-2 rounded-xl bg-slate-900/80 border border-slate-700 text-[11px] opacity-85">💬 Vibe 原话：“${entry.vibe_prompt}”</div>` : ''}
-          <ul class="space-y-1 text-[11px] leading-relaxed">${bullets}</ul>
-        </div>
-      `;
-    }).join("");
-  }
-
-  window.tsForceReloadFreshVersion = async function() {
-    try {
-      if ("caches" in window) {
-        const keys = await caches.keys();
-        await Promise.all(keys.map(k => caches.delete(k)));
-      }
-      if ("serviceWorker" in navigator) {
-        const regs = await navigator.serviceWorker.getRegistrations();
-        await Promise.all(regs.map(r => r.update()));
-      }
-    } catch (e) {}
-    const u = new URL(window.location.href);
-    u.searchParams.set("v", Date.now().toString());
-    window.location.replace(u.toString());
-  };
-
-  window.tsSubmitVibeFeedback = async function() {
-    if (!isVibeUnlocked()) {
-      syncPasswordGateUi();
+  window.submitTsVibeFeedback = async function() {
+    if (!isTsVibeUnlocked()) {
+      syncTsPasswordGateUi();
       return;
     }
     const author = (document.getElementById("tsVibeAuthorInput")?.value || "同行旅伴").trim();
-    const scope = document.getElementById("tsVibeScopeSelect")?.value || "🌟 整体行程 Vibe 与节奏";
-    const trackUrl = (document.getElementById("tsHubTrackUrlInput")?.value || "").trim();
+    const scope = document.getElementById("tsVibeScopeSelect")?.value || "全行程";
+    const trackUrl = (document.getElementById("tsTrackUrlInput")?.value || "").trim();
     let message = (document.getElementById("tsVibeMessageInput")?.value || "").trim();
-    const statusEl = document.getElementById("tsVibeSubmitStatus");
-    const btn = document.getElementById("tsBtnSubmitVibe");
-    if (!message && tsHubUploadedTrack) {
-      message = `上传了户外轨迹《${tsHubUploadedTrack.name}》(${tsHubUploadedTrack.format}, ${tsHubUploadedTrack.distanceKm}km, +${tsHubUploadedTrack.elevationGainM}m)，请集成进路书`;
+    const statusEl = document.getElementById("tsVibeSubmitStatusText");
+    if (!message && tsUploadedTrack) {
+      message = `上传了户外轨迹《${tsUploadedTrack.name}》(${tsUploadedTrack.format}, ${tsUploadedTrack.distanceKm}km, +${tsUploadedTrack.elevationGainM}m)，请合入路书地图与徒步卡片`;
     }
     if (!message && trackUrl) {
-      message = `分享了户外轨迹链接 ${trackUrl}，请集成进路书`;
+      message = `分享了户外轨迹链接 ${trackUrl}，请集成到路书中`;
     }
     if (!message) {
-      if (statusEl) {
-        statusEl.className = "text-xs font-bold text-rose-400";
-        statusEl.textContent = "⚠️ 请先输入你想调整的具体 Vibe 描述或上传轨迹文件！";
-      }
+      if (statusEl) statusEl.textContent = "⚠️ 请先输入你想调整的具体 Vibe 或上传轨迹文件！";
       return;
     }
     const payload = {
@@ -2139,70 +2358,19 @@ python3 generator.py publish \
       scope,
       vibe_tags: Array.from(tsSelectedTags),
       message,
-      gpx_track: tsHubUploadedTrack || null,
+      gpx_track: tsUploadedTrack || null,
       track_url: trackUrl || "",
-      password_token: localStorage.getItem(TS_STORAGE_TOKEN_KEY) || TS_EXPECTED_PW,
-      password_sha256: TS_EXPECTED_SHA256,
+      password_token: localStorage.getItem(TS_PW_STORAGE_KEY) || TS_REQUIRED_PASSWORD,
       timestamp: new Date().toISOString()
     };
-    if (btn) btn.disabled = true;
-    if (statusEl) {
-      statusEl.className = "text-xs font-bold text-amber-400";
-      statusEl.textContent = "📡 正在通过口令核验直连 Cloudtop 守护进程...";
-    }
-    try {
-      const resp = await fetch(TS_NTFY_URL, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      });
-      if (!resp.ok) throw new Error("HTTP " + resp.status);
-      document.getElementById("tsVibeMessageInput").value = "";
-      window.tsHubClearTrack();
-      if (statusEl) {
-        statusEl.className = "text-xs font-bold text-emerald-400";
-        statusEl.textContent = "✅ 已通过口令认证并送达 Cloudtop！AI 正在自动改版，已开启每 8 秒新版本检测！";
-      }
-      tsBaselineVersion = (tsCloudStatus && tsCloudStatus.version) || TS_BUILTIN_VERSION;
-      document.getElementById("tsVibeAutoWatchBox")?.classList.remove("hidden");
-      if (tsWatchTimer) clearInterval(tsWatchTimer);
-      tsWatchTimer = setInterval(async () => {
-        const latest = await window.tsRefreshVibeStatusJson();
-        if (latest && latest.version && latest.version !== tsBaselineVersion) {
-          clearInterval(tsWatchTimer);
-          document.getElementById("tsBtnModalReloadFresh")?.classList.remove("hidden");
-          document.getElementById("tsVibeNewReleaseBanner")?.classList.remove("hidden");
-        }
-      }, 8000);
-    } catch (err) {
-      if (statusEl) {
-        statusEl.className = "text-xs font-bold text-rose-400";
-        statusEl.textContent = "⚠️ 网络波动，请稍后重试。";
-      }
-    } finally {
-      if (btn) btn.disabled = false;
-    }
-  };
-
-  document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll(".ts-vibe-tag").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const t = btn.getAttribute("data-vtag");
-        if (tsSelectedTags.has(t)) {
-          tsSelectedTags.delete(t);
-          btn.classList.remove("border-amber-500", "bg-amber-500/20", "text-amber-300");
-        } else {
-          tsSelectedTags.add(t);
-          btn.classList.add("border-amber-500", "bg-amber-500/20", "text-amber-300");
-        }
-      });
+    await fetch(TS_VIBE_NTFY_URL, {
+      method: "POST",
+      body: JSON.stringify(payload)
     });
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("vibe") === "1") window.openVibeFeedbackModal();
-    if (params.get("versions") === "1") window.openVersionHistoryModal();
-  });
+    if (statusEl) statusEl.textContent = "✅ 已通过口令核验并送达 Cloudtop！正在自动编译新版本...";
+  };
 })();
 </script>
-
 
 </body>
 </html>

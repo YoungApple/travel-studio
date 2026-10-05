@@ -1,8 +1,8 @@
 // Travel Studio Offline Service Worker Engine
 // Trip: 2026 滇西北秘境巅峰穿越 11 日随行伴侣 (yunnan-2026)
-// Cache Version: travel-studio-yunnan-2026-v821ca72c
+// Cache Version: travel-studio-yunnan-2026-v8c3085e5
 
-const CACHE_NAME = "travel-studio-yunnan-2026-v821ca72c";
+const CACHE_NAME = "travel-studio-yunnan-2026-v8c3085e5";
 const TILE_CACHE_NAME = "travel-studio-tiles-yunnan-2026";
 const PRECACHE_ASSETS = [
   "./",
