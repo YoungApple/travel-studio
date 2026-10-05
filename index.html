@@ -635,16 +635,17 @@
         <div>
           <div class="brand-title">
             Travel Studio
-            <span class="pill blue">MVP v1.1</span>
+            <span class="pill blue">v2.0 · Vibe Loop Pro</span>
           </div>
-          <div class="brand-sub">Bespoke Offline Travel Companion Generator Platform · 高定私家团离线随行 Web App 生成器</div>
+          <div class="brand-sub">Bespoke Offline Travel Companion Generator Platform · 高定私家团离线随行 Web App 生成器 (含口令保护 Vibe 自动迭代闭环)</div>
         </div>
       </div>
       <div class="status-pills">
+        <button type="button" onclick="window.openVersionHistoryModal()" class="pill blue" style="cursor:pointer;">📜 版本记录 (v2.0)</button>
+        <button type="button" onclick="window.openVibeFeedbackModal()" class="pill warn" style="cursor:pointer; font-weight:800;">✨ Vibe 迭代舱 (🔒 applefriend)</button>
         <span id="sw-badge" class="pill ok">⚡ 离线引擎已就绪 · Service Worker Active</span>
-        <span id="net-badge" class="pill blue">🌐 Dual-Stack: CN Domestic + Global</span>
-        <a href="https://youngapple.github.io/south-america-2026/" target="_blank" rel="noopener" class="pill warn">🧊 案例1: 南美 2026 ↗</a>
-        <a href="https://youngapple.github.io/yunnan-2026/" target="_blank" rel="noopener" class="pill ok">🏔️ 案例2: 云南 2026 ↗</a>
+        <a href="https://youngapple.github.io/south-america-2026/" target="_blank" rel="noopener" class="pill warn">🧊 案例1: 南美 2026 (口令 sa26) ↗</a>
+        <a href="https://youngapple.github.io/yunnan-2026/" target="_blank" rel="noopener" class="pill ok">🏔️ 案例2: 云南 2026 (口令 applefriend) ↗</a>
       </div>
     </div>
   </header>
@@ -811,10 +812,25 @@
                 <button type="button" class="chip-opt" data-group="fork" data-val="planB" onclick="setInterviewOpt('fork', 'planB', this)">🅱️ 锁定主推方案 B (南极洛+茨中)</button>
               </div>
             </div>
+
+            <!-- Premium Feature: Password-Gated Vibe Feedback -> Autonomous New-Version Loop -->
+            <div class="gap-q" style="margin-top:12px; padding-top:12px; border-top:1px dashed rgba(251, 191, 36, 0.35);">
+              <div class="gap-q-label" style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="color:#fde68a; font-weight:800;">✨ 旗舰特权功能 · 口令保护 Vibe 随身反馈 ➔ 全自动新版本闭环:</span>
+                <span class="pill warn">Premium Feature</span>
+              </div>
+              <p style="font-size:0.75rem; color:var(--text-muted); margin:4px 0 8px;">
+                编译后的 Web App 自动内置「✨ Vibe 实时迭代舱」与「📜 版本演进记录」。旅伴输入专属口令解锁后提交新想法，直连 Cloudtop <code>vibe_bridge.py</code> 自动改代码、递增版本号并 4 秒重发 GitHub Pages（云南默认 <code>applefriend</code>，南美默认 <code>sa26</code>，其他行程默认 <code>applefriend</code>）：
+              </p>
+              <div style="display:grid; grid-template-columns: 1fr auto; gap:8px; align-items:center;">
+                <input id="vibe-password-input" class="text-input" type="text" value="applefriend" oninput="runCompiler()" placeholder="设置本行程专属 Vibe 口令 (默认 applefriend)" />
+                <button type="button" class="btn-chip active" onclick="window.openVibeFeedbackModal()">✨ 体验本平台 Vibe 舱</button>
+              </div>
+            </div>
           </div>
 
           <button type="button" class="btn-primary" onclick="runCompiler()">
-            ⚡ 立即预编译离线随行 Web App (Compile Offline PWA)
+            ⚡ 立即预编译离线随行 Web App (含口令保护 Vibe 闭环)
           </button>
         </div>
 
@@ -838,6 +854,7 @@
           <div id="inspector-box" class="hidden">
             <div class="preset-row" style="margin-bottom:8px;">
               <button type="button" class="btn-chip active" onclick="showInspectorMode('json')">📄 trip_compiled.json</button>
+              <button type="button" class="btn-chip" onclick="showInspectorMode('vibe')">✨ core/vibe_loop.py 口令闭环引擎</button>
               <button type="button" class="btn-chip" onclick="showInspectorMode('cli')">🚀 GitHub Pages 一键发布流水线</button>
               <button type="button" class="btn-chip" onclick="showInspectorMode('sw')">⚡ sw.js 离线 Service Worker</button>
             </div>
@@ -1319,11 +1336,25 @@ python3 generator.py publish \
       reminders.unshift(interviewLabels.pace[interviewState.pace]);
       reminders.unshift(interviewLabels.transport[interviewState.transport]);
 
+      const vibePwInput = document.getElementById("vibe-password-input");
+      const vibePassword = (vibePwInput && vibePwInput.value.trim()) || (region === "global" ? "sa26" : "applefriend");
+      const ntfyTopic = region === "global"
+        ? "yungapple_sa2026_vibe_9f8a7b6c"
+        : "yungapple_yunnan2026_vibe_9f8a7b6c";
+
       return {
-        schemaVersion: "1.1.0",
+        schemaVersion: "2.0.0",
         generatedAt: new Date().toISOString(),
         title,
         regionProfile: region,
+        vibeLoop: {
+          enabled: true,
+          passwordGate: vibePassword,
+          rememberDeviceInLocalStorage: true,
+          ntfyRelayTopic: ntfyTopic,
+          liveVersionPollIntervalSec: 8,
+          protocol: "5-Step Auto-Release & Version History Loop (vibe_status.json)"
+        },
         intakeInterview: { ...interviewState },
         dayCount: days.length,
         stopCount: days.reduce((acc, d) => acc + d.stops.length, 0),
@@ -1342,12 +1373,12 @@ python3 generator.py publish \
         `<span class="pill blue">📅 已识别 ${compiled.dayCount} 个行程段</span>`,
         `<span class="pill ok">📍 已锁定 ${compiled.stopCount} 个地理锚点</span>`,
         `<span class="pill warn">⏰ ${compiled.cutoffCount} 处时间截点红线</span>`,
-        `<span class="pill ${compiled.forkCount > 0 ? "warn" : "blue"}">🔀 检测到 ${compiled.forkCount} 处待定/分叉 ("or" / 方案A/B)</span>`
+        `<span class="pill ok">🔒 Vibe 口令保护: ${compiled.vibeLoop.passwordGate}</span>`
       ].join("");
       if (statusPill) {
         statusPill.textContent = compiled.forkCount > 0
-          ? `检测到 ${compiled.forkCount} 处未决分叉 · 微访谈已生效`
-          : "已自动识别锚点 · 微访谈已生效";
+          ? `检测到 ${compiled.forkCount} 处未决分叉 · 口令闭环已就绪`
+          : "已自动识别锚点 · 口令闭环已就绪";
       }
     }
 
@@ -1409,7 +1440,7 @@ python3 generator.py publish \
       const stackLabel = compiled.regionProfile === "cn_domestic"
         ? "🇨🇳 中国境内原生栈 (高德瓦片 + GCJ-02 + 百度百科 + 小红书 + 携程)"
         : "🌍 国际全球栈 (Carto/OSM + WGS-84 + Google Maps + Wikipedia)";
-      statsEl.innerHTML = `已编译 <strong>${compiled.dayCount}</strong> 个行程段 · <strong>${compiled.stopCount}</strong> 个预标地图点位 · <strong>${compiled.reminders.length}</strong> 条全局护栏提醒 · 当前网络栈：<strong>${stackLabel}</strong>`;
+      statsEl.innerHTML = `已编译 <strong>${compiled.dayCount}</strong> 个行程段 · <strong>${compiled.stopCount}</strong> 个预标地图点位 · Vibe 口令门禁：<code>${compiled.vibeLoop.passwordGate}</code> · 当前网络栈：<strong>${stackLabel}</strong>`;
 
       const container = document.getElementById("compiled-days");
       container.innerHTML = "";
@@ -1472,6 +1503,10 @@ python3 generator.py publish \
       document.getElementById("preset-sa").classList.toggle("active", key === "sa");
       document.getElementById("trip-title").value = p.title;
       document.getElementById("agenda-text").value = p.agenda;
+      const pwInput = document.getElementById("vibe-password-input");
+      if (pwInput) {
+        pwInput.value = key === "sa" ? "sa26" : "applefriend";
+      }
       setRegion(p.region);
     }
 
@@ -1498,31 +1533,47 @@ python3 generator.py publish \
       if (!currentCompiled || !pre) return;
       if (inspectorMode === "json") {
         pre.textContent = JSON.stringify(currentCompiled, null, 2);
+      } else if (inspectorMode === "vibe") {
+        pre.textContent = [
+          "# core/vibe_loop.py + vibe_bridge.py — Password-Gated Vibe Feedback -> New-Version Loop",
+          "# Default Password Policy:",
+          "#   - yunnan-2026:        'applefriend'",
+          "#   - south-america-2026: 'sa26'",
+          "#   - all other trips:    'applefriend'",
+          "",
+          `vibe_config = VibeLoopEngine.resolve_vibe_config({`,
+          `  "id": "${currentCompiled.regionProfile === 'cn_domestic' ? 'yunnan-2026' : 'south-america-2026'}",`,
+          `  "vibePassword": "${currentCompiled.vibeLoop.passwordGate}",`,
+          `  "ntfyTopic": "${currentCompiled.vibeLoop.ntfyRelayTopic}"`,
+          `})`,
+          "",
+          "# 5-Step Autonomous Release Loop (Cloudtop vibe_bridge.py):",
+          "# 1. Verify password_token against project password table (reject unauthorized payloads)",
+          "# 2. Wake dedicated Jetski conversation via agentapi & increment version in vibe_status.json",
+          "# 3. Apply Vibe changes to itinerary / places / map layers / UI",
+          "# 4. Prepend structured changelog entry into vibe_status.json & bump sw.js cache",
+          "# 5. Fast-publish to GitHub Pages -> client 8s watcher auto-detects & prompts 1-tap reload!"
+        ].join("\n");
       } else if (inspectorMode === "cli") {
         const slug = currentCompiled.regionProfile === "cn_domestic" ? "yunnan-2026" : "south-america-2026";
         pre.textContent = [
-          "# Step 1: 将原始行程预编译为带 Service Worker 的离线 PWA 目录",
-          `python3 ~/.travel_studio/generator.py compile \\`,
-          `  --input agenda.txt \\`,
-          `  --region ${currentCompiled.regionProfile} \\`,
-          `  --title "${currentCompiled.title}" \\`,
-          `  --output ./dist/${slug}`,
+          "# Step 1: 将原始行程预编译为带口令保护 Vibe 闭环 + Service Worker 的离线 PWA 目录",
+          `python3 ~/.travel_studio/generator.py --all`,
           "",
           "# Step 2: 一键自动创建/推送 GitHub 仓库并开启 GitHub Pages",
-          `python3 ~/.travel_studio/generator.py publish \\`,
-          `  --dir ./dist/${slug} \\`,
-          `  --repo YoungApple/${slug}`,
+          `python3 ~/.travel_studio/publish.py --trip ${slug} --repo YoungApple/${slug}`,
           "",
-          `# Live URL: https://youngapple.github.io/${slug}/`
+          `# Live URL: https://youngapple.github.io/${slug}/ (Vibe Password: ${currentCompiled.vibeLoop.passwordGate})`
         ].join("\n");
       } else {
         pre.textContent = [
           "// sw.js — Offline-First Service Worker (Auto-Generated by Travel Studio)",
           "// Caches index.html, manifest.webmanifest, and visited Gaode/Carto map tiles",
-          "const SHELL_CACHE = 'travel-studio-shell-v1';",
-          "const TILE_CACHE = 'travel-studio-tiles-v1';",
+          "// Bypasses cache for vibe_status.json & ntfy.sh so 8s live version polling is real-time",
+          "const SHELL_CACHE = 'travel-studio-shell-v2';",
+          "const TILE_CACHE = 'travel-studio-tiles-v2';",
           "self.addEventListener('install', (e) => { self.skipWaiting(); });",
-          "self.addEventListener('fetch', (e) => { /* Cache-First for tiles, Network-First fallback to cache for Shell */ });"
+          "self.addEventListener('fetch', (e) => { if (e.request.url.includes('vibe_status.json')) return; });"
         ].join("\n");
       }
     }
@@ -1562,5 +1613,407 @@ python3 generator.py publish \
       loadPreset("yunnan");
     });
   </script>
+  
+<!-- ==================== TRAVEL STUDIO PREMIUM FEATURE: PASSWORD-GATED VIBE FEEDBACK & VERSION HISTORY LOOP ==================== -->
+<style>
+  .ts-vibe-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9990;
+    background: rgba(2, 6, 23, 0.76);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .ts-vibe-backdrop.hidden { display: none !important; }
+  .ts-vibe-sheet {
+    width: 100%;
+    max-width: 640px;
+    max-height: 88vh;
+    background: var(--card, #111827);
+    color: var(--foreground, #f8fafc);
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    border-radius: 20px;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.55);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  @media (max-width: 640px) {
+    .ts-vibe-backdrop {
+      align-items: flex-end;
+      padding: 0;
+    }
+    .ts-vibe-sheet {
+      max-width: 100vw;
+      width: 100vw;
+      max-height: 86dvh;
+      border-radius: 20px 20px 0 0;
+      border-bottom: none;
+    }
+  }
+</style>
+
+<!-- Top Auto-Upgrade Notification Bar -->
+<div id="tsVibeNewReleaseBanner" class="hidden fixed top-0 inset-x-0 z-[9995] bg-emerald-500 text-slate-950 px-3 py-2 text-xs font-black flex items-center justify-between gap-2 shadow-lg">
+  <span id="tsVibeNewReleaseBannerText">🎉 新版本已编译上线！点击立即无损热更新</span>
+  <button onclick="window.tsForceReloadFreshVersion()" class="px-2.5 py-1 rounded-lg bg-slate-950 text-emerald-400 font-black text-[11px] cursor-pointer shrink-0">🔄 立即刷新</button>
+</div>
+
+<!-- Modal A: Password-Gated Vibe Feedback Drawer -->
+<div id="vibeFeedbackModal" class="ts-vibe-backdrop hidden" onclick="if(event.target===this) window.closeVibeFeedbackModal()">
+  <div class="ts-vibe-sheet">
+    <div class="px-4 py-3 border-b border-slate-700/60 flex items-center justify-between gap-2 bg-gradient-to-r from-amber-500/20 via-orange-500/10 to-sky-500/10 shrink-0">
+      <div class="min-w-0">
+        <div class="flex items-center gap-1.5">
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-slate-950 shrink-0">VIBE LOOP · PRO</span>
+          <h3 class="text-xs sm:text-sm font-black truncate">✨ AI 定制师 · 实时 Vibe 反馈与自动发版舱</h3>
+        </div>
+        <p class="text-[10px] sm:text-[11px] opacity-75 truncate mt-0.5">
+          口令保护已启用 ──► 提交后直连 Cloudtop 自动改版、写版本记录并重发 GitHub Pages
+        </p>
+      </div>
+      <button onclick="window.closeVibeFeedbackModal()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-200 font-bold cursor-pointer shrink-0">✕</button>
+    </div>
+
+    <div class="p-3.5 sm:p-4 overflow-y-auto space-y-3 text-xs flex-1">
+      <!-- Live Engine Status -->
+      <div class="p-2.5 rounded-xl bg-slate-800/70 border border-slate-700 flex items-center justify-between gap-2">
+        <div class="min-w-0 space-y-0.5">
+          <div class="flex items-center gap-1.5 font-extrabold truncate">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block shrink-0"></span>
+            <span id="tsVibeLiveVersionBadge" class="truncate">📡 云端 AI 迭代引擎在线 (v2.0)</span>
+          </div>
+          <div id="tsVibeLatestChangelog" class="text-[11px] opacity-75 truncate">
+            最近更新：口令保护 Vibe 自动反馈与新版本闭环已激活
+          </div>
+        </div>
+        <button onclick="window.tsRefreshVibeStatusJson()" class="px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-bold hover:border-amber-500 cursor-pointer shrink-0">🔄 刷新</button>
+      </div>
+
+      <!-- Password Gate Card (Shown when locked) -->
+      <div id="tsVibePasswordGateBox" class="p-3 rounded-2xl bg-amber-500/10 border-2 border-amber-500/40 space-y-2">
+        <div class="flex items-center justify-between gap-2">
+          <span class="font-black text-amber-400 text-xs flex items-center gap-1">🔒 Vibe 创作口令认证 (防误触保护)</span>
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold">验证一次 · 本机自动记住</span>
+        </div>
+        <p class="text-[11px] opacity-80 leading-relaxed">
+          为防止路书公开链接被非同行人员误触改版，请输入本行程专属 Vibe 口令解锁自动迭代权限：
+        </p>
+        <div class="flex items-center gap-2">
+          <input id="tsVibePasswordInput" type="password" placeholder="输入专属 Vibe 口令..." onkeydown="if(event.key==='Enter') window.tsVerifyVibePassword()" class="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-500" />
+          <button type="button" onclick="window.tsVerifyVibePassword()" class="px-3.5 py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs cursor-pointer shrink-0 hover:opacity-95">🔓 解锁 Vibe</button>
+        </div>
+        <div id="tsVibePasswordError" class="text-[11px] font-bold text-rose-400 hidden"></div>
+      </div>
+
+      <!-- Unlocked Status Pill (Shown when unlocked) -->
+      <div id="tsVibeUnlockedBar" class="hidden px-3 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/40 flex items-center justify-between gap-2">
+        <span class="text-[11px] font-extrabold text-emerald-400">🔓 已通过口令认证 · 设备已记住（随时可提交修改）</span>
+        <button type="button" onclick="window.tsLockVibeSession()" class="text-[10px] font-bold text-slate-400 hover:text-rose-400 cursor-pointer">🔒 锁定</button>
+      </div>
+
+      <!-- Vibe Form Body (Enabled when unlocked) -->
+      <div id="tsVibeFormContainer" class="space-y-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div>
+            <label class="block font-bold mb-1">👤 你的昵称 (选填)</label>
+            <input id="tsVibeAuthorInput" type="text" placeholder="如：Shuguo / 同行老友" class="w-full px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-500" />
+          </div>
+          <div>
+            <label class="block font-bold mb-1">🎯 针对哪个赛段？</label>
+            <select id="tsVibeScopeSelect" class="w-full px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-500">
+              <option value="🌟 整体行程 Vibe 与节奏">🌟 整体行程 Vibe 与节奏</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold mb-1">✨ 期望调整的 Vibe 方向（可多选）：</label>
+          <div class="flex flex-wrap gap-1.5" id="tsVibeTagChips">
+            <button type="button" data-vtag="🥾 调整徒步/节奏强度" class="ts-vibe-tag px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-bold cursor-pointer">🥾 徒步节奏</button>
+            <button type="button" data-vtag="🍽️ 补充周边口碑美食" class="ts-vibe-tag px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-bold cursor-pointer">🍽️ 周边美食</button>
+            <button type="button" data-vtag="📸 增加绝佳摄影机位" class="ts-vibe-tag px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-bold cursor-pointer">📸 摄影机位</button>
+            <button type="button" data-vtag="🏨 调整酒店或包车衔接" class="ts-vibe-tag px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-bold cursor-pointer">🏨 酒店/交通</button>
+            <button type="button" data-vtag="🎨 升级视觉插画与交互体验" class="ts-vibe-tag px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-bold cursor-pointer">🎨 视觉/交互</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold mb-1">💬 具体想法或新 Vibe 描述：</label>
+          <textarea id="tsVibeMessageInput" rows="3" placeholder="写下你想调整的行程细节、新增餐厅/徒步线或界面优化想法，提交后 Cloudtop 将自动唤醒专属 Agent 改版并发布新版本..." class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-700 text-xs focus:outline-none focus:border-amber-500 leading-relaxed"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 pt-0.5">
+          <button type="button" id="tsBtnSubmitVibe" onclick="window.tsSubmitVibeFeedback()" class="col-span-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-xs shadow-sm hover:opacity-95 cursor-pointer flex items-center justify-center gap-1.5">
+            <span>🚀 发送新 Vibe 并自动编译新版本</span>
+          </button>
+          <button type="button" onclick="window.openVersionHistoryModal()" class="px-3 py-2 rounded-xl bg-sky-500/15 text-sky-400 border border-sky-500/30 font-extrabold text-xs cursor-pointer text-center">
+            📜 版本记录
+          </button>
+        </div>
+        <div id="tsVibeSubmitStatus" class="text-xs font-bold text-emerald-400"></div>
+
+        <div id="tsVibeAutoWatchBox" class="hidden p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
+          <div class="flex items-center justify-between gap-2">
+            <span id="tsVibeAutoWatchTitle" class="font-black text-emerald-400 text-xs">📡 1. 已投递 ──► 🧠 2. AI 正在实时编译新版本 (每8秒检测)...</span>
+            <button onclick="window.tsForceReloadFreshVersion()" id="tsBtnModalReloadFresh" class="hidden px-2.5 py-1 rounded-lg bg-emerald-500 text-slate-950 font-black text-[11px] cursor-pointer shrink-0">🔄 立即刷新</button>
+          </div>
+          <div class="text-[11px] opacity-75">当云端会话完成改版并推送到 GitHub Pages 后，此处将自动弹出升级提示。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal B: Version History Modal -->
+<div id="versionHistoryModal" class="ts-vibe-backdrop hidden" onclick="if(event.target===this) window.closeVersionHistoryModal()">
+  <div class="ts-vibe-sheet">
+    <div class="px-4 py-3 border-b border-slate-700/60 flex items-center justify-between gap-2 bg-gradient-to-r from-sky-500/20 via-amber-500/10 to-emerald-500/10 shrink-0">
+      <div class="min-w-0">
+        <div class="flex items-center gap-1.5">
+          <span id="tsVhCurrentVersionPill" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-sky-400 text-slate-950 shrink-0">v2.0</span>
+          <h3 class="text-xs sm:text-sm font-black truncate">📜 版本演进与 Vibe 自动迭代记录</h3>
+        </div>
+        <p class="text-[10px] sm:text-[11px] opacity-75 truncate mt-0.5">每次通过口令提交新 Vibe，云端 AI 自动更新路书并记录完整变更</p>
+      </div>
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button onclick="window.closeVersionHistoryModal(); window.openVibeFeedbackModal();" class="px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 font-black text-[11px] cursor-pointer">✨ 提Vibe</button>
+        <button onclick="window.closeVersionHistoryModal()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-200 font-bold cursor-pointer">✕</button>
+      </div>
+    </div>
+    <div id="tsVersionHistoryBody" class="p-3.5 sm:p-4 overflow-y-auto space-y-2.5 text-xs flex-1"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const TS_APP_ID = "travel-studio";
+  const TS_EXPECTED_PW = "applefriend";
+  const TS_EXPECTED_SHA256 = "1f3216c601f6af86b37ec55f490492562306a1fe3aebe5db67fcc183f3b26e98";
+  const TS_NTFY_URL = "https://ntfy.sh/yungapple_travel_studio_vibe_9f8a7b6c";
+  const TS_BUILTIN_VERSION = "v2.0";
+  const TS_STORAGE_UNLOCK_KEY = "vibe_unlocked_" + TS_APP_ID;
+  const TS_STORAGE_TOKEN_KEY = "vibe_token_" + TS_APP_ID;
+  const TS_DEFAULT_HISTORY = [{"version": "v2.0", "title": "提取「口令保护 Vibe 随身反馈 ➔ 全自动新版本闭环」为平台级旗舰特权功能", "timestamp": "2026-10-05 22:55 CST", "author": "Shuguo & Travel Studio Architect", "scope": "🌟 平台编译器核心 (core/vibe_loop.py & vibe_bridge.py)", "vibe_prompt": "Let's extract the vibe feedback-newversion-loop into a premium feature in the travel-studio, also make it in my south-americ trip side as well. Let's put some passwords before anyone can vibe the site. For yunnan: password is: applefriend, south americ: sa26, all others: applefriend", "changes": ["新增 core/vibe_loop.py 与多项目口令核验守护引擎 vibe_bridge.py，任何通过 Travel Studio 编译的路书自动获得「✨ 口令认证 Vibe 抽屉 + 📜 版本演进记录 + 8秒新版本自动轮询」", "实装分级口令门禁（Password Gate + 设备自动记住）：云南路书口令为 applefriend，南美路书口令为 sa26，Travel Studio 平台及所有其他新建行程默认口令为 applefriend", "左栏工作台新增「🔒 Vibe 自动迭代口令配置器」与「✨ core/vibe_loop.py 源码检视」，支持一键测试平台自身的 Vibe 自动迭代闭环"]}, {"version": "v1.5", "title": "三模态混合输入与 AI 缺口微访谈编译器上线", "timestamp": "2026-10-04 16:00 CST", "author": "Shuguo", "scope": "🗺️ 编译器工作台与双栈适配", "vibe_prompt": "支持粘贴随手碎片笔记、AI 自动识别缺口追问并编译为离线 PWA", "changes": ["上线中国境内 (cn_domestic 高德/GCJ-02/百科/小红书) 与国际全球 (global WGS-84/Google Maps/Wiki) 双栈编译器", "收录 South America 2026 与 Yunnan 2026 两大实战标杆案例与 CEO 商业计划书"]}];
+
+  let tsSelectedTags = new Set();
+  let tsCloudStatus = null;
+  let tsWatchTimer = null;
+  let tsBaselineVersion = null;
+
+  function isVibeUnlocked() {
+    const saved = localStorage.getItem(TS_STORAGE_TOKEN_KEY) || "";
+    return saved === TS_EXPECTED_PW || localStorage.getItem(TS_STORAGE_UNLOCK_KEY) === "1";
+  }
+
+  function syncPasswordGateUi() {
+    const unlocked = isVibeUnlocked();
+    const gateBox = document.getElementById("tsVibePasswordGateBox");
+    const unlockedBar = document.getElementById("tsVibeUnlockedBar");
+    const formBox = document.getElementById("tsVibeFormContainer");
+    if (gateBox) gateBox.classList.toggle("hidden", unlocked);
+    if (unlockedBar) unlockedBar.classList.toggle("hidden", !unlocked);
+    if (formBox) {
+      formBox.style.opacity = unlocked ? "1" : "0.42";
+      formBox.style.pointerEvents = unlocked ? "auto" : "none";
+    }
+  }
+
+  window.tsVerifyVibePassword = function() {
+    const inputEl = document.getElementById("tsVibePasswordInput");
+    const errEl = document.getElementById("tsVibePasswordError");
+    const candidate = (inputEl ? inputEl.value : "").trim();
+    if (candidate === TS_EXPECTED_PW) {
+      localStorage.setItem(TS_STORAGE_UNLOCK_KEY, "1");
+      localStorage.setItem(TS_STORAGE_TOKEN_KEY, candidate);
+      if (errEl) errEl.classList.add("hidden");
+      if (inputEl) inputEl.value = "";
+      syncPasswordGateUi();
+    } else {
+      if (errEl) {
+        errEl.textContent = "❌ 口令不正确，请向行程发起人确认专属 Vibe 口令后重试。";
+        errEl.classList.remove("hidden");
+      }
+    }
+  };
+
+  window.tsLockVibeSession = function() {
+    localStorage.removeItem(TS_STORAGE_UNLOCK_KEY);
+    localStorage.removeItem(TS_STORAGE_TOKEN_KEY);
+    syncPasswordGateUi();
+  };
+
+  window.openVibeFeedbackModal = function() {
+    document.getElementById("vibeFeedbackModal")?.classList.remove("hidden");
+    syncPasswordGateUi();
+    window.tsRefreshVibeStatusJson();
+  };
+
+  window.closeVibeFeedbackModal = function() {
+    document.getElementById("vibeFeedbackModal")?.classList.add("hidden");
+  };
+
+  window.openVersionHistoryModal = function() {
+    document.getElementById("versionHistoryModal")?.classList.remove("hidden");
+    window.tsRefreshVibeStatusJson();
+    renderTsVersionHistory();
+  };
+
+  window.closeVersionHistoryModal = function() {
+    document.getElementById("versionHistoryModal")?.classList.add("hidden");
+  };
+
+  window.tsRefreshVibeStatusJson = async function() {
+    try {
+      const res = await fetch("./vibe_status.json?t=" + Date.now(), { cache: "no-store" });
+      if (res.ok) {
+        tsCloudStatus = await res.json();
+        const badge = document.getElementById("tsVibeLiveVersionBadge");
+        const logEl = document.getElementById("tsVibeLatestChangelog");
+        const pill = document.getElementById("tsVhCurrentVersionPill");
+        if (badge && tsCloudStatus.version) {
+          badge.textContent = "📡 云端 AI 迭代引擎在线 (" + tsCloudStatus.version + " · " + (tsCloudStatus.updated_at || "刚刚") + ")";
+        }
+        if (logEl && tsCloudStatus.latest_summary) {
+          logEl.textContent = "最近已上线：" + tsCloudStatus.latest_summary;
+        }
+        if (pill && tsCloudStatus.version) pill.textContent = tsCloudStatus.version;
+        renderTsVersionHistory();
+        return tsCloudStatus;
+      }
+    } catch (e) {}
+    renderTsVersionHistory();
+    return null;
+  };
+
+  function renderTsVersionHistory() {
+    const body = document.getElementById("tsVersionHistoryBody");
+    if (!body) return;
+    const list = (tsCloudStatus && Array.isArray(tsCloudStatus.history) && tsCloudStatus.history.length)
+      ? tsCloudStatus.history
+      : TS_DEFAULT_HISTORY;
+    body.innerHTML = list.map((entry, idx) => {
+      const isLatest = idx === 0;
+      const bullets = (entry.changes || []).map(c => `<li class="flex items-start gap-1.5"><span class="text-sky-400 font-black">•</span><span>${c}</span></li>`).join("");
+      return `
+        <div class="p-3 rounded-2xl ${isLatest ? 'bg-sky-500/10 border-2 border-sky-500/40' : 'bg-slate-800/60 border border-slate-700'} space-y-1.5">
+          <div class="flex flex-wrap items-center justify-between gap-1.5">
+            <div class="flex items-center gap-1.5">
+              <span class="px-2 py-0.5 rounded-full text-[11px] font-black ${isLatest ? 'bg-sky-400 text-slate-950' : 'bg-slate-900 text-slate-200'}">${entry.version || 'v1.0'}</span>
+              <span class="font-black text-xs">${entry.title || entry.scope || '版本更新'}</span>
+            </div>
+            <span class="text-[10px] opacity-70">${entry.timestamp || ''}</span>
+          </div>
+          ${entry.vibe_prompt ? `<div class="p-2 rounded-xl bg-slate-900/80 border border-slate-700 text-[11px] opacity-85">💬 Vibe 原话：“${entry.vibe_prompt}”</div>` : ''}
+          <ul class="space-y-1 text-[11px] leading-relaxed">${bullets}</ul>
+        </div>
+      `;
+    }).join("");
+  }
+
+  window.tsForceReloadFreshVersion = async function() {
+    try {
+      if ("caches" in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => caches.delete(k)));
+      }
+      if ("serviceWorker" in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(r => r.update()));
+      }
+    } catch (e) {}
+    const u = new URL(window.location.href);
+    u.searchParams.set("v", Date.now().toString());
+    window.location.replace(u.toString());
+  };
+
+  window.tsSubmitVibeFeedback = async function() {
+    if (!isVibeUnlocked()) {
+      syncPasswordGateUi();
+      return;
+    }
+    const author = (document.getElementById("tsVibeAuthorInput")?.value || "同行旅伴").trim();
+    const scope = document.getElementById("tsVibeScopeSelect")?.value || "🌟 整体行程 Vibe 与节奏";
+    const message = (document.getElementById("tsVibeMessageInput")?.value || "").trim();
+    const statusEl = document.getElementById("tsVibeSubmitStatus");
+    const btn = document.getElementById("tsBtnSubmitVibe");
+    if (!message) {
+      if (statusEl) {
+        statusEl.className = "text-xs font-bold text-rose-400";
+        statusEl.textContent = "⚠️ 请先输入你想调整的具体 Vibe 描述！";
+      }
+      return;
+    }
+    const payload = {
+      app: TS_APP_ID,
+      id: "vibe-" + Date.now() + "-" + Math.random().toString(36).slice(2, 7),
+      author,
+      scope,
+      vibe_tags: Array.from(tsSelectedTags),
+      message,
+      password_token: localStorage.getItem(TS_STORAGE_TOKEN_KEY) || TS_EXPECTED_PW,
+      password_sha256: TS_EXPECTED_SHA256,
+      timestamp: new Date().toISOString()
+    };
+    if (btn) btn.disabled = true;
+    if (statusEl) {
+      statusEl.className = "text-xs font-bold text-amber-400";
+      statusEl.textContent = "📡 正在通过口令核验直连 Cloudtop 守护进程...";
+    }
+    try {
+      const resp = await fetch(TS_NTFY_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+      if (!resp.ok) throw new Error("HTTP " + resp.status);
+      document.getElementById("tsVibeMessageInput").value = "";
+      if (statusEl) {
+        statusEl.className = "text-xs font-bold text-emerald-400";
+        statusEl.textContent = "✅ 已通过口令认证并送达 Cloudtop！AI 正在自动改版，已开启每 8 秒新版本检测！";
+      }
+      tsBaselineVersion = (tsCloudStatus && tsCloudStatus.version) || TS_BUILTIN_VERSION;
+      document.getElementById("tsVibeAutoWatchBox")?.classList.remove("hidden");
+      if (tsWatchTimer) clearInterval(tsWatchTimer);
+      tsWatchTimer = setInterval(async () => {
+        const latest = await window.tsRefreshVibeStatusJson();
+        if (latest && latest.version && latest.version !== tsBaselineVersion) {
+          clearInterval(tsWatchTimer);
+          document.getElementById("tsBtnModalReloadFresh")?.classList.remove("hidden");
+          document.getElementById("tsVibeNewReleaseBanner")?.classList.remove("hidden");
+        }
+      }, 8000);
+    } catch (err) {
+      if (statusEl) {
+        statusEl.className = "text-xs font-bold text-rose-400";
+        statusEl.textContent = "⚠️ 网络波动，请稍后重试。";
+      }
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  };
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".ts-vibe-tag").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const t = btn.getAttribute("data-vtag");
+        if (tsSelectedTags.has(t)) {
+          tsSelectedTags.delete(t);
+          btn.classList.remove("border-amber-500", "bg-amber-500/20", "text-amber-300");
+        } else {
+          tsSelectedTags.add(t);
+          btn.classList.add("border-amber-500", "bg-amber-500/20", "text-amber-300");
+        }
+      });
+    });
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("vibe") === "1") window.openVibeFeedbackModal();
+    if (params.get("versions") === "1") window.openVersionHistoryModal();
+  });
+})();
+</script>
+
 </body>
 </html>

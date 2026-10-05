@@ -1,0 +1,35 @@
+{
+  "app": "travel-studio",
+  "version": "v2.0",
+  "updated_at": "2026-10-05 14:57 CST",
+  "password_protected": true,
+  "password_sha256": "1f3216c601f6af86b37ec55f490492562306a1fe3aebe5db67fcc183f3b26e98",
+  "latest_summary": "新增 core/vibe_loop.py 与多项目口令核验守护引擎 vibe_bridge.py，任何通过 Travel Studio 编译的路书自动获得「✨ 口令认证 Vibe 抽屉 + 📜 版本演进记录 + 8秒新版本自动轮询」",
+  "history": [
+    {
+      "version": "v2.0",
+      "title": "提取「口令保护 Vibe 随身反馈 ➔ 全自动新版本闭环」为平台级旗舰特权功能",
+      "timestamp": "2026-10-05 22:55 CST",
+      "author": "Shuguo & Travel Studio Architect",
+      "scope": "🌟 平台编译器核心 (core/vibe_loop.py & vibe_bridge.py)",
+      "vibe_prompt": "Let's extract the vibe feedback-newversion-loop into a premium feature in the travel-studio, also make it in my south-americ trip side as well. Let's put some passwords before anyone can vibe the site. For yunnan: password is: applefriend, south americ: sa26, all others: applefriend",
+      "changes": [
+        "新增 core/vibe_loop.py 与多项目口令核验守护引擎 vibe_bridge.py，任何通过 Travel Studio 编译的路书自动获得「✨ 口令认证 Vibe 抽屉 + 📜 版本演进记录 + 8秒新版本自动轮询」",
+        "实装分级口令门禁（Password Gate + 设备自动记住）：云南路书口令为 applefriend，南美路书口令为 sa26，Travel Studio 平台及所有其他新建行程默认口令为 applefriend",
+        "左栏工作台新增「🔒 Vibe 自动迭代口令配置器」与「✨ core/vibe_loop.py 源码检视」，支持一键测试平台自身的 Vibe 自动迭代闭环"
+      ]
+    },
+    {
+      "version": "v1.5",
+      "title": "三模态混合输入与 AI 缺口微访谈编译器上线",
+      "timestamp": "2026-10-04 16:00 CST",
+      "author": "Shuguo",
+      "scope": "🗺️ 编译器工作台与双栈适配",
+      "vibe_prompt": "支持粘贴随手碎片笔记、AI 自动识别缺口追问并编译为离线 PWA",
+      "changes": [
+        "上线中国境内 (cn_domestic 高德/GCJ-02/百科/小红书) 与国际全球 (global WGS-84/Google Maps/Wiki) 双栈编译器",
+        "收录 South America 2026 与 Yunnan 2026 两大实战标杆案例与 CEO 商业计划书"
+      ]
+    }
+  ]
+}

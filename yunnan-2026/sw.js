@@ -1,8 +1,8 @@
 // Travel Studio Offline Service Worker Engine
 // Trip: 2026 滇西北秘境巅峰穿越 11 日随行伴侣 (yunnan-2026)
-// Cache Version: travel-studio-yunnan-2026-vac18010c
+// Cache Version: travel-studio-yunnan-2026-v821ca72c
 
-const CACHE_NAME = "travel-studio-yunnan-2026-vac18010c";
+const CACHE_NAME = "travel-studio-yunnan-2026-v821ca72c";
 const TILE_CACHE_NAME = "travel-studio-tiles-yunnan-2026";
 const PRECACHE_ASSETS = [
   "./",
@@ -42,6 +42,9 @@ self.addEventListener('activate', (event) => {
 // Fetch Event: Cache strategies
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
+  if (url.pathname.endsWith('vibe_status.json') || url.hostname.includes('ntfy.sh')) {
+    return;
+  }
 
   // Strategy 1: Map Tiles (Stale-While-Revalidate with Tile Cache)
   if (

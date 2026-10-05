@@ -184,15 +184,20 @@
     <div class="max-w-7xl mx-auto px-3 py-2 flex flex-col gap-1.5">
       <div class="flex items-center justify-between gap-2">
         <div class="flex items-center gap-2 min-w-0 shrink-0">
-          <div class="w-8 h-8 rounded-xl bg-[var(--primary)] text-white flex items-center justify-center font-extrabold text-sm shadow-xs shrink-0">
+          <div id="saBrandBadge" onclick="window.handleSaBadgeTap && window.handleSaBadgeTap()" class="w-8 h-8 rounded-xl bg-[var(--primary)] text-white flex items-center justify-center font-extrabold text-sm shadow-xs shrink-0 cursor-pointer select-none" title="连点3次或点击右侧 ✨ Vibe 唤醒随身迭代舱">
             SA
           </div>
           <div class="hidden sm:block min-w-0">
-            <h1 class="text-sm font-extrabold tracking-tight text-[var(--foreground)] truncate">
-              南美 2026 随身行 · South America Companion
-            </h1>
+            <div class="flex items-center gap-1.5">
+              <h1 class="text-sm font-extrabold tracking-tight text-[var(--foreground)] truncate">
+                南美 2026 随身行 · South America
+              </h1>
+              <button type="button" onclick="window.openSaVersionHistoryModal()" class="px-1.5 py-0.5 rounded-md text-[10px] font-extrabold bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/30 cursor-pointer shrink-0">
+                📜 <span id="saHeaderVerText">v2.6</span>
+              </button>
+            </div>
             <p class="text-[11px] text-[var(--muted-foreground)] truncate">
-              ⛶ 全屏地图 · 📋 当日行程全展开 · 🥾 12条徒步轨迹 · 🌟 实名周边精选
+              ⛶ 全屏地图 · 📋 当日行程全展开 · 🥾 12条徒步轨迹 · 🌟 实名周边精选 · ✨ 口令Vibe闭环
             </p>
           </div>
         </div>
@@ -223,13 +228,22 @@
           </button>
         </div>
 
-        <!-- Right: Search + Quick Fullscreen Map + 4-Language & Export Menu -->
+        <!-- Right: Search + Quick Fullscreen Map + Vibe + Version + 4-Language & Export Menu -->
         <div class="flex items-center gap-1.5 shrink-0 relative">
           <button onclick="toggleMapFullscreen()" class="px-2.5 py-1.5 rounded-xl text-xs font-extrabold bg-emerald-600 text-white hover:opacity-90 cursor-pointer flex items-center gap-1 shadow-xs" title="一键全屏放大地图">
             <span>⛶ 全屏地图</span>
           </button>
 
-          <div class="relative w-24 sm:w-40">
+          <button type="button" onclick="window.openSaVersionHistoryModal()" class="px-2 py-1.5 rounded-xl text-xs font-extrabold bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/30 hover:bg-sky-500/25 cursor-pointer flex items-center gap-1" title="查看南美路书版本演进记录">
+            <span>📜</span>
+            <span class="hidden md:inline">版本</span>
+          </button>
+
+          <button type="button" onclick="window.openSaVibeFeedbackModal()" class="px-2.5 py-1.5 rounded-xl text-xs font-extrabold bg-amber-500 text-slate-950 hover:opacity-95 cursor-pointer flex items-center gap-1 shadow-xs" title="打开口令保护 Vibe 随身反馈与自动发版舱 (口令: sa26)">
+            <span>✨ Vibe</span>
+          </button>
+
+          <div class="relative w-20 sm:w-36">
             <input id="searchInput" type="search" aria-label="搜索行程地点" placeholder="🔍 搜地点/徒步/餐厅..." class="w-full px-2.5 py-1.5 rounded-xl text-xs bg-[var(--content)] text-[var(--foreground)] border border-[var(--border)] focus:outline-none focus:border-[var(--primary)]" />
           </div>
 
@@ -4868,6 +4882,624 @@
         navigator.serviceWorker.register("./sw.js").catch(() => {});
       });
     }
+  </script>
+
+  <!-- ==================== SOUTH AMERICA 2026: PASSWORD-GATED VIBE FEEDBACK & VERSION HISTORY LOOP (sa26) ==================== -->
+  <style>
+    .sa-vibe-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 9990;
+      background: rgba(2, 6, 23, 0.78);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .sa-vibe-backdrop.hidden { display: none !important; }
+    .sa-vibe-sheet {
+      width: 100%;
+      max-width: 680px;
+      max-height: 88vh;
+      background: var(--card);
+      color: var(--foreground);
+      border: 1.5px solid rgba(245, 158, 11, 0.45);
+      border-radius: 20px;
+      box-shadow: 0 24px 50px rgba(0, 0, 0, 0.55);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    @media (max-width: 640px) {
+      .sa-vibe-backdrop {
+        align-items: flex-end;
+        padding: 0;
+      }
+      .sa-vibe-sheet {
+        max-width: 100vw;
+        width: 100vw;
+        max-height: 86dvh;
+        border-radius: 20px 20px 0 0;
+        border-bottom: none;
+      }
+    }
+  </style>
+
+  <!-- Top Live Auto-Upgrade Notification Bar -->
+  <div id="saVibeNewReleaseBanner" class="hidden fixed top-0 inset-x-0 z-[9995] bg-emerald-500 text-slate-950 px-3 py-2 text-xs font-black flex items-center justify-between gap-2 shadow-lg">
+    <span id="saVibeNewReleaseBannerText">🎉 南美路书新版本已编译上线！点击立即无损热更新</span>
+    <button onclick="window.saForceReloadFreshVersion()" class="px-2.5 py-1 rounded-lg bg-slate-950 text-emerald-400 font-black text-[11px] cursor-pointer shrink-0">🔄 立即刷新</button>
+  </div>
+
+  <!-- Modal 1: South America Password-Gated Vibe Feedback Drawer -->
+  <div id="saVibeFeedbackModal" class="sa-vibe-backdrop hidden" onclick="if(event.target===this) window.closeSaVibeFeedbackModal()">
+    <div class="sa-vibe-sheet">
+      <div class="px-3.5 sm:px-4 py-2.5 border-b border-[var(--border)] flex items-center justify-between gap-2 bg-gradient-to-r from-amber-500/20 via-orange-500/10 to-sky-500/10 shrink-0">
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-slate-950 shrink-0">SA VIBE LOOP</span>
+            <h3 class="text-xs sm:text-base font-black text-[var(--foreground)] truncate">✨ 南美随身进化 · 实时 Vibe 反馈与自动发版舱</h3>
+          </div>
+          <p class="text-[10px] sm:text-[11px] text-[var(--muted-foreground)] truncate mt-0.5">
+            口令保护已启用 (sa26) ──► 提交后直连 Cloudtop 自动改版、写版本记录并重发 GitHub Pages
+          </p>
+        </div>
+        <button onclick="window.closeSaVibeFeedbackModal()" class="w-7 h-7 rounded-full bg-[var(--content)] text-[var(--foreground)] font-bold cursor-pointer shrink-0">✕</button>
+      </div>
+
+      <div class="p-3.5 sm:p-4 overflow-y-auto space-y-3 text-xs flex-1">
+        <!-- Live Cloudtop & Iteration Status Banner -->
+        <div class="p-2.5 rounded-xl bg-[var(--content)]/70 border border-[var(--border)] flex items-center justify-between gap-2">
+          <div class="min-w-0 space-y-0.5">
+            <div class="flex items-center gap-1.5 font-extrabold text-[var(--foreground)] truncate">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping inline-block shrink-0"></span>
+              <span id="saVibeLiveVersionBadge" class="truncate">📡 云端 AI 迭代引擎在线 (v2.6 · 口令保护已启用)</span>
+            </div>
+            <div id="saVibeLatestChangelog" class="text-[11px] text-[var(--muted-foreground)] truncate">
+              最近更新：已上线南美路书口令保护 Vibe 自动迭代闭环与 12条徒步/18家周边精选
+            </div>
+          </div>
+          <button onclick="window.saRefreshVibeStatusJson()" class="px-2 py-1 rounded-lg bg-[var(--card)] border border-[var(--border)] text-[11px] font-bold hover:border-amber-500 cursor-pointer shrink-0">
+            🔄 刷新
+          </button>
+        </div>
+
+        <!-- Password Gate Box (Locked State) -->
+        <div id="saVibePasswordGateBox" class="p-3 rounded-2xl bg-amber-500/10 border-2 border-amber-500/40 space-y-2">
+          <div class="flex items-center justify-between gap-2">
+            <span class="font-black text-amber-600 dark:text-amber-400 text-xs flex items-center gap-1">🔒 南美远征专属 Vibe 口令认证 (防误触门禁)</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/20 text-amber-600 dark:text-amber-400">验证一次 · 设备自动记住</span>
+          </div>
+          <p class="text-[11px] text-[var(--muted-foreground)] leading-relaxed">
+            为防止公开路书链接被非同行人员误触改版，请输入南美行程专属口令解锁 Vibe 实时迭代舱：
+          </p>
+          <div class="flex items-center gap-2">
+            <input id="saVibePasswordInput" type="password" placeholder="请输入南美专属 Vibe 口令..." onkeydown="if(event.key==='Enter') window.verifySaVibePassword()" class="flex-1 px-3 py-2 rounded-xl bg-[var(--card)] border border-[var(--border)] text-xs font-bold text-[var(--foreground)] focus:outline-none focus:border-amber-500" />
+            <button type="button" onclick="window.verifySaVibePassword()" class="px-3.5 py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs cursor-pointer shrink-0 hover:opacity-95">
+              🔓 验证解锁
+            </button>
+          </div>
+          <div id="saVibePasswordError" class="hidden text-[11px] font-bold text-rose-500"></div>
+        </div>
+
+        <!-- Unlocked Status Bar -->
+        <div id="saVibeUnlockedBar" class="hidden px-3 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/40 flex items-center justify-between gap-2">
+          <span class="text-[11px] font-extrabold text-emerald-600 dark:text-emerald-400">🔓 已通过口令认证 · 设备已记住（随时可提交修改）</span>
+          <button type="button" onclick="window.lockSaVibePassword()" class="text-[10px] font-bold text-[var(--muted-foreground)] hover:text-rose-500 cursor-pointer">🔒 退出认证</button>
+        </div>
+
+        <div id="saVibeProtectedFormArea" class="space-y-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="block font-bold mb-1 text-[var(--foreground)]">👤 你的昵称 (选填)</label>
+              <input id="saVibeAuthorInput" type="text" placeholder="如：Shuguo / 旅伴" class="w-full px-3 py-1.5 rounded-xl bg-[var(--content)] border border-[var(--border)] text-xs font-bold focus:outline-none focus:border-amber-500" />
+            </div>
+            <div>
+              <label class="block font-bold mb-1 text-[var(--foreground)]">🎯 针对哪个赛段或日期？</label>
+              <select id="saVibeScopeSelect" class="w-full px-3 py-1.5 rounded-xl bg-[var(--content)] border border-[var(--border)] text-xs font-bold focus:outline-none focus:border-amber-500">
+                <option value="🌟 整体行程 Vibe 与全局功能">🌟 整体行程 Vibe 与全局功能</option>
+                <option value="🇦🇷 L1 布宜诺斯艾利斯 (D1–D3)">🇦🇷 L1 布宜诺斯艾利斯 (D1–D3)</option>
+                <option value="🧊 L2 卡拉法特 & 莫雷诺冰川/徒步 (D3–D5)">🧊 L2 卡拉法特 & 莫雷诺冰川/徒步 (D3–D5)</option>
+                <option value="🌊 L3 伊瓜苏双侧大瀑布 (D5–D7)">🌊 L3 伊瓜苏双侧大瀑布 (D5–D7)</option>
+                <option value="🌴 L4 玛瑙斯 & 亚马逊雨林 (D7–D10)">🌴 L4 玛瑙斯 & 亚马逊雨林 (D7–D10)</option>
+                <option value="🇧🇷 L5 里约热内卢山海收官 (D11–D14)">🇧🇷 L5 里约热内卢山海收官 (D11–D14)</option>
+                <option value="🥾 12条南美徒步轨迹与参数">🥾 12条南美徒步轨迹与参数</option>
+                <option value="🌟 18家周边口碑美食与秘境">🌟 18家周边口碑美食与秘境</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Multi-select Vibe Shift Chips -->
+          <div>
+            <label class="block font-bold mb-1 text-[var(--foreground)]">✨ 期望调整的 Vibe 方向（可多选）：</label>
+            <div class="flex flex-wrap gap-1.5" id="saVibeTagChips">
+              <button type="button" data-vtag="🥾 增补徒步路线/轨迹参数" class="sa-vibe-tag-btn px-2 py-1 rounded-lg bg-[var(--content)] text-[var(--foreground)] border border-[var(--border)] text-[11px] font-bold cursor-pointer transition">🥾 徒步轨迹</button>
+              <button type="button" data-vtag="🥩 补充周边烤肉/精酿/餐厅" class="sa-vibe-tag-btn px-2 py-1 rounded-lg bg-[var(--content)] text-[var(--foreground)] border border-[var(--border)] text-[11px] font-bold cursor-pointer transition">🥩 周边美食</button>
+              <button type="button" data-vtag="📸 增加绝佳摄影机位/日落点" class="sa-vibe-tag-btn px-2 py-1 rounded-lg bg-[var(--content)] text-[var(--foreground)] border border-[var(--border)] text-[11px] font-bold cursor-pointer transition">📸 摄影机位</button>
+              <button type="button" data-vtag="🚕 补充西语/葡语问路与点餐" class="sa-vibe-tag-btn px-2 py-1 rounded-lg bg-[var(--content)] text-[var(--foreground)] border border-[var(--border)] text-[11px] font-bold cursor-pointer transition">🚕 西葡口语</button>
+              <button type="button" data-vtag="✈️ 更新航班/包车/时间安排" class="sa-vibe-tag-btn px-2 py-1 rounded-lg bg-[var(--content)] text-[var(--foreground)] border border-[var(--border)] text-[11px] font-bold cursor-pointer transition">✈️ 航班/时间</button>
+              <button type="button" data-vtag="📱 优化地图与界面交互体验" class="sa-vibe-tag-btn px-2 py-1 rounded-lg bg-[var(--content)] text-[var(--foreground)] border border-[var(--border)] text-[11px] font-bold cursor-pointer transition">📱 界面交互</button>
+            </div>
+          </div>
+
+          <!-- Freeform Vibe Prompt + 1-Tap Examples -->
+          <div>
+            <div class="flex flex-wrap items-center justify-between gap-1 mb-1">
+              <label class="font-bold text-[var(--foreground)]">💬 具体想法或新 Vibe 描述：</label>
+              <div class="flex items-center gap-1 text-[10px]">
+                <button type="button" onclick="window.fillSaVibeSample('在伊瓜苏巴西侧增加直升机俯瞰恶魔咽喉的预约贴士与价格参考！', '🌊 L3 伊瓜苏双侧大瀑布 (D5–D7)')" class="px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-600 dark:text-amber-400 font-bold cursor-pointer">示例1：伊瓜苏直升机</button>
+                <button type="button" onclick="window.fillSaVibeSample('在里约 Ipanema 海滩增加日落鼓掌岩石 (Pedra do Arpoador) 的最佳守候时间与安全提醒！', '🇧🇷 L5 里约热内卢山海收官 (D11–D14)')" class="px-1.5 py-0.5 rounded bg-sky-500/15 text-sky-600 dark:text-sky-400 font-bold cursor-pointer">示例2：里约日落</button>
+              </div>
+            </div>
+            <textarea id="saVibeMessageInput" rows="3" placeholder="写下你在南美旅途中随时想补充的餐厅、徒步贴士、日程微调或新功能，提交后 Cloudtop 将自动改版并推送新版本..." class="w-full p-2.5 rounded-xl bg-[var(--content)] border border-[var(--border)] text-xs text-[var(--foreground)] focus:outline-none focus:border-amber-500 leading-relaxed"></textarea>
+          </div>
+
+          <!-- Submit & Backup Copy Actions -->
+          <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 pt-0.5">
+            <button type="button" id="btnSubmitSaVibe" onclick="window.submitSaVibeFeedback()" class="col-span-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-xs shadow-sm hover:opacity-95 cursor-pointer flex items-center justify-center gap-1.5">
+              <span>🚀 发送新 Vibe 并自动迭代</span>
+            </button>
+            <button type="button" onclick="window.openSaVersionHistoryModal()" class="px-3 py-2 rounded-xl bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/30 font-extrabold text-xs hover:bg-sky-500/25 cursor-pointer text-center">
+              📜 版本记录
+            </button>
+            <button type="button" onclick="window.copySaVibeBackup()" class="px-3 py-2 rounded-xl bg-[var(--content)] text-[var(--foreground)] border border-[var(--border)] font-bold text-xs hover:border-amber-500 cursor-pointer text-center">
+              📋 复制口令
+            </button>
+          </div>
+          <div id="saVibeSubmitStatusText" class="text-xs font-bold text-emerald-500"></div>
+        </div>
+
+        <!-- Live Post-Submit Auto-Compile Progress Stepper -->
+        <div id="saVibeAutoWatchBox" class="hidden p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
+          <div class="flex items-center justify-between gap-2">
+            <span id="saVibeAutoWatchTitle" class="font-black text-emerald-600 dark:text-emerald-400 text-xs">📡 1. 已投递 ──► 🧠 2. AI 正在实时编译新版本 (每8秒检测)...</span>
+            <button onclick="window.saForceReloadFreshVersion()" id="btnSaModalReloadFresh" class="hidden px-2.5 py-1 rounded-lg bg-emerald-500 text-slate-950 font-black text-[11px] cursor-pointer shrink-0">
+              🔄 立即刷新
+            </button>
+          </div>
+          <div class="text-[11px] text-[var(--muted-foreground)]">
+            当云端完成改版并推送到 GitHub Pages 后，此处将自动弹出升级提示。
+          </div>
+        </div>
+
+        <!-- Submitted Feedback History & Cloud Iteration Log -->
+        <div class="pt-2 border-t border-[var(--border)] space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-extrabold text-[var(--muted-foreground)]">📜 最近提交与版本演进记录：</span>
+            <button onclick="window.openSaVersionHistoryModal()" class="text-[11px] font-bold text-sky-500 hover:underline cursor-pointer">全部版本 ➔</button>
+          </div>
+          <div id="saVibeHistoryList" class="space-y-1.5 max-h-36 overflow-y-auto"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: South America Full Version History Modal -->
+  <div id="saVersionHistoryModal" class="sa-vibe-backdrop hidden" onclick="if(event.target===this) window.closeSaVersionHistoryModal()">
+    <div class="sa-vibe-sheet">
+      <div class="px-3.5 sm:px-4 py-2.5 border-b border-[var(--border)] flex items-center justify-between gap-2 bg-gradient-to-r from-sky-500/20 via-amber-500/10 to-emerald-500/10 shrink-0">
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5">
+            <span id="saVhCurrentVersionPill" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-sky-500 text-slate-950 shrink-0">v2.6</span>
+            <h3 class="text-xs sm:text-base font-black text-[var(--foreground)] truncate">📜 南美 2026 随身路书 · 版本演进与 Vibe 迭代记录</h3>
+          </div>
+          <p class="text-[10px] sm:text-[11px] text-[var(--muted-foreground)] truncate mt-0.5">
+            每次在旅途中提交新 Vibe，云端 AI 自动更新路书、递增版本号并记录变更明细
+          </p>
+        </div>
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button onclick="window.closeSaVersionHistoryModal(); window.openSaVibeFeedbackModal();" class="px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 font-black text-[11px] cursor-pointer">
+            ✨ 提Vibe
+          </button>
+          <button onclick="window.closeSaVersionHistoryModal()" class="w-7 h-7 rounded-full bg-[var(--content)] text-[var(--foreground)] font-bold cursor-pointer">✕</button>
+        </div>
+      </div>
+      <div id="saVersionHistoryModalBody" class="p-3.5 sm:p-4 overflow-y-auto space-y-2.5 text-xs flex-1"></div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const SA_VIBE_NTFY_URL = "https://ntfy.sh/yungapple_sa2026_vibe_9f8a7b6c";
+      const SA_BUILTIN_VERSION = "v2.6";
+      const SA_VIBE_PASSWORD = "sa26";
+      const SA_PW_STORAGE_KEY = "sa2026_vibe_pw";
+      const SA_UNLOCK_STORAGE_KEY = "vibe_unlocked_south-america-2026";
+      let saSelectedVibeTags = new Set();
+      let saCloudVibeStatus = null;
+      let saWatchTimer = null;
+      let saBaselineVersion = null;
+      let saBadgeTapCount = 0;
+      let saBadgeTapTimer = null;
+
+      const SA_DEFAULT_VIBE_HISTORY = [
+        {
+          version: "v2.6",
+          title: "上线「✨ 口令保护 Vibe 随身反馈 ➔ 全自动新版本闭环」(口令: sa26) & 📜 版本记录舱",
+          timestamp: "2026-10-05 22:58 CST",
+          author: "Shuguo & 随身AI定制师",
+          scope: "🌟 全站自动迭代闭环 & 口令门禁 (sa26)",
+          vibe_prompt: "Let's extract the vibe feedback-newversion-loop into a premium feature in the travel-studio, also make it in my south-americ trip side as well. Let's put some passwords before anyone can vibe the site. For yunnan: password is: applefriend, south americ: sa26, all others: applefriend",
+          changes: [
+            "顶部导航栏新增「📜 v2.6」版本演进记录与「✨ Vibe」实时迭代入口（亦支持三击左上角 SA 徽章或访问 ?vibe=1 唤醒）",
+            "实装手机端 iOS 底部抽屉自适应「✨ Vibe 随身进化舱」并内置南美专属口令门禁（口令：sa26，验证一次本机自动记住）",
+            "打通手机浏览器直连 ntfy.sh (yungapple_sa2026_vibe_9f8a7b6c) ──► Cloudtop 守护进程口令核验 ──► 自动改版并推送到 GitHub Pages ──► 前端每 8 秒自动检测新版本并提示一键热刷新"
+          ]
+        },
+        {
+          version: "v2.5",
+          title: "巴塔哥尼亚与南美实战 4 大升级：全屏地图 · 当日全展开 · 12条徒步轨迹 · 18家周边精选",
+          timestamp: "2026-10-05 16:30 CST",
+          author: "Shuguo (埃尔卡拉法特前方实测)",
+          scope: "🗺️ 地图全屏、当日行程卡片与徒步/美食图层",
+          vibe_prompt: "在南美实地使用反馈：1) 支持一键全屏放大地图；2) 每天的行程点位默认全部展开方便一眼看清全天安排；3) 增加周边口碑餐厅/秘境推荐；4) 增加徒步路线建议并在地图上画出轨迹与参数",
+          changes: [
+            "新增「⛶ 全屏地图」模式（含顶部与地图内双入口、全屏悬浮快筛胶囊条、ESC 退出）",
+            "重构每日行程列表为「📋 按天全展开」手风琴卡片（D1–D14 所有景点、交通、贴士默认完整展开，并置顶 D1-D14 一键快筛条）",
+            "新增「🥾 徒步线 (12条)」独立图层与详情库（含 Fitz Roy、Laguna Torre、莫雷诺冰川、火地岛翡翠湖、伊瓜苏步道、里约糖面包山等地图双色轨迹线、🟢起点/🏔️终点 Marker 及距离/爬升/装备参数）",
+            "新增「🌟 周边精选 (18家)」实名高分餐厅、精酿酒馆、手工冰淇淋与绝佳摄影机位图层（地图琥珀色星标 + 西语/葡语点餐指路卡）"
+          ]
+        },
+        {
+          version: "v2.0",
+          title: "巴塔哥尼亚旅途实拍画册 (📸 实拍) 与 AI 四语随身领队上线",
+          timestamp: "2026-10-04 14:20 CST",
+          author: "Shuguo",
+          scope: "📸 旅途实拍集锦 & 🤖 AI 导游",
+          vibe_prompt: "把旅途中拍的巴塔哥尼亚晚霞、野生麦哲伦雁、莫雷诺冰川等实拍照片集成进相册，并支持地点联动",
+          changes: [
+            "上线 📸 旅途实拍灯箱画册（含 EXIF 故事导读与关联景点一键跳转）",
+            "升级 🤖 AI 随身导游（内置 D1–D14 航班、酒店、冰川徒步硬性规定与西语/葡语应急问答）"
+          ]
+        },
+        {
+          version: "v1.5",
+          title: "智能四语模式 (ZH/ES/PT/EN) · 司机问路大字闪卡 · Web Speech 真人发音",
+          timestamp: "2026-10-02 19:00 CST",
+          author: "Shuguo",
+          scope: "🗣️ 阿根廷西语 / 巴西葡语无障碍沟通",
+          vibe_prompt: "阿根廷优先显示西班牙语，巴西优先显示葡萄牙语，加上给出租车司机看的大字问路卡和慢速跟读发音",
+          changes: [
+            "实装阿根廷 (#1-#17 es-AR) 与巴西 (#18-#39 pt-BR) 智能语种优先级切换及 1.0x/0.65x 慢速语音跟读",
+            "上线 🚕 司机问路大字闪卡与分类旅行生存口语库，支持四语 KML / CSV 一键导出"
+          ]
+        },
+        {
+          version: "v1.0",
+          title: "2026 南美 15 日远征随身伴侣初代上线",
+          timestamp: "2026-09-30 20:00 CST",
+          author: "Shuguo",
+          scope: "🌎 全程 5 大赛段 39 个核心坐标",
+          vibe_prompt: "构建覆盖布宜诺斯艾利斯、卡拉法特莫雷诺冰川、伊瓜苏双侧瀑布、玛瑙斯亚马逊雨林、里约热内卢的离线随身地图",
+          changes: [
+            "完成全程 39 个核心节点（机场/酒店/景点/码头/餐厅）WGS-84 坐标校准与 Google Maps / 离线矢量双引擎渲染",
+            "接入 Wikipedia 多语种深度文化导读与 Service Worker 离线缓存"
+          ]
+        }
+      ];
+
+      function isSaVibeUnlocked() {
+        const saved = localStorage.getItem(SA_PW_STORAGE_KEY) || "";
+        return saved === SA_VIBE_PASSWORD || localStorage.getItem(SA_UNLOCK_STORAGE_KEY) === "1";
+      }
+
+      function syncSaPasswordGateUi() {
+        const unlocked = isSaVibeUnlocked();
+        const gateBox = document.getElementById("saVibePasswordGateBox");
+        const unlockedBar = document.getElementById("saVibeUnlockedBar");
+        const formArea = document.getElementById("saVibeProtectedFormArea");
+        if (gateBox) gateBox.classList.toggle("hidden", unlocked);
+        if (unlockedBar) unlockedBar.classList.toggle("hidden", !unlocked);
+        if (formArea) {
+          formArea.style.opacity = unlocked ? "1" : "0.4";
+          formArea.style.pointerEvents = unlocked ? "auto" : "none";
+        }
+      }
+
+      window.verifySaVibePassword = function() {
+        const inputEl = document.getElementById("saVibePasswordInput");
+        const errEl = document.getElementById("saVibePasswordError");
+        const val = (inputEl?.value || "").trim();
+        if (val === SA_VIBE_PASSWORD) {
+          localStorage.setItem(SA_PW_STORAGE_KEY, val);
+          localStorage.setItem(SA_UNLOCK_STORAGE_KEY, "1");
+          if (errEl) errEl.classList.add("hidden");
+          if (inputEl) inputEl.value = "";
+          syncSaPasswordGateUi();
+        } else {
+          if (errEl) {
+            errEl.textContent = "❌ 口令不正确，请输入南美行程专属 Vibe 口令后重试。";
+            errEl.classList.remove("hidden");
+          }
+        }
+      };
+
+      window.lockSaVibePassword = function() {
+        localStorage.removeItem(SA_PW_STORAGE_KEY);
+        localStorage.removeItem(SA_UNLOCK_STORAGE_KEY);
+        syncSaPasswordGateUi();
+      };
+
+      window.handleSaBadgeTap = function() {
+        saBadgeTapCount++;
+        if (saBadgeTapTimer) clearTimeout(saBadgeTapTimer);
+        if (saBadgeTapCount >= 3) {
+          saBadgeTapCount = 0;
+          window.openSaVibeFeedbackModal();
+          return;
+        }
+        saBadgeTapTimer = setTimeout(() => { saBadgeTapCount = 0; }, 700);
+      };
+
+      window.openSaVibeFeedbackModal = function() {
+        document.getElementById("saVibeFeedbackModal")?.classList.remove("hidden");
+        syncSaPasswordGateUi();
+        const savedAuthor = localStorage.getItem("sa2026_vibe_author") || "";
+        const authorEl = document.getElementById("saVibeAuthorInput");
+        if (authorEl && !authorEl.value && savedAuthor) authorEl.value = savedAuthor;
+        window.saRefreshVibeStatusJson();
+        renderSaVibeHistoryList();
+      };
+
+      window.closeSaVibeFeedbackModal = function() {
+        document.getElementById("saVibeFeedbackModal")?.classList.add("hidden");
+      };
+
+      window.openSaVersionHistoryModal = function() {
+        document.getElementById("saVersionHistoryModal")?.classList.remove("hidden");
+        window.saRefreshVibeStatusJson();
+        renderSaVersionHistoryModal();
+      };
+
+      window.closeSaVersionHistoryModal = function() {
+        document.getElementById("saVersionHistoryModal")?.classList.add("hidden");
+      };
+
+      window.fillSaVibeSample = function(msg, scope) {
+        const mEl = document.getElementById("saVibeMessageInput");
+        if (mEl) mEl.value = msg;
+        const sEl = document.getElementById("saVibeScopeSelect");
+        if (sEl && scope) sEl.value = scope;
+      };
+
+      function getSaLocalSubmissions() {
+        try {
+          return JSON.parse(localStorage.getItem("sa2026_my_vibe_submissions") || "[]");
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function getSaMergedHistory() {
+        if (saCloudVibeStatus && Array.isArray(saCloudVibeStatus.history) && saCloudVibeStatus.history.length > 0) {
+          return saCloudVibeStatus.history;
+        }
+        return SA_DEFAULT_VIBE_HISTORY;
+      }
+
+      window.saRefreshVibeStatusJson = async function() {
+        try {
+          const res = await fetch("./vibe_status.json?t=" + Date.now(), { cache: "no-store" });
+          if (res.ok) {
+            saCloudVibeStatus = await res.json();
+            const ver = saCloudVibeStatus.version || SA_BUILTIN_VERSION;
+            const badge = document.getElementById("saVibeLiveVersionBadge");
+            const logEl = document.getElementById("saVibeLatestChangelog");
+            const hdrVer = document.getElementById("saHeaderVerText");
+            const vhPill = document.getElementById("saVhCurrentVersionPill");
+            if (badge) badge.textContent = `📡 云端 AI 迭代引擎在线 (${ver} · 更新于 ${saCloudVibeStatus.updated_at || '刚刚'})`;
+            if (logEl && saCloudVibeStatus.latest_summary) logEl.textContent = `最近已上线：${saCloudVibeStatus.latest_summary}`;
+            if (hdrVer) hdrVer.textContent = ver;
+            if (vhPill) vhPill.textContent = ver;
+            renderSaVibeHistoryList();
+            renderSaVersionHistoryModal();
+            return saCloudVibeStatus;
+          }
+        } catch (e) {}
+        renderSaVibeHistoryList();
+        renderSaVersionHistoryModal();
+        return null;
+      };
+
+      function renderSaVibeHistoryList() {
+        const box = document.getElementById("saVibeHistoryList");
+        if (!box) return;
+        const locals = getSaLocalSubmissions();
+        const history = getSaMergedHistory();
+        let html = "";
+        locals.slice(0, 3).forEach(it => {
+          html += `
+            <div class="p-2 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-start justify-between gap-2">
+              <div class="min-w-0">
+                <div class="font-extrabold text-amber-600 dark:text-amber-400 truncate">[本机已投递] ${it.scope} · ${it.author || '旅伴'}</div>
+                <div class="text-[var(--foreground)] truncate">${it.message}</div>
+              </div>
+              <span class="shrink-0 px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold text-[10px]">🚀 编译中</span>
+            </div>
+          `;
+        });
+        history.slice(0, 4).forEach(cit => {
+          const firstChange = (Array.isArray(cit.changes) && cit.changes[0]) || cit.title || "";
+          html += `
+            <div onclick="window.openSaVersionHistoryModal()" class="p-2 rounded-xl bg-[var(--content)]/60 hover:bg-sky-500/10 border border-[var(--border)] flex items-start justify-between gap-2 cursor-pointer transition">
+              <div class="min-w-0">
+                <div class="font-bold text-sky-600 dark:text-sky-400 truncate">[已上线 ${cit.version || ''}] ${cit.title || cit.scope || ''}</div>
+                <div class="text-[var(--muted-foreground)] truncate">${firstChange}</div>
+              </div>
+              <span class="shrink-0 px-2 py-0.5 rounded bg-sky-500/20 text-sky-600 dark:text-sky-400 font-bold text-[10px]">📜 详情</span>
+            </div>
+          `;
+        });
+        box.innerHTML = html;
+      }
+
+      function renderSaVersionHistoryModal() {
+        const body = document.getElementById("saVersionHistoryModalBody");
+        if (!body) return;
+        const history = getSaMergedHistory();
+        body.innerHTML = history.map((entry, idx) => {
+          const isLatest = idx === 0;
+          const bullets = (entry.changes || []).map(c => `<li class="flex items-start gap-1.5"><span class="text-sky-500 font-black">•</span><span>${c}</span></li>`).join("");
+          return `
+            <div class="p-3.5 rounded-2xl ${isLatest ? 'bg-sky-500/10 border-2 border-sky-500/40' : 'bg-[var(--content)]/60 border border-[var(--border)]'} space-y-1.5">
+              <div class="flex flex-wrap items-center justify-between gap-1.5">
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="px-2 py-0.5 rounded-full text-[11px] font-black ${isLatest ? 'bg-sky-500 text-slate-950' : 'bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)]'}">${entry.version || 'v2.x'}</span>
+                  ${isLatest ? '<span class="px-1.5 py-0.5 rounded-md text-[10px] font-black bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">当前在线版本</span>' : ''}
+                  <span class="font-black text-xs text-[var(--foreground)]">${entry.title || entry.scope || '版本更新'}</span>
+                </div>
+                <span class="text-[10px] font-mono-code text-[var(--muted-foreground)]">${entry.timestamp || ''}</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-1.5 text-[10px]">
+                <span class="px-2 py-0.5 rounded bg-[var(--card)] border border-[var(--border)] font-bold text-[var(--foreground)]">👤 ${entry.author || 'Shuguo'}</span>
+                <span class="px-2 py-0.5 rounded bg-[var(--card)] border border-[var(--border)] font-bold text-amber-600 dark:text-amber-400">🎯 ${entry.scope || '全程'}</span>
+              </div>
+              ${entry.vibe_prompt ? `<div class="p-2 rounded-xl bg-[var(--card)]/80 border border-[var(--border)] text-[11px] text-[var(--muted-foreground)]"><span class="font-extrabold text-[var(--foreground)]">💬 Vibe 原话：</span>“${entry.vibe_prompt}”</div>` : ''}
+              <ul class="space-y-1 text-[11px] sm:text-xs text-[var(--foreground)] leading-relaxed pt-0.5">${bullets}</ul>
+            </div>
+          `;
+        }).join("");
+      }
+
+      window.saForceReloadFreshVersion = async function() {
+        try {
+          if ("caches" in window) {
+            const keys = await caches.keys();
+            await Promise.all(keys.map(k => caches.delete(k)));
+          }
+          if ("serviceWorker" in navigator) {
+            const regs = await navigator.serviceWorker.getRegistrations();
+            await Promise.all(regs.map(r => r.update()));
+          }
+        } catch (e) {}
+        const u = new URL(window.location.href);
+        u.searchParams.set("v", Date.now().toString());
+        window.location.replace(u.toString());
+      };
+
+      window.submitSaVibeFeedback = async function() {
+        if (!isSaVibeUnlocked()) {
+          syncSaPasswordGateUi();
+          const errEl = document.getElementById("saVibePasswordError");
+          if (errEl) {
+            errEl.textContent = "⚠️ 请先输入上方南美专属 Vibe 口令解锁后再提交修改！";
+            errEl.classList.remove("hidden");
+          }
+          return;
+        }
+        const author = (document.getElementById("saVibeAuthorInput")?.value || "Shuguo").trim();
+        const scope = document.getElementById("saVibeScopeSelect")?.value || "🌟 整体行程 Vibe 与全局功能";
+        const message = (document.getElementById("saVibeMessageInput")?.value || "").trim();
+        const statusEl = document.getElementById("saVibeSubmitStatusText");
+        const btn = document.getElementById("btnSubmitSaVibe");
+
+        if (!message) {
+          if (statusEl) {
+            statusEl.className = "text-xs font-bold text-rose-500";
+            statusEl.textContent = "⚠️ 请先输入你想调整的具体 Vibe 或南美行程想法！";
+          }
+          return;
+        }
+
+        await window.saRefreshVibeStatusJson();
+        localStorage.setItem("sa2026_vibe_author", author);
+        const payload = {
+          app: "south-america-2026",
+          id: "vibe-" + Date.now() + "-" + Math.random().toString(36).slice(2, 7),
+          author,
+          scope,
+          vibe_tags: Array.from(saSelectedVibeTags),
+          message,
+          password_token: localStorage.getItem(SA_PW_STORAGE_KEY) || SA_VIBE_PASSWORD,
+          timestamp: new Date().toISOString()
+        };
+
+        if (btn) btn.disabled = true;
+        if (statusEl) {
+          statusEl.className = "text-xs font-bold text-amber-500";
+          statusEl.textContent = "📡 正在通过口令认证直连 Cloudtop 守护进程...";
+        }
+
+        try {
+          const resp = await fetch(SA_VIBE_NTFY_URL, {
+            method: "POST",
+            body: JSON.stringify(payload)
+          });
+          if (!resp.ok) throw new Error("HTTP " + resp.status);
+
+          const prev = getSaLocalSubmissions();
+          prev.unshift(payload);
+          localStorage.setItem("sa2026_my_vibe_submissions", JSON.stringify(prev.slice(0, 20)));
+          document.getElementById("saVibeMessageInput").value = "";
+          renderSaVibeHistoryList();
+
+          saBaselineVersion = (saCloudVibeStatus && saCloudVibeStatus.version) || SA_BUILTIN_VERSION;
+          document.getElementById("saVibeAutoWatchBox")?.classList.remove("hidden");
+          if (saWatchTimer) clearInterval(saWatchTimer);
+          saWatchTimer = setInterval(async () => {
+            const latest = await window.saRefreshVibeStatusJson();
+            if (latest && latest.version && latest.version !== saBaselineVersion) {
+              clearInterval(saWatchTimer);
+              document.getElementById("btnSaModalReloadFresh")?.classList.remove("hidden");
+              const topBanner = document.getElementById("saVibeNewReleaseBanner");
+              const topText = document.getElementById("saVibeNewReleaseBannerText");
+              if (topText) topText.textContent = `🎉 南美路书新版本 ${latest.version} 已上线！(${latest.latest_summary || '点击立即刷新'})`;
+              if (topBanner) topBanner.classList.remove("hidden");
+            }
+          }, 8000);
+
+          if (statusEl) {
+            statusEl.className = "text-xs font-bold text-emerald-500";
+            statusEl.textContent = "✅ 已送达 Cloudtop！AI 正在自动改版，下方已开启每 8 秒新版本检测！";
+          }
+        } catch (err) {
+          if (statusEl) {
+            statusEl.className = "text-xs font-bold text-rose-500";
+            statusEl.textContent = "⚠️ 当前网络波动，已复制反馈口令，可直接粘贴发送至 Google Chat！";
+          }
+          window.copySaVibeBackup();
+        } finally {
+          if (btn) btn.disabled = false;
+        }
+      };
+
+      window.copySaVibeBackup = function() {
+        const author = (document.getElementById("saVibeAuthorInput")?.value || "Shuguo").trim();
+        const scope = document.getElementById("saVibeScopeSelect")?.value || "🌟 整体行程 Vibe 与全局功能";
+        const message = (document.getElementById("saVibeMessageInput")?.value || "").trim();
+        const tags = Array.from(saSelectedVibeTags).join("、") || "自由调优";
+        const cmd = `【South-America-2026 Vibe迭代请求】\n提交人：${author}\n赛段：${scope}\n标签：${tags}\n需求：${message}`;
+        navigator.clipboard?.writeText(cmd);
+        const statusEl = document.getElementById("saVibeSubmitStatusText");
+        if (statusEl) {
+          statusEl.className = "text-xs font-bold text-emerald-500";
+          statusEl.textContent = "📋 已复制反馈口令到剪贴板！";
+        }
+      };
+
+      document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".sa-vibe-tag-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const t = btn.getAttribute("data-vtag");
+            if (saSelectedVibeTags.has(t)) {
+              saSelectedVibeTags.delete(t);
+              btn.classList.remove("border-amber-500", "bg-amber-500/20", "text-amber-600", "dark:text-amber-400");
+            } else {
+              saSelectedVibeTags.add(t);
+              btn.classList.add("border-amber-500", "bg-amber-500/20", "text-amber-600", "dark:text-amber-400");
+            }
+          });
+        });
+        window.saRefreshVibeStatusJson();
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("vibe") === "1" || window.location.hash === "#vibe") {
+          window.openSaVibeFeedbackModal();
+        } else if (params.get("versions") === "1" || params.get("changelog") === "1") {
+          window.openSaVersionHistoryModal();
+        }
+      });
+    })();
   </script>
 </body>
 </html>

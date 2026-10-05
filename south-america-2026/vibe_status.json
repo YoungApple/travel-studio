@@ -1,0 +1,73 @@
+{
+  "app": "south-america-2026",
+  "version": "v2.6",
+  "updated_at": "2026-10-05 22:58 CST",
+  "password_protected": true,
+  "target_conversation_id": "353ea1f4-12ba-438b-baaa-2c828d788c51",
+  "latest_summary": "已上线南美路书「✨ 口令保护 Vibe 随身反馈 ➔ 全自动新版本闭环」(专属口令：sa26) 与 📜 版本演进记录舱",
+  "history": [
+    {
+      "version": "v2.6",
+      "title": "上线「✨ 口令保护 Vibe 随身反馈 ➔ 全自动新版本闭环」(口令: sa26) & 📜 版本记录舱",
+      "timestamp": "2026-10-05 22:58 CST",
+      "author": "Shuguo & 随身AI定制师",
+      "scope": "🌟 全站自动迭代闭环 & 口令门禁 (sa26)",
+      "vibe_prompt": "Let's extract the vibe feedback-newversion-loop into a premium feature in the travel-studio, also make it in my south-americ trip side as well. Let's put some passwords before anyone can vibe the site. For yunnan: password is: applefriend, south americ: sa26, all others: applefriend",
+      "changes": [
+        "顶部导航栏新增「📜 v2.6」版本演进记录与「✨ Vibe」实时迭代入口（亦支持三击左上角 SA 徽章或访问 ?vibe=1 唤醒）",
+        "实装手机端 iOS 底部抽屉自适应「✨ Vibe 随身进化舱」并内置南美专属口令门禁（口令：sa26，验证一次本机自动记住）",
+        "打通手机浏览器直连 ntfy.sh (yungapple_sa2026_vibe_9f8a7b6c) ──► Cloudtop 守护进程口令核验 ──► 自动改版并推送到 GitHub Pages ──► 前端每 8 秒自动检测新版本并提示一键热刷新"
+      ]
+    },
+    {
+      "version": "v2.5",
+      "title": "巴塔哥尼亚与南美实战 4 大升级：全屏地图 · 当日全展开 · 12条徒步轨迹 · 18家周边精选",
+      "timestamp": "2026-10-05 16:30 CST",
+      "author": "Shuguo (埃尔卡拉法特前方实测)",
+      "scope": "🗺️ 地图全屏、当日行程卡片与徒步/美食图层",
+      "vibe_prompt": "在南美实地使用反馈：1) 支持一键全屏放大地图；2) 每天的行程点位默认全部展开方便一眼看清全天安排；3) 增加周边口碑餐厅/秘境推荐；4) 增加徒步路线建议并在地图上画出轨迹与参数",
+      "changes": [
+        "新增「⛶ 全屏地图」模式（含顶部与地图内双入口、全屏悬浮快筛胶囊条、ESC 退出）",
+        "重构每日行程列表为「📋 按天全展开」手风琴卡片（D1–D14 所有景点、交通、贴士默认完整展开，并置顶 D1-D14 一键快筛条）",
+        "新增「🥾 徒步线 (12条)」独立图层与详情库（含 Fitz Roy、Laguna Torre、莫雷诺冰川、火地岛翡翠湖、伊瓜苏步道、里约糖面包山等地图双色轨迹线、🟢起点/🏔️终点 Marker 及距离/爬升/装备参数）",
+        "新增「🌟 周边精选 (18家)」实名高分餐厅、精酿酒馆、手工冰淇淋与绝佳摄影机位图层（地图琥珀色星标 + 西语/葡语点餐指路卡）"
+      ]
+    },
+    {
+      "version": "v2.0",
+      "title": "巴塔哥尼亚旅途实拍画册 (📸 实拍) 与 AI 四语随身领队上线",
+      "timestamp": "2026-10-04 14:20 CST",
+      "author": "Shuguo",
+      "scope": "📸 旅途实拍集锦 & 🤖 AI 导游",
+      "vibe_prompt": "把旅途中拍的巴塔哥尼亚晚霞、野生麦哲伦雁、莫雷诺冰川等实拍照片集成进相册，并支持地点联动",
+      "changes": [
+        "上线 📸 旅途实拍灯箱画册（含 EXIF 故事导读与关联景点一键跳转）",
+        "升级 🤖 AI 随身导游（内置 D1–D14 航班、酒店、冰川徒步硬性规定与西语/葡语应急问答）"
+      ]
+    },
+    {
+      "version": "v1.5",
+      "title": "智能四语模式 (ZH/ES/PT/EN) · 司机问路大字闪卡 · Web Speech 真人发音",
+      "timestamp": "2026-10-02 19:00 CST",
+      "author": "Shuguo",
+      "scope": "🗣️ 阿根廷西语 / 巴西葡语无障碍沟通",
+      "vibe_prompt": "阿根廷优先显示西班牙语，巴西优先显示葡萄牙语，加上给出租车司机看的大字问路卡和慢速跟读发音",
+      "changes": [
+        "实装阿根廷 (#1-#17 es-AR) 与巴西 (#18-#39 pt-BR) 智能语种优先级切换及 1.0x/0.65x 慢速语音跟读",
+        "上线 🚕 司机问路大字闪卡与分类旅行生存口语库，支持四语 KML / CSV 一键导出"
+      ]
+    },
+    {
+      "version": "v1.0",
+      "title": "2026 南美 15 日远征随身伴侣初代上线",
+      "timestamp": "2026-09-30 20:00 CST",
+      "author": "Shuguo",
+      "scope": "🌎 全程 5 大赛段 39 个核心坐标",
+      "vibe_prompt": "构建覆盖布宜诺斯艾利斯、卡拉法特莫雷诺冰川、伊瓜苏双侧瀑布、玛瑙斯亚马逊雨林、里约热内卢的离线随身地图",
+      "changes": [
+        "完成全程 39 个核心节点（机场/酒店/景点/码头/餐厅）WGS-84 坐标校准与 Google Maps / 离线矢量双引擎渲染",
+        "接入 Wikipedia 多语种深度文化导读与 Service Worker 离线缓存"
+      ]
+    }
+  ]
+}

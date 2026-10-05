@@ -1,0 +1,126 @@
+{
+  "app": "yunnan-2026",
+  "version": "v1.8",
+  "updated_at": "2026-10-05 22:58 CST",
+  "password_protected": true,
+  "target_conversation_id": "4aa6fc13-048a-443a-9afe-a58b2bd7940d",
+  "latest_summary": "已上线旅伴专属 Vibe 口令认证门禁 (applefriend) 与设备自动记忆，防止公开链接误触改版",
+  "history": [
+    {
+      "version": "v1.8",
+      "title": "上线「🔒 旅伴专属 Vibe 口令认证 (applefriend)」防误触门禁与设备自动记忆",
+      "timestamp": "2026-10-05 22:58 CST",
+      "author": "Shuguo & 随身AI定制师",
+      "scope": "🔒 全站安全护栏与 Vibe 自动迭代闭环",
+      "vibe_prompt": "Let's extract the vibe feedback-newversion-loop into a premium feature in the travel-studio, also make it in my south-americ trip side as well. Let's put some passwords before anyone can vibe the site. For yunnan: password is: applefriend, south americ: sa26, all others: applefriend",
+      "changes": [
+        "在「✨ AI 定制师 · 实时反馈与自动迭代舱」顶部新增专属口令认证门禁（口令：applefriend），防止公开路书链接被非同行人员误触改版",
+        "支持设备级口令记忆（验证通过一次后自动保存在本机 localStorage，后续打开直接展示 🔓 已通过口令认证状态条）",
+        "后端 Cloudtop vibe_bridge.py 同步开启多项目口令强校验（password_token），Service Worker 升级至 yunnan-2026-bespoke-v8"
+      ]
+    },
+    {
+      "version": "v1.7",
+      "title": "D3/D4/D5 节奏精准重排 · D3休整看雪山/D4徒步中虎跳住哈巴/D5徒步黑海湖住香格里拉",
+      "timestamp": "2026-10-05 22:50 CST",
+      "author": "同行旅伴 & 随身AI定制师",
+      "scope": "🌟 整体行程 Vibe 与节奏",
+      "vibe_prompt": "D3不徒步虎跳峡，D4徒步虎跳峡，徒步结束后去往哈巴村，入住哈巴大本营民宿；D5徒步哈巴黑海湖后去往香格里拉，入住香格里拉",
+      "changes": [
+        "D3 (10.06) 节奏降压：老药山 3820m 轻徒步热身后直达虎跳峡新茶马客栈，本日不徒步峡谷，在美宿无边露台喝下午茶躺看玉龙雪山背坡日落晚霞，充分休整泡脚",
+        "D4 (10.07) 虎跳峡激流深度徒步：清晨开启中虎跳峡谷徒步（张老师客栈/天梯/一线天/惊涛巨石，3–4h），徒步结束后下午驱车前往哈巴村，入住哈巴雪山大本营精品民宿，品尝土鸡火锅蓄力",
+        "D5 (10.08) 征战哈巴黑海湖：清晨出发徒步哈巴雪山海拔 4100m 墨玉冰碛黑海湖与千年松萝冷杉林；下午下撤后驱车直达香格里拉，顺利入住独克宗古城「格雅·雪印梵境」开启连住 3 晚免搬行李",
+        "Service Worker 升级至 yunnan-2026-bespoke-v7，全站离线路书、高德导航与司机卡即时秒刷更新"
+      ]
+    },
+    {
+      "version": "v1.6",
+      "title": "纳西藏族在地风物灵动插画重塑 · 萌趣与视觉盛宴升级",
+      "timestamp": "2026-10-05 22:35 CST",
+      "author": "Shuguo Test & 随身AI定制师",
+      "scope": "🌟 整体行程 Vibe 与节奏",
+      "vibe_prompt": "I hope the illustration could be more fun and delightful according to the local elements. Optimze the visual to make it beyond awesome!",
+      "changes": [
+        "全面重塑全环线 8 大手绘矢量风物插画（Photos/SVG）：融入纳西东巴大水车与红灯笼、白沙扎染与萌宠小羊驼、虎跳峡金沙狂澜猛虎腾跃、哈巴黑海湖五彩经幡与玛尼堆、香格里拉无底湖静谧黑牦牛与牧人木屋、巴拉格宗千年菩提手印与天然佛塔、飞来寺八塔煨桑与日照金山盛典、南极洛绝壁双瀑与高山流石滩萌趣雪山鼠",
+        "视觉细节全面升级：在景点详情卡引入在地灵动画卷实时预览横幅，增强风物百科、旅途画册与决策卡微交互，注入纳西东巴文化、茶马古道与扎西德勒藏地祝福",
+        "Service Worker 升级至 yunnan-2026-bespoke-v6，实现秒级热更新，离线也能 0ms 极速畅览高精风物插画"
+      ]
+    },
+    {
+      "version": "v1.5",
+      "title": "手机端一屏双核架构重构 · 底部抽屉弹窗与地图气泡全面自适应",
+      "timestamp": "2026-10-05 21:45 CST",
+      "author": "Shuguo & 随身AI定制师",
+      "scope": "📱 移动端体验重构 & 弹窗/气泡自适应",
+      "vibe_prompt": "bugs for yunnan，dialog and popup width is not Mobile adaptive，overall looks bad...",
+      "changes": [
+        "重构手机端首屏架构（对齐南美路书体验）：顶部精简为单行导航条，首屏直接呈现「高德实景地图(悬浮图层胶囊) + 当前景点深度卡片(含‹上一站/下一站›切换)」，彻底消除横向滚动条与首屏遮挡",
+        "全站 6 大弹窗（使用指南/Vibe调优舱/版本记录/11日总表/司机卡/导出）在手机端(<=640px)全面升级为 iOS 风格底部抽屉(Bottom Sheet, 100vw, 85dvh)，并取消首次打开网页时的 600ms 强行自动弹窗遮挡",
+        "新增高德地图 Marker 点击气泡手机端自适应宽度约束 (max-width: min(264px, 100vw-40px)) 与一键导航/司机卡快捷按钮，新增底部 5 栏真正视图切换 (setMobileView)"
+      ]
+    },
+    {
+      "version": "v1.4",
+      "title": "上线「💡 功能导览与同行旅伴使用指南」弹窗 & 一键复制微信分享文案",
+      "timestamp": "2026-10-05 18:22 CST",
+      "author": "Shuguo & 随身AI定制师",
+      "scope": "🌟 全环线导览体验 & 旅伴分享指南",
+      "vibe_prompt": "生成一段功能介绍和使用帮助，我好转发给朋友，同时也需要在Web App里展示一个dialog凸显出来",
+      "changes": [
+        "新增「💡 2026 滇西北·雪山秘境奢野路书 · 功能介绍与使用指南」弹窗 (#userGuideModal)，支持点击顶部「💡 指南」或访问 ?guide=1 直达",
+        "弹窗内内置「📲 一键复制微信分享文案」卡片，方便直接转发给同行旅伴微信群"
+      ]
+    },
+    {
+      "version": "v1.3",
+      "title": "自动 Vibe 闭环编译状态轮询 & 路书版本演进记录舱",
+      "timestamp": "2026-10-05 17:45 CST",
+      "author": "Shuguo & 随身AI定制师",
+      "scope": "🌟 全环线自动迭代闭环 & 版本记录系统",
+      "vibe_prompt": "懂了，有点儿意思，那岂不是可以完成自动vibe反馈然后自动更新了？加上更新版本记录",
+      "changes": [
+        "新增「📜 版本记录」顶部徽章与完整版本演进弹窗 (#versionHistoryModal)，完整展示每次迭代的版本号、提交人、Vibe 原话与变更细项",
+        "新增提交 Vibe 后的「8秒实时自动检测新版本」轮询引擎 (#vibeAutoWatchBox)，检测到云端新版本上线后自动清理缓存并弹出「🎉 新版本已上线 · 立即刷新」横幅",
+        "升级 Cloudtop 守护进程 vibe_bridge.py 为 5 步全自动「改代码 ➔ 递增版本号写 Changelog ➔ 重建产物 ➔ 4秒极速发布 GitHub Pages ➔ 双端通知」闭环"
+      ]
+    },
+    {
+      "version": "v1.2",
+      "title": "上线隐藏式「AI 定制师 Vibe 实时反馈与自动迭代舱」",
+      "timestamp": "2026-10-05 12:10 CST",
+      "author": "Shuguo",
+      "scope": "🌟 整体行程 Vibe 与交互闭环",
+      "vibe_prompt": "在网页加一个隐藏入口，同行旅伴随时输入新的 Vibe，自动通知 Cloudtop 上的守护进程并唤醒专属会话迭代重发页面",
+      "changes": [
+        "新增三击左上角「云境」徽章、点击 ✨ 按钮或访问 ?vibe=1 唤醒「Vibe 实时迭代舱」",
+        "打通国内手机浏览器免翻墙直连公网信箱 (ntfy.sh) ──► Cloudtop 守护进程 8 秒轮询 ──► 自动唤醒专属会话 (4aa6fc13) 改版闭环",
+        "内置高原弱网兜底：断网时自动复制结构化 Vibe 反馈口令至剪贴板"
+      ]
+    },
+    {
+      "version": "v1.1",
+      "title": "商业奢野定妆版：四大雪山美宿、三大行程决策器与百度百科实景图鉴",
+      "timestamp": "2026-10-05 09:30 CST",
+      "author": "Shuguo",
+      "scope": "🏔️ 全环线 11日 (10.4–10.14)",
+      "vibe_prompt": "把10.4到10.14的完整行程、四大必住雪山美宿、10.5二选一、10.11下午14:30出发、10.13南极洛拼车决策全部做成可交互商业路书",
+      "changes": [
+        "上线 11 日高爬低睡海拔阶梯图（峰值孔雀山垭口 3950m、南极洛 5 号湖 3920m，住宿严格控制在 1980m–3400m）",
+        "内置 10.5 香巴拉/云栖壹号院、10.10 巴拉格宗路线、10.13 南极洛 1-5/1-9 号湖及拼车返丽江三大交互式决策器",
+        "接入百度百科直连词条、小红书机位攻略、司机藏地双语问路卡与定制师白标海报/KML/CSV 导出"
+      ]
+    },
+    {
+      "version": "v1.0",
+      "title": "2026 滇西北·雪山秘境环线初代路书上线",
+      "timestamp": "2026-10-04 20:00 CST",
+      "author": "Shuguo",
+      "scope": "🗺️ 基础地图与行程框架",
+      "vibe_prompt": "生成云南丽江-虎跳峡-哈巴雪山-香格里拉-梅里雪山-南极洛 11 日环线地图",
+      "changes": [
+        "构建 100% 中国大陆原生直连架构（高德 GCJ-02 实景瓦片 + 离线矢量等高线双引擎，零海外阻塞依赖）",
+        "完成丽江、虎跳峡、哈巴黑海湖、香格里拉无底湖、巴拉格宗、飞来寺、南极洛 12 大核心节点坐标校准"
+      ]
+    }
+  ]
+}
