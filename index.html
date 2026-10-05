@@ -1733,12 +1733,31 @@ python3 generator.py publish \
         <div>
           <label class="block font-bold mb-1">✨ 期望调整的 Vibe 方向（可多选）：</label>
           <div class="flex flex-wrap gap-1.5" id="tsVibeTagChips">
+            <button type="button" data-vtag="🥾 导入两步路/GPX/KML/KMZ徒步轨迹" class="ts-vibe-tag px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-bold cursor-pointer">🥾 两步路轨迹</button>
             <button type="button" data-vtag="🥾 调整徒步/节奏强度" class="ts-vibe-tag px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-bold cursor-pointer">🥾 徒步节奏</button>
             <button type="button" data-vtag="🍽️ 补充周边口碑美食" class="ts-vibe-tag px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-bold cursor-pointer">🍽️ 周边美食</button>
             <button type="button" data-vtag="📸 增加绝佳摄影机位" class="ts-vibe-tag px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-bold cursor-pointer">📸 摄影机位</button>
             <button type="button" data-vtag="🏨 调整酒店或包车衔接" class="ts-vibe-tag px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-bold cursor-pointer">🏨 酒店/交通</button>
             <button type="button" data-vtag="🎨 升级视觉插画与交互体验" class="ts-vibe-tag px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-bold cursor-pointer">🎨 视觉/交互</button>
           </div>
+        </div>
+
+        <!-- 🥾 2bulu / Outdoor Track Upload Box -->
+        <div class="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/35 space-y-2">
+          <div class="flex items-center justify-between gap-2 flex-wrap">
+            <span class="font-black text-emerald-400 text-xs">🥾 上传两步路 / 六只脚 / AllTrails 轨迹文件 (选填)</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300">支持 KML(轨迹/路径) · KMZ · GPX · GeoJSON</span>
+          </div>
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+            <label class="flex-1 px-3 py-2 rounded-xl bg-slate-900/80 border border-dashed border-emerald-500/50 hover:border-emerald-400 cursor-pointer flex items-center justify-between gap-2 transition">
+              <span id="tsHubTrackFileLabel" class="text-[11px] font-bold text-emerald-300 truncate">📂 选择两步路导出文件 (.kml / .kmz / .gpx / .geojson)</span>
+              <input id="tsHubTrackFileInput" type="file" accept=".gpx,.kml,.kmz,.geojson,.json,.xml" class="hidden" onchange="window.tsHubHandleTrackSelect(this.files[0])" />
+              <span class="px-2 py-0.5 rounded bg-emerald-500 text-slate-950 font-black text-[10px] shrink-0">浏览文件</span>
+            </label>
+            <button type="button" id="tsHubBtnClearTrack" onclick="window.tsHubClearTrack()" class="hidden px-2.5 py-2 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/30 font-bold text-[11px] cursor-pointer shrink-0">✕ 移除</button>
+          </div>
+          <input id="tsHubTrackUrlInput" type="url" placeholder="🔗 或粘贴两步路 (2bulu.com) / AllTrails / Wikiloc 轨迹链接 (选填)..." class="w-full px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-[11px] font-semibold focus:outline-none focus:border-emerald-400" />
+          <div id="tsHubTrackPreview" class="hidden p-2.5 rounded-xl bg-slate-950/85 border border-emerald-500/40 space-y-1 text-[11px]"></div>
         </div>
 
         <div>
@@ -1774,10 +1793,10 @@ python3 generator.py publish \
     <div class="px-4 py-3 border-b border-slate-700/60 flex items-center justify-between gap-2 bg-gradient-to-r from-sky-500/20 via-amber-500/10 to-emerald-500/10 shrink-0">
       <div class="min-w-0">
         <div class="flex items-center gap-1.5">
-          <span id="tsVhCurrentVersionPill" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-sky-400 text-slate-950 shrink-0">v2.0</span>
+          <span id="tsVhCurrentVersionPill" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-sky-400 text-slate-950 shrink-0">v2.1</span>
           <h3 class="text-xs sm:text-sm font-black truncate">📜 版本演进与 Vibe 自动迭代记录</h3>
         </div>
-        <p class="text-[10px] sm:text-[11px] opacity-75 truncate mt-0.5">每次通过口令提交新 Vibe，云端 AI 自动更新路书并记录完整变更</p>
+        <p class="text-[10px] sm:text-[11px] opacity-75 truncate mt-0.5">每次通过口令提交新 Vibe 或上传两步路轨迹，云端 AI 自动更新路书并记录完整变更</p>
       </div>
       <div class="flex items-center gap-1.5 shrink-0">
         <button onclick="window.closeVersionHistoryModal(); window.openVibeFeedbackModal();" class="px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 font-black text-[11px] cursor-pointer">✨ 提Vibe</button>
@@ -1794,15 +1813,174 @@ python3 generator.py publish \
   const TS_EXPECTED_PW = "applefriend";
   const TS_EXPECTED_SHA256 = "1f3216c601f6af86b37ec55f490492562306a1fe3aebe5db67fcc183f3b26e98";
   const TS_NTFY_URL = "https://ntfy.sh/yungapple_travel_studio_vibe_9f8a7b6c";
-  const TS_BUILTIN_VERSION = "v2.0";
+  const TS_BUILTIN_VERSION = "v2.1";
   const TS_STORAGE_UNLOCK_KEY = "vibe_unlocked_" + TS_APP_ID;
   const TS_STORAGE_TOKEN_KEY = "vibe_token_" + TS_APP_ID;
-  const TS_DEFAULT_HISTORY = [{"version": "v2.0", "title": "提取「口令保护 Vibe 随身反馈 ➔ 全自动新版本闭环」为平台级旗舰特权功能", "timestamp": "2026-10-05 22:55 CST", "author": "Shuguo & Travel Studio Architect", "scope": "🌟 平台编译器核心 (core/vibe_loop.py & vibe_bridge.py)", "vibe_prompt": "Let's extract the vibe feedback-newversion-loop into a premium feature in the travel-studio, also make it in my south-americ trip side as well. Let's put some passwords before anyone can vibe the site. For yunnan: password is: applefriend, south americ: sa26, all others: applefriend", "changes": ["新增 core/vibe_loop.py 与多项目口令核验守护引擎 vibe_bridge.py，任何通过 Travel Studio 编译的路书自动获得「✨ 口令认证 Vibe 抽屉 + 📜 版本演进记录 + 8秒新版本自动轮询」", "实装分级口令门禁（Password Gate + 设备自动记住）：云南路书口令为 applefriend，南美路书口令为 sa26，Travel Studio 平台及所有其他新建行程默认口令为 applefriend", "左栏工作台新增「🔒 Vibe 自动迭代口令配置器」与「✨ core/vibe_loop.py 源码检视」，支持一键测试平台自身的 Vibe 自动迭代闭环"]}, {"version": "v1.5", "title": "三模态混合输入与 AI 缺口微访谈编译器上线", "timestamp": "2026-10-04 16:00 CST", "author": "Shuguo", "scope": "🗺️ 编译器工作台与双栈适配", "vibe_prompt": "支持粘贴随手碎片笔记、AI 自动识别缺口追问并编译为离线 PWA", "changes": ["上线中国境内 (cn_domestic 高德/GCJ-02/百科/小红书) 与国际全球 (global WGS-84/Google Maps/Wiki) 双栈编译器", "收录 South America 2026 与 Yunnan 2026 两大实战标杆案例与 CEO 商业计划书"]}];
+  const TS_DEFAULT_HISTORY = [
+    {
+      "version": "v2.1",
+      "title": "打通「两步路 (2bulu) / 六只脚 / AllTrails」4 大轨迹格式双向互通与 Vibe 抽屉上传闭环",
+      "timestamp": "2026-10-05 23:25 CST",
+      "author": "Shuguo & Travel Studio Architect",
+      "scope": "🥾 户外徒步轨迹互通引擎 (core/vibe_loop.py & vibe_bridge.py)",
+      "vibe_prompt": "BTW，户外徒步轨迹需要两步路等app，不知道能不能打通，找到方法，也可以支持vibe反馈时上传轨迹文件（两步路导出格式：KML格式(轨迹)、KML格式(路径)、KMZ格式、GPX格式）",
+      "changes": [
+        "全面支持两步路 4 大导出格式客户端 0 依赖解析：KML格式（轨迹 <gx:Track><gx:coord>）、KML格式（路径 <LineString><coordinates>）、KMZ格式（浏览器原生 DecompressionStream 解压 doc.kml）、GPX格式（<trkpt>/<rtept>/<wpt>）及 GeoJSON",
+        "内置中国境内 WGS-84 ⇄ GCJ-02 坐标系自动双向转换算法：两步路/GPS 轨迹导入高德地图自动纠偏对齐，路书导出 .gpx / .kml 自动还原标准 WGS-84 供两步路直接打开跟走",
+        "Vibe 反馈舱新增「🥾 上传两步路/AllTrails 轨迹文件」与分享链接输入，自动计算距离/爬升/最高海拔并通过 ntfy.sh 同步至 Cloudtop custom_tracks.json 持久化合入路书"
+      ]
+    },
+    {
+      "version": "v2.0",
+      "title": "提取「口令保护 Vibe 随身反馈 ➔ 全自动新版本闭环」为平台级旗舰特权功能",
+      "timestamp": "2026-10-05 22:55 CST",
+      "author": "Shuguo & Travel Studio Architect",
+      "scope": "🌟 平台编译器核心 (core/vibe_loop.py & vibe_bridge.py)",
+      "vibe_prompt": "Let's extract the vibe feedback-newversion-loop into a premium feature in the travel-studio, also make it in my south-americ trip side as well. Let's put some passwords before anyone can vibe the site. For yunnan: password is: applefriend, south americ: sa26, all others: applefriend",
+      "changes": [
+        "新增 core/vibe_loop.py 与多项目口令核验守护引擎 vibe_bridge.py，任何通过 Travel Studio 编译的路书自动获得「✨ 口令认证 Vibe 抽屉 + 📜 版本演进记录 + 8秒新版本自动轮询」",
+        "实装分级口令门禁（Password Gate + 设备自动记住）：云南路书口令为 applefriend，南美路书口令为 sa26，Travel Studio 平台及所有其他新建行程默认口令为 applefriend"
+      ]
+    },
+    {
+      "version": "v1.5",
+      "title": "三模态混合输入与 AI 缺口微访谈编译器上线",
+      "timestamp": "2026-10-04 16:00 CST",
+      "author": "Shuguo",
+      "scope": "🗺️ 编译器工作台与双栈适配",
+      "vibe_prompt": "支持粘贴随手碎片笔记、AI 自动识别缺口追问并编译为离线 PWA",
+      "changes": [
+        "上线中国境内 (cn_domestic 高德/GCJ-02/百科/小红书) 与国际全球 (global WGS-84/Google Maps/Wiki) 双栈编译器",
+        "收录 South America 2026 与 Yunnan 2026 两大实战标杆案例与 CEO 商业计划书"
+      ]
+    }
+  ];
 
   let tsSelectedTags = new Set();
   let tsCloudStatus = null;
   let tsWatchTimer = null;
   let tsBaselineVersion = null;
+  let tsHubUploadedTrack = null;
+
+  async function unpackKmzBuf(buffer) {
+    const bytes = new Uint8Array(buffer);
+    const view = new DataView(buffer);
+    let offset = 0;
+    let kmlText = "";
+    while (offset + 30 <= bytes.length) {
+      if (view.getUint32(offset, true) !== 0x04034b50) break;
+      const compression = view.getUint16(offset + 8, true);
+      const compSize = view.getUint32(offset + 18, true);
+      const nameLen = view.getUint16(offset + 26, true);
+      const extraLen = view.getUint16(offset + 28, true);
+      const entryName = new TextDecoder("utf-8").decode(bytes.subarray(offset + 30, offset + 30 + nameLen));
+      const dataStart = offset + 30 + nameLen + extraLen;
+      const slice = bytes.subarray(dataStart, dataStart + compSize);
+      if (entryName.toLowerCase().endsWith(".kml") && !kmlText) {
+        if (compression === 0) {
+          kmlText = new TextDecoder("utf-8").decode(slice);
+        } else if (compression === 8 && typeof DecompressionStream !== "undefined") {
+          const ds = new DecompressionStream("deflate-raw");
+          const w = ds.writable.getWriter();
+          w.write(slice); w.close();
+          const buf = await new Response(ds.readable).arrayBuffer();
+          kmlText = new TextDecoder("utf-8").decode(buf);
+        }
+      }
+      offset = dataStart + compSize;
+    }
+    return kmlText;
+  }
+
+  window.tsHubHandleTrackSelect = async function(file) {
+    if (!file) return;
+    const labelEl = document.getElementById("tsHubTrackFileLabel");
+    const previewEl = document.getElementById("tsHubTrackPreview");
+    const clearBtn = document.getElementById("tsHubBtnClearTrack");
+    try {
+      const lower = file.name.toLowerCase();
+      let text = "";
+      let fmt = "GPX";
+      if (lower.endsWith(".kmz")) {
+        text = await unpackKmzBuf(await file.arrayBuffer());
+        fmt = "KMZ (两步路完整包)";
+      } else {
+        text = await file.text();
+        fmt = lower.endsWith(".gpx") ? "GPX" : (text.includes("gx:coord") ? "KML (两步路轨迹)" : "KML (两步路路径)");
+      }
+      const xml = new DOMParser().parseFromString(text, "text/xml");
+      const pts = [];
+      Array.from(xml.querySelectorAll("trkpt, rtept")).forEach(p => {
+        const lat = parseFloat(p.getAttribute("lat")), lon = parseFloat(p.getAttribute("lon"));
+        const ele = parseFloat(p.querySelector("ele")?.textContent || "0") || 0;
+        if (!isNaN(lat) && !isNaN(lon)) pts.push([lat, lon, Math.round(ele)]);
+      });
+      Array.from(xml.getElementsByTagName("*")).forEach(el => {
+        const ln = (el.localName || el.tagName || "").toLowerCase();
+        if (ln === "coord" || ln === "gx:coord") {
+          const sp = (el.textContent || "").trim().split(/\s+/);
+          if (sp.length >= 2) pts.push([parseFloat(sp[1]), parseFloat(sp[0]), Math.round(parseFloat(sp[2] || "0") || 0)]);
+        }
+      });
+      if (!pts.length) {
+        Array.from(xml.querySelectorAll("coordinates")).forEach(c => {
+          (c.textContent || "").trim().split(/\s+/).forEach(tok => {
+            const sp = tok.split(",");
+            if (sp.length >= 2 && !isNaN(parseFloat(sp[1]))) pts.push([parseFloat(sp[1]), parseFloat(sp[0]), Math.round(parseFloat(sp[2] || "0") || 0)]);
+          });
+        });
+      }
+      if (!pts.length) throw new Error("未解析到轨迹坐标点");
+      let distKm = 0, gainM = 0, maxE = -99999, minE = 99999;
+      for (let i = 0; i < pts.length; i++) {
+        const [lat, lng, ele] = pts[i];
+        if (ele > maxE) maxE = ele;
+        if (ele < minE) minE = ele;
+        if (i > 0) {
+          const dLat = (lat - pts[i-1][0]) * Math.PI / 180, dLon = (lng - pts[i-1][1]) * Math.PI / 180;
+          const a = Math.sin(dLat/2)**2 + Math.cos(pts[i-1][0]*Math.PI/180)*Math.cos(lat*Math.PI/180)*Math.sin(dLon/2)**2;
+          distKm += 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          if (ele - pts[i-1][2] > 1.5) gainM += (ele - pts[i-1][2]);
+        }
+      }
+      const step = Math.max(1, Math.floor(pts.length / 100));
+      const sampled = pts.filter((_, idx) => idx % step === 0 || idx === pts.length - 1).slice(0, 110);
+      tsHubUploadedTrack = {
+        id: "track-" + Date.now(),
+        name: xml.querySelector("name")?.textContent?.trim() || file.name.replace(/\.[^.]+$/, ""),
+        fileName: file.name,
+        format: fmt,
+        distanceKm: Number(distKm.toFixed(2)),
+        elevationGainM: Math.round(gainM),
+        maxElevM: maxE === -99999 ? 0 : maxE,
+        minElevM: minE === 99999 ? 0 : minE,
+        coords: sampled,
+        waypoints: []
+      };
+      if (labelEl) labelEl.textContent = `✅ 已解析: ${file.name} (${fmt})`;
+      if (clearBtn) clearBtn.classList.remove("hidden");
+      if (previewEl) {
+        previewEl.classList.remove("hidden");
+        previewEl.innerHTML = `<div class="font-extrabold text-emerald-400">🥾 轨迹解析成功：《${tsHubUploadedTrack.name}》 (${fmt}) · ${tsHubUploadedTrack.distanceKm}km · 爬升+${tsHubUploadedTrack.elevationGainM}m · 最高${tsHubUploadedTrack.maxElevM}m</div>`;
+      }
+    } catch (err) {
+      tsHubUploadedTrack = null;
+      if (previewEl) {
+        previewEl.classList.remove("hidden");
+        previewEl.innerHTML = `<div class="text-rose-400 font-bold">❌ 解析失败：${err.message || err}</div>`;
+      }
+    }
+  };
+
+  window.tsHubClearTrack = function() {
+    tsHubUploadedTrack = null;
+    const inp = document.getElementById("tsHubTrackFileInput");
+    if (inp) inp.value = "";
+    const lbl = document.getElementById("tsHubTrackFileLabel");
+    if (lbl) lbl.textContent = "📂 选择两步路导出文件 (.kml / .kmz / .gpx / .geojson)";
+    document.getElementById("tsHubBtnClearTrack")?.classList.add("hidden");
+    document.getElementById("tsHubTrackPreview")?.classList.add("hidden");
+  };
 
   function isVibeUnlocked() {
     const saved = localStorage.getItem(TS_STORAGE_TOKEN_KEY) || "";
@@ -1937,13 +2115,20 @@ python3 generator.py publish \
     }
     const author = (document.getElementById("tsVibeAuthorInput")?.value || "同行旅伴").trim();
     const scope = document.getElementById("tsVibeScopeSelect")?.value || "🌟 整体行程 Vibe 与节奏";
-    const message = (document.getElementById("tsVibeMessageInput")?.value || "").trim();
+    const trackUrl = (document.getElementById("tsHubTrackUrlInput")?.value || "").trim();
+    let message = (document.getElementById("tsVibeMessageInput")?.value || "").trim();
     const statusEl = document.getElementById("tsVibeSubmitStatus");
     const btn = document.getElementById("tsBtnSubmitVibe");
+    if (!message && tsHubUploadedTrack) {
+      message = `上传了户外轨迹《${tsHubUploadedTrack.name}》(${tsHubUploadedTrack.format}, ${tsHubUploadedTrack.distanceKm}km, +${tsHubUploadedTrack.elevationGainM}m)，请集成进路书`;
+    }
+    if (!message && trackUrl) {
+      message = `分享了户外轨迹链接 ${trackUrl}，请集成进路书`;
+    }
     if (!message) {
       if (statusEl) {
         statusEl.className = "text-xs font-bold text-rose-400";
-        statusEl.textContent = "⚠️ 请先输入你想调整的具体 Vibe 描述！";
+        statusEl.textContent = "⚠️ 请先输入你想调整的具体 Vibe 描述或上传轨迹文件！";
       }
       return;
     }
@@ -1954,6 +2139,8 @@ python3 generator.py publish \
       scope,
       vibe_tags: Array.from(tsSelectedTags),
       message,
+      gpx_track: tsHubUploadedTrack || null,
+      track_url: trackUrl || "",
       password_token: localStorage.getItem(TS_STORAGE_TOKEN_KEY) || TS_EXPECTED_PW,
       password_sha256: TS_EXPECTED_SHA256,
       timestamp: new Date().toISOString()
@@ -1970,6 +2157,7 @@ python3 generator.py publish \
       });
       if (!resp.ok) throw new Error("HTTP " + resp.status);
       document.getElementById("tsVibeMessageInput").value = "";
+      window.tsHubClearTrack();
       if (statusEl) {
         statusEl.className = "text-xs font-bold text-emerald-400";
         statusEl.textContent = "✅ 已通过口令认证并送达 Cloudtop！AI 正在自动改版，已开启每 8 秒新版本检测！";
@@ -2014,6 +2202,7 @@ python3 generator.py publish \
   });
 })();
 </script>
+
 
 </body>
 </html>

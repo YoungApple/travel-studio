@@ -193,11 +193,11 @@
                 南美 2026 随身行 · South America
               </h1>
               <button type="button" onclick="window.openSaVersionHistoryModal()" class="px-1.5 py-0.5 rounded-md text-[10px] font-extrabold bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/30 cursor-pointer shrink-0">
-                📜 <span id="saHeaderVerText">v2.6</span>
+                📜 <span id="saHeaderVerText">v2.7</span>
               </button>
             </div>
             <p class="text-[11px] text-[var(--muted-foreground)] truncate">
-              ⛶ 全屏地图 · 📋 当日行程全展开 · 🥾 12条徒步轨迹 · 🌟 实名周边精选 · ✨ 口令Vibe闭环
+              ⛶ 全屏地图 · 📋 当日全展开 · 🥾 12条徒步轨迹(支持两步路KML/KMZ/GPX互通) · 🌟 周边精选 · ✨ 口令Vibe闭环
             </p>
           </div>
         </div>
@@ -2984,22 +2984,117 @@
       });
     }
 
+    window.saCustomTrails = [];
+    try {
+      const savedCustom = JSON.parse(localStorage.getItem("sa2026_custom_tracks") || "[]");
+      if (Array.isArray(savedCustom)) window.saCustomTrails = savedCustom;
+    } catch (e) {}
+
+    function getAllSaTrails() {
+      return [...(window.saCustomTrails || []), ...HIKING_TRAILS];
+    }
+
     function getFilteredTrails() {
+      const allTrails = getAllSaTrails();
       if (activeDayFilter !== "all") {
         const dayPlaces = PLACES.filter(p => p.dayNum.includes(Number(activeDayFilter)));
         const dayLayers = new Set(dayPlaces.map(p => p.layer));
-        return HIKING_TRAILS.filter(t => dayLayers.has(t.layer));
+        return allTrails.filter(t => dayLayers.has(t.layer) || t.isCustom);
       }
       if (activeLayer === "today") {
         const todayPlaces = PLACES.filter(p => p.dayNum.includes(currentTripDay));
         const todayLayers = new Set(todayPlaces.map(p => p.layer));
-        return HIKING_TRAILS.filter(t => todayLayers.has(t.layer));
+        return allTrails.filter(t => todayLayers.has(t.layer) || t.isCustom);
       }
       if (activeLayer !== "all") {
-        return HIKING_TRAILS.filter(t => t.layer === activeLayer);
+        return allTrails.filter(t => t.layer === activeLayer || t.isCustom);
       }
-      return HIKING_TRAILS;
+      return allTrails;
     }
+
+    window.exportSaTrailKml = function(trailId) {
+      const tr = getAllSaTrails().find(t => t.id === trailId);
+      if (!tr || !Array.isArray(tr.coords) || tr.coords.length === 0) return;
+      const coordLines = tr.coords.map(c => `${Number(c[1]).toFixed(6)},${Number(c[0]).toFixed(6)},${c[2] || 0}`).join("\n            ");
+      const sPt = tr.coords[0];
+      const ePt = tr.coords[tr.coords.length - 1];
+      const kml = `<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+  <Document>
+    <name>${tr.nameZh} (${tr.nameLocal || ""})</name>
+    <description>${tr.subRegion} | 距离: ${tr.distanceKm} | 爬升: ${tr.elevationGain} | 最高海拔: ${tr.maxAltitude} | ${tr.highlightsZh || ""}</description>
+    <Style id="saTrailStyle">
+      <LineStyle><color>ff5e3ff4</color><width>4</width></LineStyle>
+    </Style>
+    <Placemark>
+      <name>🟢 起点：${tr.trailheadName || "Trailhead"}</name>
+      <Point><coordinates>${Number(sPt[1]).toFixed(6)},${Number(sPt[0]).toFixed(6)},${sPt[2] || 0}</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>🏔️ 终点：${tr.endPointName || "Summit"}</name>
+      <Point><coordinates>${Number(ePt[1]).toFixed(6)},${Number(ePt[0]).toFixed(6)},${ePt[2] || 0}</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>${tr.nameZh}</name>
+      <description>${tr.highlightsZh || ""}</description>
+      <styleUrl>#saTrailStyle</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+            ${coordLines}
+        </coordinates>
+      </LineString>
+    </Placemark>
+  </Document>
+</kml>`;
+      const blob = new Blob([kml], { type: "application/vnd.google-earth.kml+xml;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `south_america_2026_${tr.id}_2bulu.kml`;
+      a.click();
+    };
+
+    window.exportSaTrailGpx = function(trailId) {
+      const tr = getAllSaTrails().find(t => t.id === trailId);
+      if (!tr || !Array.isArray(tr.coords) || tr.coords.length === 0) return;
+      const trkpts = tr.coords.map(c => `      <trkpt lat="${Number(c[0]).toFixed(6)}" lon="${Number(c[1]).toFixed(6)}"><ele>${c[2] || 0}</ele></trkpt>`).join("\n");
+      const sPt = tr.coords[0];
+      const ePt = tr.coords[tr.coords.length - 1];
+      const gpx = `<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="South-America-2026-2bulu-AllTrails-Bridge" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>${tr.nameZh} (${tr.nameLocal || ""})</name>
+    <desc>${tr.subRegion} | 距离: ${tr.distanceKm} | 爬升: ${tr.elevationGain} | 最高海拔: ${tr.maxAltitude} | ${tr.highlightsZh || ""}</desc>
+  </metadata>
+  <wpt lat="${Number(sPt[0]).toFixed(6)}" lon="${Number(sPt[1]).toFixed(6)}">
+    <ele>${sPt[2] || 0}</ele>
+    <name>起点：${tr.trailheadName || "Trailhead"}</name>
+  </wpt>
+  <wpt lat="${Number(ePt[0]).toFixed(6)}" lon="${Number(ePt[1]).toFixed(6)}">
+    <ele>${ePt[2] || 0}</ele>
+    <name>终点：${tr.endPointName || "Summit"}</name>
+  </wpt>
+  <trk>
+    <name>${tr.nameZh}</name>
+    <desc>${tr.highlightsZh || ""}</desc>
+    <trkseg>
+${trkpts}
+    </trkseg>
+  </trk>
+</gpx>`;
+      const blob = new Blob([gpx], { type: "application/gpx+xml;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `south_america_2026_${tr.id}_2bulu.gpx`;
+      a.click();
+    };
+
+    window.searchSaTrailOn2bulu = function(trailId) {
+      const tr = getAllSaTrails().find(t => t.id === trailId);
+      const kw = tr ? `${tr.nameLocal || tr.nameZh}` : "Fitz Roy";
+      navigator.clipboard?.writeText(kw);
+      window.open(`https://www.wikiloc.com/wikiloc/map.do?q=${encodeURIComponent(kw)}`, "_blank", "noopener");
+    };
 
     function getFilteredGems() {
       if (activeDayFilter !== "all") {
@@ -3285,17 +3380,18 @@
             <div style="min-width:240px;max-width:290px;line-height:1.45;">
               <div style="font-size:11px;font-weight:800;color:${tr.diffColor};margin-bottom:2px;">🥾 ${tr.subRegion} · ${tr.difficulty}</div>
               <div style="font-size:13.5px;font-weight:800;margin-bottom:2px;">${tr.nameZh}</div>
-              <div style="font-size:11.5px;font-weight:700;color:#0284c7;margin-bottom:5px;">${tr.nameLocal}</div>
+              <div style="font-size:11.5px;font-weight:700;color:#0284c7;margin-bottom:5px;">${tr.nameLocal || ""}</div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;background:rgba(16,185,129,0.1);padding:6px;border-radius:8px;font-size:11px;margin-bottom:6px;">
                 <div>📏 <strong>距离:</strong> ${tr.distanceKm}</div>
                 <div>⛰️ <strong>爬升:</strong> ${tr.elevationGain}</div>
                 <div>🏔️ <strong>最高:</strong> ${tr.maxAltitude}</div>
                 <div>⏱️ <strong>耗时:</strong> ${tr.duration}</div>
               </div>
-              <div style="font-size:11px;margin-bottom:6px;opacity:0.9;"><strong>💡 亮点:</strong> ${tr.highlightsZh}</div>
+              <div style="font-size:11px;margin-bottom:6px;opacity:0.9;"><strong>💡 亮点:</strong> ${tr.highlightsZh || ""}</div>
               <div style="display:flex;gap:5px;flex-wrap:wrap;">
-                <a href="https://www.google.com/maps/dir/?api=1&destination=${tr.trailheadLat},${tr.trailheadLng}&travelmode=walking" target="_blank" rel="noopener noreferrer" style="background:#059669;color:#fff;padding:5px 9px;border-radius:8px;text-decoration:none;font-weight:800;font-size:11px;">📍 导航去起点</a>
-                <button onclick="switchRightTab('trails')" style="background:#0284c7;color:#fff;padding:5px 9px;border-radius:8px;border:none;font-weight:800;font-size:11px;cursor:pointer;">🥾 查看完整参数</button>
+                <a href="https://www.google.com/maps/dir/?api=1&destination=${tr.trailheadLat},${tr.trailheadLng}&travelmode=walking" target="_blank" rel="noopener noreferrer" style="background:#059669;color:#fff;padding:5px 8px;border-radius:8px;text-decoration:none;font-weight:800;font-size:11px;">📍 导航起点</a>
+                <button onclick="exportSaTrailKml('${tr.id}')" style="background:#0284c7;color:#fff;padding:5px 8px;border-radius:8px;border:none;font-weight:800;font-size:11px;cursor:pointer;">📥 .KML (两步路)</button>
+                <button onclick="exportSaTrailGpx('${tr.id}')" style="background:#f59e0b;color:#0f172a;padding:5px 8px;border-radius:8px;border:none;font-weight:800;font-size:11px;cursor:pointer;">📥 .GPX</button>
               </div>
             </div>
           `;
@@ -3755,12 +3851,12 @@
               <div class="flex items-center justify-between gap-2 flex-wrap">
                 <div>
                   <div class="text-xs sm:text-sm font-extrabold text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5">
-                    <span>🥾 本区域附近精选徒步路线建议 (${localTrails.length} 条 · 含地图轨迹与技术参数)</span>
+                    <span>🥾 本区域附近精选徒步路线建议 (${localTrails.length} 条 · 支持两步路 .KML/.GPX 导出)</span>
                   </div>
-                  <p class="text-[11px] text-[var(--muted-foreground)] mt-0.5">点击「🗺️ 在地图高亮路线」即可在上方地图缩放查看完整徒步轨迹、🟢起点与🏔️终点坐标</p>
+                  <p class="text-[11px] text-[var(--muted-foreground)] mt-0.5">点击「🗺️ 地图高亮路线」查看完整轨迹；点击「📥 导出 .KML / .GPX」可直接用手机「两步路户外助手 (2bulu) / AllTrails」打开离线循迹</p>
                 </div>
                 <button onclick="switchRightTab('trails')" class="px-2.5 py-1 rounded-xl text-xs font-extrabold bg-emerald-600 text-white cursor-pointer">
-                  全部 12 条徒步线 ›
+                  全部徒步线 & 上传轨迹 ›
                 </button>
               </div>
               <div class="grid grid-cols-1 gap-2.5">
@@ -3773,11 +3869,17 @@
                           <span class="text-[11px] font-extrabold text-[var(--primary)]">${tr.subRegion}</span>
                         </div>
                         <div class="text-sm font-extrabold text-[var(--foreground)] mt-0.5">${tr.nameZh}</div>
-                        <div class="text-xs font-semibold text-[var(--muted-foreground)]">${tr.nameLocal}</div>
+                        <div class="text-xs font-semibold text-[var(--muted-foreground)]">${tr.nameLocal || ""}</div>
                       </div>
-                      <div class="flex items-center gap-1.5 shrink-0">
+                      <div class="flex items-center gap-1.5 flex-wrap shrink-0">
                         <button onclick="focusTrailOnMap('${tr.id}')" class="px-2.5 py-1.5 rounded-xl text-xs font-extrabold bg-emerald-600 text-white hover:opacity-90 cursor-pointer shadow-2xs">
                           🗺️ 地图高亮路线
+                        </button>
+                        <button onclick="exportSaTrailKml('${tr.id}')" class="px-2.5 py-1.5 rounded-xl text-xs font-extrabold bg-sky-600 text-white hover:opacity-90 cursor-pointer shadow-2xs" title="导出两步路户外助手 KML格式(路径)">
+                          📥 .KML (两步路)
+                        </button>
+                        <button onclick="exportSaTrailGpx('${tr.id}')" class="px-2.5 py-1.5 rounded-xl text-xs font-extrabold bg-amber-500 text-slate-950 hover:opacity-90 cursor-pointer shadow-2xs" title="导出两步路/AllTrails/Garmin 通用 GPX 轨迹">
+                          📥 .GPX
                         </button>
                         <a href="https://www.google.com/maps/dir/?api=1&destination=${tr.trailheadLat},${tr.trailheadLng}&travelmode=walking" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-[var(--content)] text-[var(--foreground)] border border-[var(--border)]">
                           📍 起点导航
@@ -3790,11 +3892,11 @@
                       <div><span class="text-[var(--muted-foreground)]">🏔️ 最高海拔：</span><strong class="text-[var(--foreground)]">${tr.maxAltitude}</strong></div>
                       <div><span class="text-[var(--muted-foreground)]">⏱️ 预计耗时：</span><strong class="text-[var(--foreground)]">${tr.duration}</strong></div>
                     </div>
-                    <p class="text-xs text-[var(--foreground)] leading-relaxed"><strong>✨ 路线亮点：</strong>${tr.highlightsZh}</p>
+                    <p class="text-xs text-[var(--foreground)] leading-relaxed"><strong>✨ 路线亮点：</strong>${tr.highlightsZh || ""}</p>
                     <div class="text-[11px] text-[var(--muted-foreground)] flex flex-wrap gap-x-4 gap-y-1">
-                      <span><strong>🟢 起点：</strong>${tr.trailheadName} (${tr.trailheadLat.toFixed(4)}, ${tr.trailheadLng.toFixed(4)})</span>
-                      <span><strong>🏔️ 终点：</strong>${tr.endPointName}</span>
-                      <span><strong>🎒 装备建议：</strong>${tr.gearTipsZh}</span>
+                      <span><strong>🟢 起点：</strong>${tr.trailheadName || "Trailhead"} (${Number(tr.trailheadLat).toFixed(4)}, ${Number(tr.trailheadLng).toFixed(4)})</span>
+                      <span><strong>🏔️ 终点：</strong>${tr.endPointName || "Summit"}</span>
+                      <span><strong>🎒 装备建议：</strong>${tr.gearTipsZh || ""}</span>
                     </div>
                   </div>
                 `).join("")}
@@ -3950,15 +4052,27 @@
       const badge = document.getElementById("trailCountBadge");
       if (!box) return;
       const trails = getFilteredTrails();
+      const totalCount = getAllSaTrails().length;
       if (badge) badge.textContent = trails.length;
 
       box.innerHTML = `
-        <div class="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-1.5 text-xs">
+        <div class="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-2 text-xs">
           <div class="flex items-center justify-between gap-2 flex-wrap">
-            <span class="font-extrabold text-emerald-700 dark:text-emerald-300">🥾 南美徒步路线库 (当前展示 ${trails.length} / 全程 ${HIKING_TRAILS.length} 条)</span>
-            ${trails.length < HIKING_TRAILS.length ? `<button onclick="resetFiltersAndSearchAll(false); switchRightTab('trails');" class="px-2 py-0.5 rounded-lg font-extrabold bg-emerald-600 text-white cursor-pointer">查看全部 12 条 ›</button>` : ""}
+            <span class="font-extrabold text-emerald-700 dark:text-emerald-300">🥾 南美徒步路线 & 两步路 (2bulu) 4大格式互通舱 (${trails.length} / ${totalCount} 条)</span>
+            <div class="flex items-center gap-1.5 flex-wrap">
+              ${trails.length < totalCount ? `<button onclick="resetFiltersAndSearchAll(false); switchRightTab('trails');" class="px-2 py-1 rounded-lg font-extrabold bg-emerald-600 text-white cursor-pointer">查看全部 ${totalCount} 条 ›</button>` : ""}
+              <label class="px-2.5 py-1 rounded-lg font-extrabold bg-sky-600 text-white cursor-pointer hover:opacity-90 flex items-center gap-1 shadow-2xs">
+                <span>📂 导入两步路轨迹 (.kml/.kmz/.gpx)</span>
+                <input type="file" accept=".kml,.kmz,.gpx,.geojson,.json" class="hidden" onchange="if(window.handleSaQuickTrailImport) window.handleSaQuickTrailImport(event)" />
+              </label>
+              <button onclick="window.openSaVibeFeedbackModal()" class="px-2.5 py-1 rounded-lg font-extrabold bg-amber-500 text-slate-950 cursor-pointer hover:opacity-90">
+                ✨ Vibe 上传同步云端
+              </button>
+            </div>
           </div>
-          <p class="text-[var(--muted-foreground)]">涵盖 <strong>El Calafate (莫雷诺冰川/尼梅兹湖)</strong>、<strong>El Chaltén (Fitz Roy/Laguna Torre/秃鹰台/瀑布)</strong>、<strong>Ushuaia (翡翠湖/海岸步道/马蒂亚尔冰川)</strong>、<strong>伊瓜苏阿巴两侧</strong> 与 <strong>里约糖面包山森林线</strong>。</p>
+          <p class="text-[var(--muted-foreground)] leading-relaxed">
+            支持<strong>两步路户外助手 (2bulu) 全部 4 种导出格式（KML轨迹 / KML路径 / KMZ压缩包 / GPX格式）</strong>及 AllTrails / Wikiloc / Garmin 双向互通：点击任意路线下方「📥 .KML (两步路)」或「📥 .GPX」即可直接导入手机 App 离线防迷路；也可上传新轨迹实时叠加到南美地图！
+          </p>
         </div>
       ` + trails.map(tr => `
         <div class="p-3.5 rounded-2xl border border-[var(--border)] bg-[var(--card)] space-y-2.5 shadow-xs">
@@ -3969,7 +4083,7 @@
                 <span class="text-xs font-extrabold text-[var(--primary)]">${tr.subRegion}</span>
               </div>
               <div class="text-sm sm:text-base font-extrabold text-[var(--foreground)] mt-1">${tr.nameZh}</div>
-              <div class="text-xs font-semibold text-[var(--muted-foreground)]">${tr.nameLocal}</div>
+              <div class="text-xs font-semibold text-[var(--muted-foreground)]">${tr.nameLocal || ""}</div>
             </div>
             <button onclick="focusTrailOnMap('${tr.id}')" class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold bg-emerald-600 text-white hover:opacity-90 cursor-pointer shadow-2xs">
               🗺️ 在地图看轨迹
@@ -3981,24 +4095,33 @@
             <div>⛰️ <strong>累计爬升：</strong>${tr.elevationGain}</div>
             <div>🏔️ <strong>最高海拔：</strong>${tr.maxAltitude}</div>
             <div>⏱️ <strong>预计耗时：</strong>${tr.duration}</div>
-            <div class="col-span-2">🥾 <strong>路面状况：</strong>${tr.surface}</div>
-            <div class="col-span-2">🌬️ <strong>最佳时段/风力：</strong>${tr.bestSeasonWind}</div>
+            <div class="col-span-2">🥾 <strong>路面状况：</strong>${tr.surface || "高山步道"}</div>
+            <div class="col-span-2">🌬️ <strong>最佳时段/风力：</strong>${tr.bestSeasonWind || "建议清晨出发"}</div>
           </div>
 
           <div class="text-xs space-y-1 text-[var(--foreground)] leading-relaxed">
-            <div><strong>🟢 起点 (Trailhead)：</strong>${tr.trailheadName} <code>(${tr.trailheadLat.toFixed(4)}, ${tr.trailheadLng.toFixed(4)})</code></div>
-            <div><strong>📸 核心节点：</strong>${tr.midPointName}</div>
-            <div><strong>🏔️ 终点 (Destino)：</strong>${tr.endPointName} <code>(${tr.endLat.toFixed(4)}, ${tr.endLng.toFixed(4)})</code></div>
-            <p class="pt-1"><strong>✨ 路线看点：</strong>${tr.highlightsZh}</p>
-            <p class="text-[var(--muted-foreground)]"><strong>🎒 装备贴士：</strong>${tr.gearTipsZh}</p>
+            <div><strong>🟢 起点 (Trailhead)：</strong>${tr.trailheadName || "Trailhead"} <code>(${Number(tr.trailheadLat).toFixed(4)}, ${Number(tr.trailheadLng).toFixed(4)})</code></div>
+            ${tr.midPointName ? `<div><strong>📸 核心节点：</strong>${tr.midPointName}</div>` : ""}
+            <div><strong>🏔️ 终点 (Destino)：</strong>${tr.endPointName || "Summit"} <code>(${Number(tr.endLat).toFixed(4)}, ${Number(tr.endLng).toFixed(4)})</code></div>
+            <p class="pt-1"><strong>✨ 路线看点：</strong>${tr.highlightsZh || ""}</p>
+            ${tr.gearTipsZh ? `<p class="text-[var(--muted-foreground)]"><strong>🎒 装备贴士：</strong>${tr.gearTipsZh}</p>` : ""}
           </div>
 
           <div class="flex flex-wrap items-center gap-1.5 pt-1">
+            <button onclick="exportSaTrailKml('${tr.id}')" class="px-3 py-1.5 rounded-xl text-xs font-extrabold bg-sky-600 text-white hover:opacity-90 cursor-pointer shadow-2xs">
+              📥 导出 .KML (两步路路径)
+            </button>
+            <button onclick="exportSaTrailGpx('${tr.id}')" class="px-3 py-1.5 rounded-xl text-xs font-extrabold bg-amber-500 text-slate-950 hover:opacity-90 cursor-pointer shadow-2xs">
+              📥 导出 .GPX (标准轨迹)
+            </button>
+            <button onclick="searchSaTrailOn2bulu('${tr.id}')" class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 cursor-pointer">
+              🧭 Wikiloc/两步路搜轨迹 ↗
+            </button>
             <a href="https://www.google.com/maps/dir/?api=1&destination=${tr.trailheadLat},${tr.trailheadLng}&travelmode=walking" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-xl text-xs font-extrabold bg-[var(--primary)] text-white">
-              📍 Google 导航去步道起点 ↗
+              📍 Google 导航起点 ↗
             </a>
-            <button onclick="speakText('${tr.nameLocal.replace(/'/g, "\\'")}', '${tr.country === "BR" ? "pt-BR" : "es-AR"}', 0.92, '步道名称发音')" class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-[var(--content)] text-[var(--foreground)] border border-[var(--border)] cursor-pointer">
-              🔊 读步道西/葡语名
+            <button onclick="speakText('${(tr.nameLocal || tr.nameZh).replace(/'/g, "\\'")}', '${tr.country === "BR" ? "pt-BR" : "es-AR"}', 0.92, '步道名称发音')" class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-[var(--content)] text-[var(--foreground)] border border-[var(--border)] cursor-pointer">
+              🔊 读步道名
             </button>
           </div>
         </div>
@@ -4954,10 +5077,10 @@
           <div class="min-w-0 space-y-0.5">
             <div class="flex items-center gap-1.5 font-extrabold text-[var(--foreground)] truncate">
               <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping inline-block shrink-0"></span>
-              <span id="saVibeLiveVersionBadge" class="truncate">📡 云端 AI 迭代引擎在线 (v2.6 · 口令保护已启用)</span>
+              <span id="saVibeLiveVersionBadge" class="truncate">📡 云端 AI 迭代引擎在线 (v2.7 · 口令保护已启用)</span>
             </div>
             <div id="saVibeLatestChangelog" class="text-[11px] text-[var(--muted-foreground)] truncate">
-              最近更新：已上线南美路书口令保护 Vibe 自动迭代闭环与 12条徒步/18家周边精选
+              最近更新：全面打通两步路 (2bulu) / AllTrails 4大轨迹格式 (KML轨迹/KML路径/KMZ/GPX) 双向导出导入与 Vibe 轨迹上传
             </div>
           </div>
           <button onclick="window.saRefreshVibeStatusJson()" class="px-2 py-1 rounded-lg bg-[var(--card)] border border-[var(--border)] text-[11px] font-bold hover:border-amber-500 cursor-pointer shrink-0">
@@ -5023,6 +5146,33 @@
             </div>
           </div>
 
+          <!-- 🥾 2bulu / AllTrails / Garmin 4-Format Track Upload Box -->
+          <div class="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/35 space-y-2">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <div class="font-extrabold text-emerald-600 dark:text-emerald-400 text-xs flex items-center gap-1.5">
+                <span>🥾 上传两步路 (2bulu) / AllTrails / Garmin 轨迹文件（选填）</span>
+              </div>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">支持 KML(轨迹) · KML(路径) · KMZ · GPX</span>
+            </div>
+            <p class="text-[11px] text-[var(--muted-foreground)] leading-relaxed">
+              完整兼容<strong>两步路「导出轨迹文件」全部 4 种格式（KML轨迹 / KML路径 / KMZ压缩包 / GPX格式）</strong>：选择文件后将立即在南美地图上高亮叠加并计算里程与爬升，随 Vibe 提交后同步至全员路书！
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <label class="px-3 py-2 rounded-xl bg-[var(--card)] border border-dashed border-emerald-500/50 hover:border-emerald-500 text-xs font-extrabold text-emerald-600 dark:text-emerald-400 cursor-pointer flex items-center justify-center gap-1.5 text-center transition">
+                <span>📂 选择轨迹文件 (.kml / .kmz / .gpx)</span>
+                <input id="saVibeTrackFileInput" type="file" accept=".kml,.kmz,.gpx,.geojson,.json" class="hidden" onchange="window.handleSaVibeTrackUpload(event)" />
+              </label>
+              <input id="saVibeTrackUrlInput" type="text" placeholder="或粘贴两步路/Wikiloc/AllTrails 轨迹链接..." class="px-3 py-2 rounded-xl bg-[var(--card)] border border-[var(--border)] text-xs text-[var(--foreground)] focus:outline-none focus:border-emerald-500" />
+            </div>
+            <div id="saVibeTrackPreviewBox" class="hidden p-2.5 rounded-xl bg-[var(--card)] border border-emerald-500/40 text-[11px] space-y-1">
+              <div class="flex items-center justify-between gap-2">
+                <span id="saVibeTrackPreviewTitle" class="font-black text-emerald-600 dark:text-emerald-400 truncate"></span>
+                <button type="button" onclick="window.clearSaVibeUploadedTrack()" class="text-[10px] font-bold text-rose-500 cursor-pointer shrink-0">✕ 移除轨迹</button>
+              </div>
+              <div id="saVibeTrackPreviewMeta" class="text-[var(--muted-foreground)] font-mono-code"></div>
+            </div>
+          </div>
+
           <!-- Freeform Vibe Prompt + 1-Tap Examples -->
           <div>
             <div class="flex flex-wrap items-center justify-between gap-1 mb-1">
@@ -5032,7 +5182,7 @@
                 <button type="button" onclick="window.fillSaVibeSample('在里约 Ipanema 海滩增加日落鼓掌岩石 (Pedra do Arpoador) 的最佳守候时间与安全提醒！', '🇧🇷 L5 里约热内卢山海收官 (D11–D14)')" class="px-1.5 py-0.5 rounded bg-sky-500/15 text-sky-600 dark:text-sky-400 font-bold cursor-pointer">示例2：里约日落</button>
               </div>
             </div>
-            <textarea id="saVibeMessageInput" rows="3" placeholder="写下你在南美旅途中随时想补充的餐厅、徒步贴士、日程微调或新功能，提交后 Cloudtop 将自动改版并推送新版本..." class="w-full p-2.5 rounded-xl bg-[var(--content)] border border-[var(--border)] text-xs text-[var(--foreground)] focus:outline-none focus:border-amber-500 leading-relaxed"></textarea>
+            <textarea id="saVibeMessageInput" rows="3" placeholder="写下你在南美旅途中随时想补充的餐厅、徒步贴士、日程微调或直接上传两步路轨迹文件..." class="w-full p-2.5 rounded-xl bg-[var(--content)] border border-[var(--border)] text-xs text-[var(--foreground)] focus:outline-none focus:border-amber-500 leading-relaxed"></textarea>
           </div>
 
           <!-- Submit & Backup Copy Actions -->
@@ -5081,7 +5231,7 @@
       <div class="px-3.5 sm:px-4 py-2.5 border-b border-[var(--border)] flex items-center justify-between gap-2 bg-gradient-to-r from-sky-500/20 via-amber-500/10 to-emerald-500/10 shrink-0">
         <div class="min-w-0">
           <div class="flex items-center gap-1.5">
-            <span id="saVhCurrentVersionPill" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-sky-500 text-slate-950 shrink-0">v2.6</span>
+            <span id="saVhCurrentVersionPill" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-sky-500 text-slate-950 shrink-0">v2.7</span>
             <h3 class="text-xs sm:text-base font-black text-[var(--foreground)] truncate">📜 南美 2026 随身路书 · 版本演进与 Vibe 迭代记录</h3>
           </div>
           <p class="text-[10px] sm:text-[11px] text-[var(--muted-foreground)] truncate mt-0.5">
@@ -5102,7 +5252,7 @@
   <script>
     (function() {
       const SA_VIBE_NTFY_URL = "https://ntfy.sh/yungapple_sa2026_vibe_9f8a7b6c";
-      const SA_BUILTIN_VERSION = "v2.6";
+      const SA_BUILTIN_VERSION = "v2.7";
       const SA_VIBE_PASSWORD = "sa26";
       const SA_PW_STORAGE_KEY = "sa2026_vibe_pw";
       const SA_UNLOCK_STORAGE_KEY = "vibe_unlocked_south-america-2026";
@@ -5112,8 +5262,261 @@
       let saBaselineVersion = null;
       let saBadgeTapCount = 0;
       let saBadgeTapTimer = null;
+      let saUploadedTrack = null;
+
+      function saHaversineKm(lat1, lon1, lat2, lon2) {
+        const R = 6371.0;
+        const dLat = (lat2 - lat1) * Math.PI / 180.0;
+        const dLon = (lon2 - lon1) * Math.PI / 180.0;
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(lat1 * Math.PI / 180.0) * Math.cos(lat2 * Math.PI / 180.0) *
+          Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      }
+
+      async function unpackSaKmzToKmlText(arrayBuffer) {
+        const bytes = new Uint8Array(arrayBuffer);
+        const view = new DataView(arrayBuffer);
+        let offset = 0;
+        while (offset + 30 <= bytes.length) {
+          const sig = view.getUint32(offset, true);
+          if (sig !== 0x04034b50) break;
+          const compression = view.getUint16(offset + 8, true);
+          const compSize = view.getUint32(offset + 18, true);
+          const nameLen = view.getUint16(offset + 26, true);
+          const extraLen = view.getUint16(offset + 28, true);
+          const nameBytes = bytes.subarray(offset + 30, offset + 30 + nameLen);
+          const fileName = new TextDecoder("utf-8").decode(nameBytes);
+          const dataStart = offset + 30 + nameLen + extraLen;
+          const dataEnd = dataStart + compSize;
+          if (fileName.toLowerCase().endsWith(".kml")) {
+            const rawSlice = bytes.subarray(dataStart, dataEnd);
+            if (compression === 0) {
+              return new TextDecoder("utf-8").decode(rawSlice);
+            } else if (compression === 8 && typeof DecompressionStream !== "undefined") {
+              const ds = new DecompressionStream("deflate-raw");
+              const writer = ds.writable.getWriter();
+              writer.write(rawSlice);
+              writer.close();
+              const outBuf = await new Response(ds.readable).arrayBuffer();
+              return new TextDecoder("utf-8").decode(outBuf);
+            }
+          }
+          offset = dataEnd;
+        }
+        throw new Error("KMZ 压缩包内未找到有效的 doc.kml 轨迹文件");
+      }
+
+      async function parseSaOutdoorTrackFile(file) {
+        const ext = (file.name.split(".").pop() || "").toLowerCase();
+        let text = "";
+        let formatLabel = ext.toUpperCase();
+        if (ext === "kmz") {
+          const buf = await file.arrayBuffer();
+          text = await unpackSaKmzToKmlText(buf);
+          formatLabel = "KMZ (两步路压缩轨迹)";
+        } else {
+          text = await file.text();
+        }
+        let rawPts = [];
+        let trackName = file.name.replace(/\.(gpx|kml|kmz|geojson|json)$/i, "");
+        if (ext === "geojson" || ext === "json") {
+          const gj = JSON.parse(text);
+          const feats = gj.features || (gj.type === "Feature" ? [gj] : []);
+          feats.forEach(f => {
+            if (f.properties && f.properties.name) trackName = f.properties.name;
+            const g = f.geometry || {};
+            if (g.type === "LineString") {
+              g.coordinates.forEach(c => rawPts.push([Number(c[1]), Number(c[0]), Number(c[2] || 0)]));
+            } else if (g.type === "MultiLineString") {
+              g.coordinates.forEach(line => line.forEach(c => rawPts.push([Number(c[1]), Number(c[0]), Number(c[2] || 0)])));
+            }
+          });
+          formatLabel = "GeoJSON";
+        } else {
+          const xml = new DOMParser().parseFromString(text, "text/xml");
+          const nameNode = xml.querySelector("trk > name, Document > name, Placemark > name, metadata > name");
+          if (nameNode && nameNode.textContent.trim()) trackName = nameNode.textContent.trim();
+          const trkpts = Array.from(xml.getElementsByTagName("trkpt"));
+          const rtepts = Array.from(xml.getElementsByTagName("rtept"));
+          const ptsNodes = trkpts.length > 0 ? trkpts : rtepts;
+          if (ptsNodes.length > 0) {
+            formatLabel = "GPX (两步路标准轨迹)";
+            ptsNodes.forEach(pt => {
+              const lat = parseFloat(pt.getAttribute("lat"));
+              const lon = parseFloat(pt.getAttribute("lon"));
+              const eleNode = pt.getElementsByTagName("ele")[0];
+              const ele = eleNode ? parseFloat(eleNode.textContent) : 0;
+              if (!isNaN(lat) && !isNaN(lon)) rawPts.push([lat, lon, isNaN(ele) ? 0 : Math.round(ele)]);
+            });
+          }
+          if (rawPts.length === 0) {
+            const gxCoords = [
+              ...Array.from(xml.getElementsByTagName("gx:coord")),
+              ...Array.from(xml.getElementsByTagName("coord"))
+            ];
+            if (gxCoords.length > 0) {
+              if (ext !== "kmz") formatLabel = "KML (两步路轨迹 gx:Track)";
+              gxCoords.forEach(node => {
+                const parts = (node.textContent || "").trim().split(/\s+/);
+                if (parts.length >= 2) {
+                  const lon = parseFloat(parts[0]);
+                  const lat = parseFloat(parts[1]);
+                  const ele = parts.length >= 3 ? parseFloat(parts[2]) : 0;
+                  if (!isNaN(lat) && !isNaN(lon)) rawPts.push([lat, lon, isNaN(ele) ? 0 : Math.round(ele)]);
+                }
+              });
+            }
+          }
+          if (rawPts.length === 0) {
+            const coordNodes = Array.from(xml.getElementsByTagName("coordinates"));
+            if (coordNodes.length > 0) {
+              if (ext !== "kmz") formatLabel = "KML (两步路路径 LineString)";
+              coordNodes.forEach(node => {
+                const tuples = (node.textContent || "").trim().split(/\s+/);
+                if (tuples.length > 1) {
+                  tuples.forEach(t => {
+                    const parts = t.split(",");
+                    if (parts.length >= 2) {
+                      const lon = parseFloat(parts[0]);
+                      const lat = parseFloat(parts[1]);
+                      const ele = parts.length >= 3 ? parseFloat(parts[2]) : 0;
+                      if (!isNaN(lat) && !isNaN(lon)) rawPts.push([lat, lon, isNaN(ele) ? 0 : Math.round(ele)]);
+                    }
+                  });
+                }
+              });
+            }
+          }
+        }
+        if (rawPts.length < 2) throw new Error("未在文件中解析到有效轨迹坐标点");
+        let distKm = 0, gainM = 0, maxEle = -99999, minEle = 99999;
+        for (let i = 0; i < rawPts.length; i++) {
+          const ele = rawPts[i][2] || 0;
+          if (ele > maxEle) maxEle = ele;
+          if (ele < minEle) minEle = ele;
+          if (i > 0) {
+            distKm += saHaversineKm(rawPts[i - 1][0], rawPts[i - 1][1], rawPts[i][0], rawPts[i][1]);
+            const dEle = ele - (rawPts[i - 1][2] || 0);
+            if (dEle > 0) gainM += dEle;
+          }
+        }
+        const maxSamples = 350;
+        const step = Math.max(1, Math.ceil(rawPts.length / maxSamples));
+        const sampled = [];
+        for (let i = 0; i < rawPts.length; i += step) {
+          sampled.push([Number(rawPts[i][0].toFixed(6)), Number(rawPts[i][1].toFixed(6)), rawPts[i][2] || 0]);
+        }
+        const last = rawPts[rawPts.length - 1];
+        sampled.push([Number(last[0].toFixed(6)), Number(last[1].toFixed(6)), last[2] || 0]);
+        return {
+          name: trackName,
+          fileName: file.name,
+          format: formatLabel,
+          totalRawPoints: rawPts.length,
+          distance_km: Number(distKm.toFixed(2)),
+          gain_m: Math.round(gainM),
+          max_ele_m: maxEle > -90000 ? Math.round(maxEle) : 0,
+          min_ele_m: minEle < 90000 ? Math.round(minEle) : 0,
+          points: sampled
+        };
+      }
+
+      function registerSaCustomTrail(parsed) {
+        const sPt = parsed.points[0];
+        const ePt = parsed.points[parsed.points.length - 1];
+        const newTrail = {
+          id: "sa-custom-" + Date.now(),
+          layer: activeLayer === "all" || activeLayer === "today" ? "calafate" : activeLayer,
+          country: "AR",
+          subRegion: `两步路/GPX 实测导入 (${parsed.format})`,
+          nameZh: `🚩 ${parsed.name}`,
+          nameLocal: parsed.fileName,
+          difficulty: "实测轨迹",
+          diffColor: "#f43f5e",
+          distanceKm: `${parsed.distance_km} km`,
+          elevationGain: `+${parsed.gain_m} m`,
+          maxAltitude: `${parsed.max_ele_m} m`,
+          duration: "实测GPX/KML",
+          surface: "两步路/户外实测轨迹",
+          bestSeasonWind: "全天候离线循迹",
+          trailheadName: "实测轨迹起点",
+          trailheadLat: sPt[0],
+          trailheadLng: sPt[1],
+          midPointName: `共 ${parsed.totalRawPoints} 个采样点`,
+          endPointName: "实测轨迹终点",
+          endLat: ePt[0],
+          endLng: ePt[1],
+          highlightsZh: `由旅伴导入的两步路/户外轨迹文件 (${parsed.fileName})，全程 ${parsed.distance_km}km，累计爬升 +${parsed.gain_m}m，最高海拔 ${parsed.max_ele_m}m。`,
+          gearTipsZh: "可点击下方导出 .KML / .GPX 在两步路户外助手或 AllTrails 中打开离线导航。",
+          coords: parsed.points,
+          isCustom: true
+        };
+        window.saCustomTrails = window.saCustomTrails || [];
+        window.saCustomTrails.unshift(newTrail);
+        try {
+          localStorage.setItem("sa2026_custom_tracks", JSON.stringify(window.saCustomTrails.slice(0, 15)));
+        } catch (e) {}
+        if (typeof renderTrailsPane === "function") renderTrailsPane();
+        if (typeof renderDetailCard === "function") renderDetailCard();
+        if (typeof renderMap === "function") renderMap(false);
+        return newTrail;
+      }
+
+      window.handleSaQuickTrailImport = async function(ev) {
+        const file = ev?.target?.files?.[0];
+        if (!file) return;
+        try {
+          const parsed = await parseSaOutdoorTrackFile(file);
+          const tr = registerSaCustomTrail(parsed);
+          if (typeof focusTrailOnMap === "function") focusTrailOnMap(tr.id);
+        } catch (err) {
+          alert("轨迹解析提示：" + (err.message || "请上传有效的 .kml / .kmz / .gpx 文件"));
+        }
+      };
+
+      window.handleSaVibeTrackUpload = async function(ev) {
+        const file = ev?.target?.files?.[0];
+        if (!file) return;
+        const box = document.getElementById("saVibeTrackPreviewBox");
+        const titleEl = document.getElementById("saVibeTrackPreviewTitle");
+        const metaEl = document.getElementById("saVibeTrackPreviewMeta");
+        try {
+          const parsed = await parseSaOutdoorTrackFile(file);
+          saUploadedTrack = parsed;
+          if (box) box.classList.remove("hidden");
+          if (titleEl) titleEl.textContent = `✅ 已解析：${parsed.name} (${parsed.format})`;
+          if (metaEl) metaEl.textContent = `📏 距离 ${parsed.distance_km} km · ⛰️ 爬升 +${parsed.gain_m} m · 🏔️ 最高 ${parsed.max_ele_m} m · 📍 采样 ${parsed.points.length} 点 (原文件 ${parsed.totalRawPoints} 点)`;
+          registerSaCustomTrail(parsed);
+        } catch (err) {
+          saUploadedTrack = null;
+          if (box) box.classList.remove("hidden");
+          if (titleEl) titleEl.textContent = `❌ 轨迹解析失败：${err.message || "格式不支持"}`;
+          if (metaEl) metaEl.textContent = "请上传两步路导出的 KML(轨迹)、KML(路径)、KMZ 或 GPX 文件。";
+        }
+      };
+
+      window.clearSaVibeUploadedTrack = function() {
+        saUploadedTrack = null;
+        const input = document.getElementById("saVibeTrackFileInput");
+        if (input) input.value = "";
+        document.getElementById("saVibeTrackPreviewBox")?.classList.add("hidden");
+      };
 
       const SA_DEFAULT_VIBE_HISTORY = [
+        {
+          version: "v2.7",
+          title: "全面打通「两步路户外助手 (2bulu) / AllTrails」4大轨迹格式双向互通 & Vibe 轨迹上传",
+          timestamp: "2026-10-05 23:42 CST",
+          author: "同行旅伴 & 随身AI定制师",
+          scope: "🥾 12条南美徒步轨迹 & 两步路/AllTrails 双向打通",
+          vibe_prompt: "BTW，户外徒步轨迹需要两步路等app，不知道能不能打通，找到方法，也可以支持vibe反馈时上传轨迹文件",
+          changes: [
+            "全面兼容两步路「导出轨迹文件」全部 4 种官方格式：KML格式(轨迹 gx:Track)、KML格式(路径 LineString)、KMZ格式(浏览器原生流式解压 doc.kml) 与 GPX格式",
+            "全程 12 条巴塔哥尼亚/莫雷诺冰川/Fitz Roy/火地岛/伊瓜苏/里约徒步线新增一键导出「📥 .KML (两步路路径)」与「📥 .GPX (标准轨迹)」，手机端可直接用两步路或 AllTrails 打开离线导航",
+            "在「🥾 徒步线」面板与「✨ Vibe 随身进化舱」新增轨迹文件上传，上传后立即在地图绘制高亮轨迹并随 Vibe 反馈同步至 Cloudtop 云端"
+          ]
+        },
         {
           version: "v2.6",
           title: "上线「✨ 口令保护 Vibe 随身反馈 ➔ 全自动新版本闭环」(口令: sa26) & 📜 版本记录舱",
@@ -5390,16 +5793,22 @@
         }
         const author = (document.getElementById("saVibeAuthorInput")?.value || "Shuguo").trim();
         const scope = document.getElementById("saVibeScopeSelect")?.value || "🌟 整体行程 Vibe 与全局功能";
-        const message = (document.getElementById("saVibeMessageInput")?.value || "").trim();
+        let message = (document.getElementById("saVibeMessageInput")?.value || "").trim();
+        const trackUrl = (document.getElementById("saVibeTrackUrlInput")?.value || "").trim();
         const statusEl = document.getElementById("saVibeSubmitStatusText");
         const btn = document.getElementById("btnSubmitSaVibe");
 
-        if (!message) {
+        if (!message && !saUploadedTrack && !trackUrl) {
           if (statusEl) {
             statusEl.className = "text-xs font-bold text-rose-500";
-            statusEl.textContent = "⚠️ 请先输入你想调整的具体 Vibe 或南美行程想法！";
+            statusEl.textContent = "⚠️ 请先输入你想调整的具体 Vibe 想法，或上传两步路轨迹文件 (.kml/.kmz/.gpx)！";
           }
           return;
+        }
+        if (!message && saUploadedTrack) {
+          message = `上传户外徒步轨迹：${saUploadedTrack.name} (${saUploadedTrack.format} · ${saUploadedTrack.distance_km}km · +${saUploadedTrack.gain_m}m)，请合入该赛段路书地图。`;
+        } else if (!message && trackUrl) {
+          message = `投递户外徒步轨迹链接：${trackUrl}，请解析并合入该赛段路书地图。`;
         }
 
         await window.saRefreshVibeStatusJson();
@@ -5411,6 +5820,8 @@
           scope,
           vibe_tags: Array.from(saSelectedVibeTags),
           message,
+          gpx_track: saUploadedTrack || null,
+          track_url: trackUrl || "",
           password_token: localStorage.getItem(SA_PW_STORAGE_KEY) || SA_VIBE_PASSWORD,
           timestamp: new Date().toISOString()
         };
@@ -5432,6 +5843,9 @@
           prev.unshift(payload);
           localStorage.setItem("sa2026_my_vibe_submissions", JSON.stringify(prev.slice(0, 20)));
           document.getElementById("saVibeMessageInput").value = "";
+          const urlEl = document.getElementById("saVibeTrackUrlInput");
+          if (urlEl) urlEl.value = "";
+          window.clearSaVibeUploadedTrack();
           renderSaVibeHistoryList();
 
           saBaselineVersion = (saCloudVibeStatus && saCloudVibeStatus.version) || SA_BUILTIN_VERSION;
@@ -5468,8 +5882,11 @@
         const author = (document.getElementById("saVibeAuthorInput")?.value || "Shuguo").trim();
         const scope = document.getElementById("saVibeScopeSelect")?.value || "🌟 整体行程 Vibe 与全局功能";
         const message = (document.getElementById("saVibeMessageInput")?.value || "").trim();
+        const trackUrl = (document.getElementById("saVibeTrackUrlInput")?.value || "").trim();
         const tags = Array.from(saSelectedVibeTags).join("、") || "自由调优";
-        const cmd = `【South-America-2026 Vibe迭代请求】\n提交人：${author}\n赛段：${scope}\n标签：${tags}\n需求：${message}`;
+        const trackNote = saUploadedTrack ? `\n轨迹附件：${saUploadedTrack.name} (${saUploadedTrack.format} · ${saUploadedTrack.distance_km}km · +${saUploadedTrack.gain_m}m)` : "";
+        const urlNote = trackUrl ? `\n轨迹链接：${trackUrl}` : "";
+        const cmd = `【South-America-2026 Vibe迭代请求】\n提交人：${author}\n赛段：${scope}\n标签：${tags}\n需求：${message}${trackNote}${urlNote}`;
         navigator.clipboard?.writeText(cmd);
         const statusEl = document.getElementById("saVibeSubmitStatusText");
         if (statusEl) {
@@ -5492,6 +5909,20 @@
           });
         });
         window.saRefreshVibeStatusJson();
+        fetch("./custom_tracks.json?t=" + Date.now(), { cache: "no-store" })
+          .then(r => r.ok ? r.json() : null)
+          .then(cloudTracks => {
+            if (Array.isArray(cloudTracks) && cloudTracks.length > 0) {
+              cloudTracks.forEach(ct => {
+                if (ct && Array.isArray(ct.points) && ct.points.length >= 2) {
+                  if (!(window.saCustomTrails || []).some(x => x.nameLocal === ct.fileName || x.nameZh.includes(ct.name))) {
+                    registerSaCustomTrail(ct);
+                  }
+                }
+              });
+            }
+          })
+          .catch(() => {});
         const params = new URLSearchParams(window.location.search);
         if (params.get("vibe") === "1" || window.location.hash === "#vibe") {
           window.openSaVibeFeedbackModal();

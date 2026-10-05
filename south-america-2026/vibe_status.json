@@ -1,11 +1,24 @@
 {
   "app": "south-america-2026",
-  "version": "v2.6",
-  "updated_at": "2026-10-05 22:58 CST",
+  "version": "v2.7",
+  "updated_at": "2026-10-05 23:42 CST",
   "password_protected": true,
   "target_conversation_id": "353ea1f4-12ba-438b-baaa-2c828d788c51",
-  "latest_summary": "已上线南美路书「✨ 口令保护 Vibe 随身反馈 ➔ 全自动新版本闭环」(专属口令：sa26) 与 📜 版本演进记录舱",
+  "latest_summary": "全面打通「两步路户外助手 (2bulu) / AllTrails」4大轨迹格式（KML轨迹/KML路径/KMZ/GPX）双向导出导入 & Vibe 轨迹上传引擎",
   "history": [
+    {
+      "version": "v2.7",
+      "title": "全面打通「两步路户外助手 (2bulu) / AllTrails」4大轨迹格式双向互通 & Vibe 轨迹上传",
+      "timestamp": "2026-10-05 23:42 CST",
+      "author": "同行旅伴 & 随身AI定制师",
+      "scope": "🥾 12条南美徒步轨迹 & 两步路/AllTrails 双向打通",
+      "vibe_prompt": "BTW，户外徒步轨迹需要两步路等app，不知道能不能打通，找到方法，也可以支持vibe反馈时上传轨迹文件",
+      "changes": [
+        "全面兼容两步路「导出轨迹文件」全部 4 种官方格式：KML格式(轨迹 gx:Track)、KML格式(路径 LineString)、KMZ格式(浏览器原生流式解压 doc.kml) 与 GPX格式",
+        "全程 12 条巴塔哥尼亚/莫雷诺冰川/Fitz Roy/火地岛/伊瓜苏/里约徒步线新增一键导出「📥 .KML (两步路路径)」与「📥 .GPX (标准轨迹)」，手机端可直接用两步路或 AllTrails 打开离线导航",
+        "在「🥾 徒步线」面板与「✨ Vibe 随身进化舱」新增轨迹文件上传，上传后立即在地图绘制高亮轨迹并随 Vibe 反馈同步至 Cloudtop 云端"
+      ]
+    },
     {
       "version": "v2.6",
       "title": "上线「✨ 口令保护 Vibe 随身反馈 ➔ 全自动新版本闭环」(口令: sa26) & 📜 版本记录舱",

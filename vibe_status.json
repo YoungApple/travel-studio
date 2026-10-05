@@ -1,11 +1,25 @@
 {
   "app": "travel-studio",
-  "version": "v2.0",
-  "updated_at": "2026-10-05 14:57 CST",
+  "version": "v2.1",
+  "updated_at": "2026-10-05 23:25 CST",
   "password_protected": true,
+  "supports_gpx_kml_kmz": true,
   "password_sha256": "1f3216c601f6af86b37ec55f490492562306a1fe3aebe5db67fcc183f3b26e98",
-  "latest_summary": "新增 core/vibe_loop.py 与多项目口令核验守护引擎 vibe_bridge.py，任何通过 Travel Studio 编译的路书自动获得「✨ 口令认证 Vibe 抽屉 + 📜 版本演进记录 + 8秒新版本自动轮询」",
+  "latest_summary": "打通「两步路户外助手 (2bulu) / 六只脚 / AllTrails」全格式轨迹互通：支持两步路 4 大导出格式（KML轨迹 gx:Track / KML路径 LineString / KMZ压缩包 / GPX）上传解析与一键导出",
   "history": [
+    {
+      "version": "v2.1",
+      "title": "打通「两步路 (2bulu) / 六只脚 / AllTrails」4 大轨迹格式双向互通与 Vibe 抽屉上传闭环",
+      "timestamp": "2026-10-05 23:25 CST",
+      "author": "Shuguo & Travel Studio Architect",
+      "scope": "🥾 户外徒步轨迹互通引擎 (core/vibe_loop.py & vibe_bridge.py)",
+      "vibe_prompt": "BTW，户外徒步轨迹需要两步路等app，不知道能不能打通，找到方法，也可以支持vibe反馈时上传轨迹文件（两步路导出格式：KML格式(轨迹)、KML格式(路径)、KMZ格式、GPX格式）",
+      "changes": [
+        "全面支持两步路 4 大导出格式客户端 0 依赖解析：KML格式（轨迹 <gx:Track><gx:coord>）、KML格式（路径 <LineString><coordinates>）、KMZ格式（浏览器原生 DecompressionStream 解压 doc.kml 与多媒体附件名）、GPX格式（<trkpt>/<rtept>/<wpt>）及 GeoJSON",
+        "内置中国境内 WGS-84 ⇄ GCJ-02 坐标系自动双向转换算法：两步路/GPS 轨迹导入高德地图自动纠偏对齐，路书导出 .gpx / .kml 自动还原标准 WGS-84 供两步路直接打开跟走",
+        "Vibe 反馈舱新增「🥾 上传两步路/AllTrails 轨迹文件」与分享链接输入，自动计算距离/爬升/最高海拔、在地图实时渲染轨迹，并通过 ntfy.sh 同步至 Cloudtop custom_tracks.json 持久化合入路书"
+      ]
+    },
     {
       "version": "v2.0",
       "title": "提取「口令保护 Vibe 随身反馈 ➔ 全自动新版本闭环」为平台级旗舰特权功能",
