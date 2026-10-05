@@ -641,6 +641,8 @@
         </div>
       </div>
       <div class="status-pills">
+        <button type="button" onclick="window.openPartnerModal()" class="pill warn" style="cursor:pointer; font-weight:900; background:linear-gradient(135deg,#f59e0b,#ff2442); color:#fff; border:none;">🤝 携程私家团合作 / 小红书同款</button>
+        <a href="./bp.html" class="pill ok" style="font-weight:800;">📊 携程私家团 BP &amp; 小红书套件 ↗</a>
         <button type="button" onclick="window.openTsVersionHistoryModal()" class="pill blue" style="cursor:pointer;">📜 版本记录 (v2.1)</button>
         <button type="button" onclick="window.openTsVibeFeedbackModal()" class="pill warn" style="cursor:pointer; font-weight:800;">✨ Vibe & 轨迹上传舱 (🔒 applefriend)</button>
         <span id="sw-badge" class="pill ok">⚡ 离线引擎已就绪 · Service Worker Active</span>
@@ -651,6 +653,18 @@
   </header>
 
   <main class="container">
+    <!-- Partner & Xiaohongshu Co-op Welcome Banner -->
+    <div style="background:linear-gradient(135deg,rgba(245,158,11,0.18) 0%,rgba(244,63,94,0.16) 55%,rgba(14,165,233,0.14) 100%);border:1px solid rgba(245,158,11,0.45);border-radius:16px;padding:14px 20px;margin-bottom:20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <span style="background:linear-gradient(135deg,#f59e0b,#ff2442);color:#fff;font-size:0.74rem;font-weight:900;padding:3px 10px;border-radius:999px;">🤝 欢迎合作 · 寻找 20 位种子合伙人</span>
+        <span style="font-size:0.9rem;font-weight:800;color:#f8fafc;">面向【携程/飞猪半托管私家团、高端定制游、户外徒步俱乐部】：前 20 家免费将您的 1 条王牌线路升级为 AI 交互式路书！</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <button type="button" onclick="window.openPartnerModal()" style="background:linear-gradient(135deg,#f59e0b,#ea580c);color:#020617;border:none;padding:7px 14px;border-radius:10px;font-size:0.8rem;font-weight:900;cursor:pointer;">🎁 立即登记合作 / 领免费样板</button>
+        <a href="./bp.html" style="background:rgba(15,23,42,0.85);color:#fde68a;border:1px solid rgba(245,158,11,0.45);padding:7px 13px;border-radius:10px;font-size:0.8rem;font-weight:800;text-decoration:none;">📊 查看一页式 BP &amp; 小红书文案 ↗</a>
+      </div>
+    </div>
+
     <!-- Hero Section -->
     <section class="hero">
       <div class="hero-eyebrow">★ 10-Star Private Group Travel Experience · CEO Plan & Working MVP</div>
@@ -1822,6 +1836,74 @@ python3 generator.py publish \
   </div>
 </div>
 
+<!-- Modal 3: Ctrip Semi-Managed Private Tour & Xiaohongshu Partner Lead Capture Modal -->
+<div id="tsPartnerModal" class="ts-vibe-backdrop hidden" onclick="if(event.target===this) window.closePartnerModal()">
+  <div class="ts-vibe-sheet">
+    <div class="px-4 py-3 border-b border-slate-800 flex items-center justify-between gap-2 bg-gradient-to-r from-amber-500/25 via-rose-500/20 to-sky-500/15 shrink-0">
+      <div class="min-w-0">
+        <div class="flex items-center gap-1.5">
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-slate-950">欢迎合作 · 小红书同款</span>
+          <h3 class="text-xs sm:text-base font-black truncate">🤝 携程半托管私家团 / 定制游 / 户外俱乐部 合作直通车</h3>
+        </div>
+        <p class="text-[10px] sm:text-[11px] opacity-80 truncate mt-0.5">
+          前 20 家同行免费升级 1 条王牌线路为 AI 交互式路书 · 提交后秒级推送主理人 Google Chat
+        </p>
+      </div>
+      <button onclick="window.closePartnerModal()" class="w-7 h-7 rounded-full bg-slate-800 text-white font-bold cursor-pointer shrink-0">✕</button>
+    </div>
+
+    <div class="p-3.5 sm:p-4 overflow-y-auto space-y-3 text-xs flex-1">
+      <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/35 space-y-1.5">
+        <div class="font-black text-amber-400 text-xs flex items-center justify-between gap-2">
+          <span>🎁 为什么选择 Travel Studio 智能私家团路书？</span>
+          <a href="https://youngapple.github.io/travel-studio/bp.html" target="_blank" rel="noopener" class="px-2 py-0.5 rounded bg-amber-500 text-slate-950 font-black text-[10px] no-underline shrink-0">📊 查看完整商业BP & 小红书文案 ↗</a>
+        </div>
+        <p class="text-[11px] opacity-90 leading-relaxed">
+          • <strong>售前逼单神器</strong>：3D级动态地图 + 每日高光卡片 + 冠名您的旅行社/俱乐部品牌，询单转化率提升 30%+<br/>
+          • <strong>硬核户外护城河</strong>：两步路 4 格式 (.kml/.kmz/.gpx) 互通 + 海拔曲线联动 + 高反一键切换 B 计划<br/>
+          • <strong>行中 10 秒 AI 改行程</strong>：一句话 Vibe 自动重算路线与时间表，老客晒小红书自动帮您裂变获客！
+        </p>
+      </div>
+
+      <div class="space-y-2.5">
+        <div>
+          <label class="block font-bold mb-1 text-amber-300">🏷️ 您的身份 / 合作需求 *</label>
+          <select id="tsPartnerRole" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
+            <option value="携程/飞猪半托管私家团供应商">💼 携程/飞猪半托管私家团供应商 (申领免费首条王牌线路)</option>
+            <option value="独立定制师 / 高端定制游工作室">✨ 独立定制师 / 高端定制游工作室</option>
+            <option value="户外徒步俱乐部 / 独立领队">🥾 户外徒步俱乐部 / 独立领队 (两步路轨迹互通)</option>
+            <option value="精品包车车队 / 司导团队">🚐 精品包车车队 / 司导团队</option>
+            <option value="小红书旅行博主 / 流量联名合作">📕 小红书旅行博主 / 流量联名合作</option>
+            <option value="C端游客：求同款路书 / 咨询私家团定制">✈️ C端游客：求云南/南美同款路书或包车定制</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div>
+            <label class="block font-bold mb-1 text-amber-300">👤 您的称呼 / 机构名称 *</label>
+            <input id="tsPartnerName" type="text" placeholder="如：云南雪山私家团老张 / 山野俱乐部" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" />
+          </div>
+          <div>
+            <label class="block font-bold mb-1 text-amber-300">📱 微信号 / 手机号 *</label>
+            <input id="tsPartnerContact" type="text" placeholder="请输入微信号或手机号，方便加您对接" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold mb-1 text-amber-300">💬 主营目的地 / 想升级的王牌线路或需求（选填）</label>
+          <textarea id="tsPartnerNote" rows="2" placeholder="例如：我们主做携程云南滇西北/新疆/南美私家团，希望能免费试用升级一条 8 天王牌线路..." class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-700 text-xs focus:outline-none focus:border-amber-400"></textarea>
+        </div>
+
+        <button type="button" id="btnTsSubmitPartner" onclick="window.submitTsPartnerLead()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-slate-950 font-black text-xs shadow-md hover:opacity-95 cursor-pointer">
+          🚀 立即提交合作 / 领取同款（秒级直达主理人 Google Chat）
+        </button>
+        <div id="tsPartnerStatusText" class="text-xs font-bold text-emerald-400"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <script>
 (function() {
   const TS_APP_ID = "travel-studio";
@@ -2368,6 +2450,66 @@ ${trkptsXml}
       body: JSON.stringify(payload)
     });
     if (statusEl) statusEl.textContent = "✅ 已通过口令核验并送达 Cloudtop！正在自动编译新版本...";
+  };
+
+  window.openPartnerModal = function() {
+    document.getElementById("tsPartnerModal")?.classList.remove("hidden");
+  };
+  window.closePartnerModal = function() {
+    document.getElementById("tsPartnerModal")?.classList.add("hidden");
+  };
+
+  window.submitTsPartnerLead = async function() {
+    const role = document.getElementById("tsPartnerRole")?.value || "携程私家团/定制合作";
+    const name = (document.getElementById("tsPartnerName")?.value || "").trim();
+    const contact = (document.getElementById("tsPartnerContact")?.value || "").trim();
+    const note = (document.getElementById("tsPartnerNote")?.value || "").trim();
+    const statusEl = document.getElementById("tsPartnerStatusText");
+    const btn = document.getElementById("btnTsSubmitPartner");
+
+    if (!name || !contact) {
+      if (statusEl) {
+        statusEl.style.color = "#fb7185";
+        statusEl.textContent = "⚠️ 请填写您的称呼/机构名称与微信号/手机号，方便我们联系您！";
+      }
+      return;
+    }
+    if (btn) btn.disabled = true;
+    if (statusEl) {
+      statusEl.style.color = "#fbbf24";
+      statusEl.textContent = "📡 正在实时投递至主理人 Google Chat 工作台...";
+    }
+    const payload = {
+      app: TS_APP_ID,
+      event_type: "PARTNER_INQUIRY",
+      id: "lead-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6),
+      source_page: TS_APP_ID,
+      partner_role: role,
+      author: name,
+      contact: contact,
+      scope: "🤝 商务合作 / 小红书同款定制",
+      message: note || "申请免费定制首条王牌私家团交互路书 / 洽谈合作",
+      timestamp: new Date().toISOString()
+    };
+    try {
+      await fetch("https://ntfy.sh/yungapple_travel_studio_vibe_9f8a7b6c", {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+      if (statusEl) {
+        statusEl.style.color = "#34d399";
+        statusEl.textContent = "🎉 提交成功！主理人已在 Google Chat 收到您的合作线索，将尽快加您微信对接！";
+      }
+      const noteEl = document.getElementById("tsPartnerNote");
+      if (noteEl) noteEl.value = "";
+    } catch (e) {
+      if (statusEl) {
+        statusEl.style.color = "#fb7185";
+        statusEl.textContent = "⚠️ 网络波动，请稍后重试。";
+      }
+    } finally {
+      if (btn) btn.disabled = false;
+    }
   };
 })();
 </script>
