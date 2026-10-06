@@ -221,6 +221,24 @@
       border-color: transparent;
       box-shadow: 0 6px 18px rgba(14, 165, 233, 0.35);
     }
+    @media (max-width: 720px) {
+      .nav-tabs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+      }
+      .nav-tab {
+        padding: 8px 10px;
+        font-size: 0.78rem;
+        text-align: center;
+      }
+      .nav-tab[onclick*="'bp'"] {
+        grid-column: 1 / -1;
+        font-size: 0.84rem;
+      }
+    }
 
     /* Two-Column Generator Workbench */
     .workbench {
@@ -511,7 +529,7 @@
     /* CEO Plan Grid */
     .ceo-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
       gap: 20px;
       margin-top: 12px;
     }
@@ -521,6 +539,7 @@
       border-radius: 15px;
       padding: 22px;
       box-shadow: var(--shadow);
+      min-width: 0;
     }
     .ceo-card h3 {
       font-size: 1.08rem;
@@ -537,6 +556,7 @@
       padding-left: 18px;
     }
     .hidden { display: none !important; }
+    html, body { max-width: 100vw; overflow-x: hidden; }
 
     /* Intake Mode Switcher & AI Gap-Detector Micro-Interview */
     .intake-mode-bar {
@@ -623,6 +643,529 @@
       color: #6ee7b7;
       border-color: rgba(16, 185, 129, 0.55);
     }
+
+    /* ==================== EXECUTIVE BP & XIAOHONGSHU KIT SCOPED CSS ==================== */
+    .bp-hero {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.92) 0%, rgba(15, 23, 42, 0.98) 100%);
+      border: 1px solid rgba(245, 158, 11, 0.42);
+      border-radius: 22px;
+      padding: 26px 24px;
+      margin-bottom: 18px;
+      box-shadow: 0 20px 45px -12px rgba(0, 0, 0, 0.65);
+      position: relative;
+      overflow: hidden;
+    }
+    .bp-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: rgba(245, 158, 11, 0.16);
+      border: 1px solid rgba(245, 158, 11, 0.42);
+      color: #fcd34d;
+      font-size: 0.74rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+    .bp-hero h2 {
+      font-size: clamp(1.35rem, 2.7vw, 2.15rem);
+      font-weight: 950;
+      line-height: 1.25;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+    .bp-hero h2 .hl {
+      background: linear-gradient(90deg, #fbbf24, #ff2442, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .bp-hero p.lead {
+      font-size: 0.92rem;
+      color: #cbd5e1;
+      max-width: 980px;
+      margin-bottom: 16px;
+    }
+    .bp-pitch-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: rgba(2, 6, 23, 0.72);
+      border: 1px solid rgba(56, 189, 248, 0.32);
+      border-radius: 14px;
+      padding: 11px 14px;
+      margin-bottom: 18px;
+    }
+    .bp-pitch-text {
+      font-size: 0.82rem;
+      color: #e2e8f0;
+      flex: 1;
+      min-width: 210px;
+    }
+    .bp-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 860px) {
+      .bp-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 420px) {
+      .bp-hero { padding: 18px 14px; }
+      .bp-kpi-grid { gap: 8px; }
+    }
+    .bp-kpi-card {
+      background: rgba(2, 6, 23, 0.68);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 13px 14px;
+      min-width: 0;
+    }
+    .bp-kpi-card .k { font-size: 0.72rem; color: var(--text-muted); font-weight: 700; }
+    .bp-kpi-card .v { font-size: clamp(1.12rem, 2.2vw, 1.48rem); font-weight: 950; color: #fff; margin: 3px 0 2px; }
+    .bp-kpi-card .s { font-size: 0.72rem; color: #6ee7b7; font-weight: 600; line-height: 1.35; }
+
+    .bp-subnav {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 6px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 768px) {
+      .bp-subnav { grid-template-columns: repeat(2, 1fr); }
+    }
+    .bp-subnav-btn {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 9px 10px;
+      font-size: 0.8rem;
+      font-weight: 850;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .bp-subnav-btn:hover { color: #fff; background: rgba(30, 41, 59, 0.6); }
+    .bp-subnav-btn.active {
+      background: linear-gradient(135deg, #f59e0b, #ff2442);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(255, 36, 66, 0.32);
+    }
+
+    .bp-slide {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px 22px;
+      margin-bottom: 20px;
+      box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.5);
+    }
+    @media (max-width: 640px) {
+      .bp-slide { padding: 18px 14px; border-radius: 16px; }
+    }
+    .bp-slide-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .bp-slide-num {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 6px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      margin-bottom: 6px;
+    }
+    .bp-slide-title {
+      font-size: clamp(1.1rem, 2vw, 1.35rem);
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.3;
+    }
+    .bp-slide-sub {
+      font-size: 0.81rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .bp-compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 768px) {
+      .bp-compare-grid { grid-template-columns: 1fr; }
+    }
+    .bp-compare-card {
+      border-radius: 16px;
+      padding: 18px;
+      min-width: 0;
+    }
+    .bp-compare-card.bad {
+      background: rgba(244, 63, 94, 0.07);
+      border: 1px solid rgba(244, 63, 94, 0.32);
+    }
+    .bp-compare-card.good {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+    .bp-compare-card h3 {
+      font-size: 0.96rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+    .bp-compare-item {
+      background: rgba(2, 6, 23, 0.6);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      border-radius: 11px;
+      padding: 10px 12px;
+      margin-bottom: 9px;
+      font-size: 0.82rem;
+      color: #e2e8f0;
+    }
+    .bp-compare-item:last-child { margin-bottom: 0; }
+
+    .bp-pillar-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    @media (max-width: 920px) {
+      .bp-pillar-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .bp-pillar-grid { grid-template-columns: 1fr; }
+    }
+    .bp-pillar-card {
+      background: rgba(2, 6, 23, 0.65);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 16px;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .bp-pillar-card h4 { font-size: 0.93rem; font-weight: 900; color: #fff; }
+    .bp-pillar-card p { font-size: 0.8rem; color: #cbd5e1; line-height: 1.55; }
+
+    .bp-showcase-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 768px) {
+      .bp-showcase-grid { grid-template-columns: 1fr; }
+    }
+    .bp-showcase-card {
+      background: linear-gradient(160deg, rgba(30, 41, 59, 0.75) 0%, rgba(2, 6, 23, 0.88) 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .bp-pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 860px) {
+      .bp-pricing-grid { grid-template-columns: 1fr; }
+    }
+    .bp-price-card {
+      background: rgba(2, 6, 23, 0.7);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+      min-width: 0;
+    }
+    .bp-price-card.featured {
+      border: 2px solid #f59e0b;
+      background: linear-gradient(180deg, rgba(245, 158, 11, 0.14) 0%, rgba(2, 6, 23, 0.85) 50%);
+    }
+    .bp-price-val {
+      font-size: 1.7rem;
+      font-weight: 950;
+      color: #fff;
+      margin: 6px 0 4px;
+    }
+    .bp-price-val span { font-size: 0.78rem; font-weight: 700; color: var(--text-muted); }
+    .bp-check-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      font-size: 0.81rem;
+      color: #e2e8f0;
+    }
+
+    .bp-step-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    @media (max-width: 768px) {
+      .bp-step-grid { grid-template-columns: 1fr; }
+    }
+    .bp-step-card {
+      background: rgba(2, 6, 23, 0.65);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      min-width: 0;
+    }
+
+    .bp-xhs-card {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 22px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 22px;
+      margin-bottom: 20px;
+      align-items: start;
+      box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.5);
+    }
+    @media (max-width: 860px) {
+      .bp-xhs-card {
+        grid-template-columns: 1fr;
+        padding: 16px;
+        gap: 16px;
+      }
+    }
+    .bp-xhs-cover {
+      width: min(100%, 300px);
+      aspect-ratio: 3 / 4;
+      border-radius: 18px;
+      padding: 20px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.62);
+      margin: 0 auto;
+    }
+    .bp-xhs-cover.c1 {
+      background: linear-gradient(155deg, #0f172a 0%, #1e1b4b 48%, #831843 100%);
+      border: 2px solid rgba(251, 113, 133, 0.5);
+    }
+    .bp-xhs-cover.c2 {
+      background: linear-gradient(155deg, #022c22 0%, #064e3b 50%, #0f172a 100%);
+      border: 2px solid rgba(52, 211, 153, 0.5);
+    }
+    .bp-xhs-cover.c3 {
+      background: linear-gradient(155deg, #1e1b4b 0%, #451a03 52%, #0f172a 100%);
+      border: 2px solid rgba(251, 191, 36, 0.55);
+    }
+    .bp-cover-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 900;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      width: fit-content;
+    }
+    .bp-cover-title {
+      font-size: 1.42rem;
+      font-weight: 950;
+      line-height: 1.24;
+      color: #fff;
+      text-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+      margin: 10px 0;
+    }
+    .bp-cover-chips {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .bp-cover-chip {
+      background: rgba(2, 6, 23, 0.68);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 9px;
+      padding: 6px 10px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #f8fafc;
+    }
+    .bp-cover-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.69rem;
+      font-weight: 800;
+      color: rgba(255, 255, 255, 0.82);
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .bp-copy-workstation {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      min-width: 0;
+    }
+    .bp-copy-action-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .bp-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 0.81rem;
+      font-weight: 850;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none !important;
+    }
+    .bp-btn-xhs {
+      background: linear-gradient(135deg, #ff2442, #e11d48);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(255, 36, 66, 0.35);
+    }
+    .bp-btn-amber {
+      background: linear-gradient(135deg, #f59e0b, #ea580c);
+      color: #020617;
+      font-weight: 900;
+    }
+    .bp-btn-emerald {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #020617;
+      font-weight: 900;
+    }
+    .bp-btn-ghost {
+      background: rgba(30, 41, 59, 0.85);
+      color: #e2e8f0;
+      border-color: var(--border);
+    }
+    .bp-btn-ghost:hover {
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .bp-title-box {
+      background: rgba(2, 6, 23, 0.85);
+      border: 1px solid rgba(251, 113, 133, 0.35);
+      border-radius: 11px;
+      padding: 10px 13px;
+      font-size: 0.91rem;
+      font-weight: 900;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .bp-copy-preview {
+      background: rgba(2, 6, 23, 0.78);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 14px 15px;
+      color: #e2e8f0;
+      font-size: 0.85rem;
+      line-height: 1.68;
+      white-space: pre-wrap;
+      word-break: break-word;
+      user-select: all;
+      cursor: text;
+    }
+    .bp-comment-box {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px dashed rgba(245, 158, 11, 0.45);
+      border-radius: 11px;
+      padding: 10px 13px;
+      font-size: 0.8rem;
+      color: #fde68a;
+    }
+    .bp-lead-box {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.14) 0%, rgba(255, 36, 66, 0.1) 50%, rgba(15, 23, 42, 0.96) 100%);
+      border: 2px solid rgba(245, 158, 11, 0.5);
+      border-radius: 22px;
+      padding: 24px 20px;
+      margin-top: 12px;
+    }
+    .bp-form-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+    @media (max-width: 768px) {
+      .bp-form-grid { grid-template-columns: 1fr; }
+    }
+    .bp-input {
+      width: 100%;
+      padding: 11px 13px;
+      border-radius: 11px;
+      background: rgba(2, 6, 23, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      color: #fff;
+      font-size: 0.85rem;
+      font-family: var(--font);
+    }
+    .bp-input:focus { outline: none; border-color: #f59e0b; }
+    .bp-copy-toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      background: rgba(6, 78, 59, 0.96);
+      border: 2px solid #34d399;
+      color: #ecfdf5;
+      padding: 12px 18px;
+      border-radius: 14px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+      font-size: 0.84rem;
+      font-weight: 850;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: calc(100vw - 24px);
+      backdrop-filter: blur(10px);
+    }
   </style>
 </head>
 <body>
@@ -654,7 +1197,7 @@
 
   <main class="container">
     <!-- Partner & Xiaohongshu Co-op Welcome Banner -->
-    <div style="background:linear-gradient(135deg,rgba(245,158,11,0.18) 0%,rgba(244,63,94,0.16) 55%,rgba(14,165,233,0.14) 100%);border:1px solid rgba(245,158,11,0.45);border-radius:16px;padding:14px 20px;margin-bottom:20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
+    <div id="platform-welcome-strip" style="background:linear-gradient(135deg,rgba(245,158,11,0.18) 0%,rgba(244,63,94,0.16) 55%,rgba(14,165,233,0.14) 100%);border:1px solid rgba(245,158,11,0.45);border-radius:16px;padding:14px 20px;margin-bottom:20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
         <span style="background:linear-gradient(135deg,#f59e0b,#ff2442);color:#fff;font-size:0.74rem;font-weight:900;padding:3px 10px;border-radius:999px;">🤝 欢迎合作 · 寻找 20 位种子合伙人</span>
         <span style="font-size:0.9rem;font-weight:800;color:#f8fafc;">面向【携程/飞猪半托管私家团、高端定制游、户外徒步俱乐部】：前 20 家免费将您的 1 条王牌线路升级为 AI 交互式路书！</span>
@@ -666,7 +1209,7 @@
     </div>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero" id="platform-hero-banner">
       <div class="hero-eyebrow">★ 10-Star Private Group Travel Experience · CEO Plan & Working MVP</div>
       <h1>把任意原始行程单或随手笔记，结合 AI 缺口微访谈，预编译成 100% 离线随行 Web App</h1>
       <p class="lead">
@@ -1054,174 +1597,529 @@ python3 generator.py publish \
       </div>
     </section>
 
-    <!-- TAB 5: Ctrip Semi-Managed Private Tour BP & Xiaohongshu Cold-Start Kit (Single-Page Native View) -->
+    <!-- TAB 5: Ctrip Semi-Managed Private Tour BP & Xiaohongshu Cold-Start Kit (Executive Pitch Deck + 3:4 Launch Kit) -->
     <section id="tab-bp" class="hidden">
-      <div style="background:linear-gradient(135deg,rgba(30,41,59,0.92) 0%,rgba(15,23,42,0.98) 100%);border:1px solid rgba(245,158,11,0.45);border-radius:20px;padding:26px;margin-bottom:24px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:12px;">
-          <span class="pill warn" style="font-weight:900;">🚀 B2B2C 一页式商业计划书 (Executive BP) · 携程半托管私家团 / 定制游 / 户外俱乐部</span>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button type="button" onclick="window.openPartnerModal()" style="background:linear-gradient(135deg,#f59e0b,#ff2442);color:#fff;border:none;padding:7px 14px;border-radius:10px;font-size:0.8rem;font-weight:900;cursor:pointer;">🤝 立即登记合作 / 申领免费样板</button>
-          </div>
-        </div>
-        <h2 style="font-size:1.55rem;font-weight:900;margin-bottom:10px;line-height:1.3;">
-          告别死板 PDF 行程单：给携程半托管私家团装上「活的 AI 交互式路书 + 两步路轨迹海拔驾驶舱」
-        </h2>
-        <p style="font-size:0.94rem;color:#cbd5e1;margin-bottom:18px;">
-          携程/飞猪半托管私家团与高端定制游（人均 ¥6,000 ~ ¥50,000+）客单价高、决策重，但 95% 的地接社与定制师仍在用千篇一律的 Word/PDF 文字表格交付。
-          <strong>Travel Studio</strong> 将任意原始行程单与两步路户外轨迹（<code>.kml / .kmz / .gpx</code>）一键预编译为<strong>冠名旅行社品牌的 100% 离线随行 Web App</strong> —— 帮旅行社把<strong>售前询单转化率提升 30%+、定制师排期改线提效 5 倍、司导行中客诉降低 50%</strong>。
+      <!-- Executive Hero Cover -->
+      <div class="bp-hero">
+        <div class="bp-eyebrow">🚀 EXECUTIVE PITCH DECK · 专为携程/飞猪半托管私家团、高端定制游与户外俱乐部打造</div>
+        <h2>告别死板 PDF 行程单：<br/><span class="hl">用「AI 交互式智能路书 + 两步路轨迹驾驶舱」帮私家团多成交 30%</span></h2>
+        <p class="lead">
+          携程半托管私家团与高端定制游（人均 ¥6,000 ~ ¥50,000+）拥有极高客单价，但 95% 的地接社与定制师仍在用千篇一律的 Word/PDF 文字表格交付。
+          <strong>Travel Studio</strong> 将任意原始行程单与两步路户外轨迹（<code>.kml / .kmz / .gpx</code>）一键预编译为<strong>冠名旅行社品牌的 100% 离线随行 Web App</strong> —— 售前秒杀竞品比价、行中 10 秒一句话改行程、行后客人晒小红书自动为旅行社裂变获客。
         </p>
 
-        <div class="ceo-grid" style="margin-top:16px;">
-          <div class="ceo-card">
-            <h3>💼 1. 三大核心角色痛点 vs 破局方案</h3>
-            <ul>
-              <li><strong>获客端（旅行社老板/定制师）</strong>：收客人 3 万块却发一份死板 PDF，客人看不出高溢价 ➡️ <strong>冠名专属品牌的 3D 动态地图 + 每日高光卡片 + 四大美宿图鉴</strong>，售前秒杀竞品比价。</li>
-              <li><strong>交付端（司导/户外领队）</strong>：每天回答 50 遍坐车多久、爬升多少，遇高反临时改线易背锅 ➡️ <strong>两步路 4 格式 (.kml/.kmz/.gpx) 双向互通 + 海拔曲线预警 + Plan A/B 一键切换 + 10秒 AI 改行程</strong>。</li>
-              <li><strong>游客端（C端家庭/小红书玩家）</strong>：手机翻 PDF 字小反人类 ➡️ <strong>零 App 下载点开即用、雪山无信号 100% 离线可用</strong>，晒小红书自带「求同款」裂变留资入口。</li>
-            </ul>
+        <!-- 1-Tap Elevator Pitch Copy Bar -->
+        <div class="bp-pitch-bar">
+          <div class="bp-pitch-text">
+            💡 <strong>30 秒微信招商话术：</strong>点击右侧按钮直接复制精炼话术 + 云南/南美两大实测样板链接发微信给旅行社老板或定制师同行！
           </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="button" class="bp-btn bp-btn-amber" onclick="window.copyBpText('elevator_pitch', this)">
+              📋 一键复制 30 秒商务合作话术
+            </button>
+            <button type="button" class="bp-btn bp-btn-ghost" onclick="window.switchBpSubView('xhs', document.getElementById('subnav-btn-xhs'))">
+              📕 跳转 3 篇小红书文案包 ➔
+            </button>
+          </div>
+        </div>
 
-          <div class="ceo-card">
-            <h3>💰 2. 三档商业化合作模式（一单毛利覆盖全年）</h3>
-            <ul>
-              <li><strong>🌱 种子联名内测版（¥0 免费体验 · 限前 20 家）</strong>：免费将同行最畅销的 <strong>1 条王牌私家团线路</strong> 升级为冠名品牌的 AI 交互式路书（含两步路轨迹导入 + 专属获客按钮）。</li>
-              <li><strong>🚀 定制师 / 俱乐部专业版（¥99 / 团次，或 ¥1,999 / 年不限团）</strong>：无限生成出团专属链接（独立口令保护）+ 行中 AI Vibe 实时改版 + 两步路 4 格式互通 + Plan A/B 切换。</li>
-              <li><strong>💎 旅行社旗舰联名版（¥9,800 / 年 + 询单分成）</strong>：全社 20+ 条核心路线批量数字化 + 100% 品牌白标定制 + 小红书矩阵联合投流派单。</li>
-            </ul>
+        <!-- 4 Executive KPI Cards -->
+        <div class="bp-kpi-grid">
+          <div class="bp-kpi-card">
+            <div class="k">目标市场规模 (SAM)</div>
+            <div class="v">¥3,400亿</div>
+            <div class="s">国内私家团与高定包车年交易额 · 年增 28%+</div>
+          </div>
+          <div class="bp-kpi-card">
+            <div class="k">售前询单成交转化</div>
+            <div class="v">+30% ~ 45%</div>
+            <div class="s">3D 动态沙盘 + 海拔透明化建立高客单信任</div>
+          </div>
+          <div class="bp-kpi-card">
+            <div class="k">定制师排期改线耗时</div>
+            <div class="v">-80% (5x提速)</div>
+            <div class="s">10 秒一句话 Vibe 改行程 + 轨迹秒导入</div>
+          </div>
+          <div class="bp-kpi-card">
+            <div class="k">合作定价与单团成本</div>
+            <div class="v">¥39–99 / 团</div>
+            <div class="s">前 20 家首条王牌线路 ¥0 免费定制升级</div>
           </div>
         </div>
       </div>
 
-      <!-- Xiaohongshu 3-Post Ready-to-Publish Kit -->
-      <div style="margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
-        <div>
-          <h2 style="font-size:1.35rem;font-weight:900;">📕 小红书自运营冷启动武器库（3 篇即发爆款笔记 + 3:4 封面截图卡）</h2>
-          <p style="font-size:0.85rem;color:var(--text-muted);">左侧卡片按小红书黄金 3:4 比例设计，可直接手机/电脑截图作为首图；右侧支持一键复制完整标题、正文与标签</p>
-        </div>
-      </div>
+      <!-- Sticky Segmented Sub-Navigation Bar -->
+      <nav class="bp-subnav" aria-label="BP 与小红书视图切换">
+        <button type="button" class="bp-subnav-btn active" id="subnav-btn-all" onclick="window.switchBpSubView('all', this)">
+          👁️ 全部总览
+        </button>
+        <button type="button" class="bp-subnav-btn" id="subnav-btn-deck" onclick="window.switchBpSubView('deck', this)">
+          📊 6页商业计划书
+        </button>
+        <button type="button" class="bp-subnav-btn" id="subnav-btn-xhs" onclick="window.switchBpSubView('xhs', this)">
+          📕 3篇小红书文案
+        </button>
+        <button type="button" class="bp-subnav-btn" id="subnav-btn-lead" onclick="window.switchBpSubView('lead', this)">
+          🤝 合作与领样板
+        </button>
+      </nav>
 
-      <!-- XHS POST 1 -->
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:20px;background:var(--bg-card);border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:20px;align-items:start;">
-        <div style="max-width:300px;width:100%;aspect-ratio:3/4;border-radius:16px;padding:20px;background:linear-gradient(155deg,#0f172a 0%,#1e1b4b 48%,#831843 100%);border:2px solid rgba(251,113,133,0.45);display:flex;flex-direction:column;justify-content:space-between;margin:0 auto;box-shadow:0 14px 32px rgba(0,0,0,0.55);">
-          <div>
-            <span style="display:inline-block;padding:4px 10px;border-radius:999px;font-size:0.72rem;font-weight:900;background:rgba(255,255,255,0.15);color:#fff;">🗺️ 2026 旅行黑科技 · 实测</span>
-            <div style="font-size:1.45rem;font-weight:950;line-height:1.25;color:#fff;margin-top:12px;">
-              扔掉死板 PDF！<br/>这才是 <span style="color:#fde047;">神仙私家团路书</span> 该有的样子✨
+      <!-- ==================== PART 1: 5-SLIDE EXECUTIVE PITCH DECK ==================== -->
+      <div id="bp-view-deck">
+        <!-- SLIDE 01: Before vs After Comparison -->
+        <div class="bp-slide">
+          <div class="bp-slide-header">
+            <div>
+              <span class="bp-slide-num">SLIDE 01 · PAIN POINTS &amp; PARADIGM SHIFT</span>
+              <h3 class="bp-slide-title">一、 行业痛点与代际对比：为什么收客人 3 万块，不能再发死板 PDF？</h3>
+              <p class="bp-slide-sub">精准切入「高客单价、重服务、弱工具」的携程半托管私家团地接社、独立定制师与户外俱乐部</p>
             </div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:6px;">
-            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">✈️ 点哪天飞哪天 · 3D 路线沙盘</div>
-            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">⛰️ 实时海拔剖面 · 高反一键 B 计划</div>
-            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">✨ 输入一句话 · 10秒 AI 自动改行程</div>
-            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">🥾 两步路 GPX/KML/KMZ 无缝互通</div>
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:0.7rem;font-weight:800;color:rgba(255,255,255,0.8);padding-top:8px;border-top:1px solid rgba(255,255,255,0.16);">
-            <span>🏔️ 云南11天 / 🗿 南美15天</span>
-            <span>🤝 欢迎同行合作</span>
+
+          <div class="bp-compare-grid">
+            <div class="bp-compare-card bad">
+              <h3 style="color:#fda4af;">❌ 传统私家团交付（死板 PDF / Word 表格 / 微信群刷屏）</h3>
+              <div class="bp-compare-item">
+                <strong>1. 售前看不出高溢价，客人比完价就跑：</strong><br/>
+                明明车队、司导和松赞级美宿选得极好，发过去的却是密密麻麻的 PDF 文字表，客人感觉和 ¥3,000 低价团没区别。
+              </div>
+              <div class="bp-compare-item">
+                <strong>2. 临行/行中改三次行程，定制师加班改到吐：</strong><br/>
+                遇到高反、雨雪或客人临时不想早起，定制师手动改 Word 重导 PDF 发群，新旧版本混乱，司导容易跑错背锅。
+              </div>
+              <div class="bp-compare-item">
+                <strong>3. 户外轨迹与家庭攻略割裂，雪山断网即抓瞎：</strong><br/>
+                两步路 <code>.gpx/.kml</code> 文件小白团友打不开；到了梅里雨崩或南极洛无信号区，在线小程序直接白屏。
+              </div>
+              <div class="bp-compare-item">
+                <strong>4. 行后晒单零留资，白白浪费老客口碑流量：</strong><br/>
+                客人旅拍发小红书/朋友圈收获几十条「求攻略」，却无法一键跳转到旅行社定制师微信。
+              </div>
+            </div>
+
+            <div class="bp-compare-card good">
+              <h3 style="color:#6ee7b7;">✅ Travel Studio 智能路书（冠名品牌的 100% 离线 AI 随行 Web App）</h3>
+              <div class="bp-compare-item">
+                <strong>1. 售前 3D 动态路线沙盘，询单转化率立升 +30%：</strong><br/>
+                顶部冠名旅行社品牌与定制师名片；手指点 Day 1~Day 16 地图平滑飞跃，航线、包车公路、必住美宿一眼惊艳。
+              </div>
+              <div class="bp-compare-item">
+                <strong>2. 行中 10 秒 AI 随心改 (Password-Gated Vibe Loop)：</strong><br/>
+                输入专属口令后用一句大白话提需求，AI 10 秒自动重算路线与时间表，全团手机 8 秒自动收到新版本更新。
+              </div>
+              <div class="bp-compare-item">
+                <strong>3. 两步路 4 格式互通 + 海拔预警 + 高反一键 B 计划：</strong><br/>
+                原生打通 <code>.kml(轨迹/路径) / .kmz / .gpx</code>，手指滑海拔曲线地图同步推进，高反一键切换低海拔 B 方案。
+              </div>
+              <div class="bp-compare-item">
+                <strong>4. 内置「求同款」获客闭环，老客晒单自动带新客：</strong><br/>
+                路书自带「🤝 想要同款行程？一键联系定制师」浮窗，客人转发朋友圈/小红书就是帮旅行社免费投流！
+              </div>
+            </div>
           </div>
         </div>
 
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          <div style="font-weight:900;font-size:1rem;color:#fda4af;">📌 笔记 1（C端爆款种草 + 顺带吸B端）：告别死板PDF！我把云南和南美徒步做成了3D交互路书🗺️</div>
-          <textarea id="hub-xhs-post-1" class="agenda-input" style="min-height:250px;font-family:var(--font);" readonly>告别死板PDF！我把云南15天和南美徒步做成了3D交互路书🗺️
+        <!-- SLIDE 02: 6 Core Product & Technical Moats -->
+        <div class="bp-slide">
+          <div class="bp-slide-header">
+            <div>
+              <span class="bp-slide-num">SLIDE 02 · CORE PRODUCT &amp; TECH MOAT</span>
+              <h3 class="bp-slide-title">二、 六大核心产品护城河：专为高海拔私家团与硬核户外打磨</h3>
+              <p class="bp-slide-sub">零 App 下载负担，微信/手机浏览器点开即用，兼具户外专业度与小红书级高颜值</p>
+            </div>
+          </div>
 
-每次和家人朋友出去玩，最崩溃的就是看群里发的那几十页 PDF 行程单！😩
+          <div class="bp-pillar-grid">
+            <div class="bp-pillar-card">
+              <h4>🗺️ 1. 国内外双网络栈自适应</h4>
+              <p><strong>中国境内 (<code>cn_domestic</code>)</strong> 原生采用高德瓦片 + GCJ-02 火星坐标纠偏 + 高德/百度一键导航 + 百度百科 + 小红书；<strong>海外 (<code>global</code>)</strong> 自动切换 Google Maps + OSM + Wiki，全球秒开不翻墙。</p>
+            </div>
+            <div class="bp-pillar-card">
+              <h4>🥾 2. 两步路 (2bulu) 4 格式全通</h4>
+              <p>浏览器端原生解析两步路全部 4 种导出格式：<code>KML(轨迹 gx:Track)</code>、<code>KML(路径)</code>、<code>KMZ(含ZIP解压)</code> 与 <code>GPX</code>；团友也能一键导出标准轨迹包进两步路离线防迷路。</p>
+            </div>
+            <div class="bp-pillar-card">
+              <h4>⛰️ 3. 海拔剖面联动 + 高反 B 计划</h4>
+              <p>内置每日海拔阶梯图与红/黄/绿三级高反护栏（如 <code>14:30前翻越白马雪山暗冰红线</code>）。遇团友高反或雨雪，1 秒切换低海拔富氧美宿与轻徒步 B 计划。</p>
+            </div>
+            <div class="bp-pillar-card">
+              <h4>✨ 4. 口令保护 Vibe 实时改版舱</h4>
+              <p>每团配备独立口令（如 <code>applefriend</code> / <code>sa26</code>），防止外人误触。定制师或团友提交新想法或新轨迹，直连云端自动改代码并推送新版本。</p>
+            </div>
+            <div class="bp-pillar-card">
+              <h4>⚡ 5. 100% 离线 PWA 雪山不断联</h4>
+              <p>内置自研 <code>Service Worker (sw.js)</code> 离线缓存引擎，首次打开即自动将行程、海拔图与浏览过的地图瓦片驻留手机本地，海拔 4,500m 无信号区照样丝滑查看。</p>
+            </div>
+            <div class="bp-pillar-card">
+              <h4>🧲 6. 品牌白标冠名 + 晒单裂变</h4>
+              <p>支持冠名旅行社/俱乐部专属 Logo、定制师微信二维码与「申领同款」留资入口，线索通过 <code>ntfy + Vibe Bridge</code> 秒级直推主理人工作台。</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLIDE 03: Two Flagship Live Showcases -->
+        <div class="bp-slide">
+          <div class="bp-slide-header">
+            <div>
+              <span class="bp-slide-num">SLIDE 03 · LIVE PRODUCTION SHOWCASES</span>
+              <h3 class="bp-slide-title">三、 两大已上线实战标杆样板（可直接发给客户或同行体验）</h3>
+              <p class="bp-slide-sub">一套国内滇西北高海拔私家团样板 + 一套南美跨国冰川徒步远征样板，均已实装全部核心特性</p>
+            </div>
+          </div>
+
+          <div class="bp-showcase-grid">
+            <div class="bp-showcase-card">
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+                  <span class="pill ok">🏔️ 标杆案例 1 · 中国境内双栈 (高德 GCJ-02)</span>
+                  <span class="pill">口令: applefriend</span>
+                </div>
+                <h4 style="font-size:1.12rem;font-weight:900;color:#fff;margin-bottom:6px;">
+                  云南滇西北 15 天高定私家团 · 丽江/虎跳峡/哈巴/香格里拉/梅里/雨崩/南极洛
+                </h4>
+                <p style="font-size:0.81rem;color:#cbd5e1;margin-bottom:10px;">
+                  涵盖完整 15 天排期、高黎贡山/虎跳峡/哈巴黑海湖/雨崩冰湖 4 条两步路标准轨迹下载、D6–D9 雨崩 vs 南极洛 Plan A/B 动态切换、14:30 白马雪山暗冰红线预警与四大顶奢美宿图鉴。
+                </p>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <a href="https://youngapple.github.io/yunnan-2026/" target="_blank" rel="noopener" class="bp-btn bp-btn-emerald">
+                  🏔️ 打开云南 2026 实装路书 ↗
+                </a>
+                <button type="button" class="bp-btn bp-btn-ghost" onclick="window.copyBpText('yunnan_share', this)">
+                  📋 复制云南样板链接与介绍
+                </button>
+              </div>
+            </div>
+
+            <div class="bp-showcase-card">
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+                  <span class="pill blue">🗿 标杆案例 2 · 国际全球栈 (WGS-84 / Google)</span>
+                  <span class="pill">口令: sa26</span>
+                </div>
+                <h4 style="font-size:1.12rem;font-weight:900;color:#fff;margin-bottom:6px;">
+                  南美 16 天极限远征 · 印加古道/马丘比丘/彩虹山/乌尤尼天空之镜/巴塔哥尼亚
+                </h4>
+                <p style="font-size:0.81rem;color:#cbd5e1;margin-bottom:10px;">
+                  涵盖 39 个精准预标点位、5 大 KML 离线图层、交互式海拔剖面图（滑块实时联动地图光标）、红黄绿高反分级预警、高反一键切换低海拔 B 计划与西语通关点餐锦囊。
+                </p>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <a href="https://youngapple.github.io/south-america-2026/" target="_blank" rel="noopener" class="bp-btn bp-btn-amber">
+                  🗿 打开南美 2026 实装路书 ↗
+                </a>
+                <button type="button" class="bp-btn bp-btn-ghost" onclick="window.copyBpText('sa_share', this)">
+                  📋 复制南美样板链接与介绍
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLIDE 04: Business Model & Pricing Matrix -->
+        <div class="bp-slide">
+          <div class="bp-slide-header">
+            <div>
+              <span class="bp-slide-num">SLIDE 04 · BUSINESS MODEL &amp; ROI PRICING</span>
+              <h3 class="bp-slide-title">四、 商业模式与三档合作梯队（多成交 1 单私家团即可覆盖全年系统费）</h3>
+              <p class="bp-slide-sub">纯静态预编译 PWA 边际托管成本趋近于 ¥0，毛利率 &gt;95%，让利前 20 家种子同行零门槛免费启动</p>
+            </div>
+          </div>
+
+          <div class="bp-pricing-grid">
+            <div class="bp-price-card featured">
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                  <span style="font-size:0.78rem;font-weight:900;color:#fbbf24;">🌱 种子合伙人内测版</span>
+                  <span class="pill warn" style="font-size:0.68rem;padding:2px 8px;">🔥 限前 20 家</span>
+                </div>
+                <div class="bp-price-val">¥0 <span>/ 首条王牌线路免费定制</span></div>
+                <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:12px;">适合：携程/飞猪私家团定制师、地接社、户外领队快速验证逼单转化效果</p>
+                <ul class="bp-check-list">
+                  <li>✅ <strong>免费将您最赚钱的 1 条王牌线路</strong>编译为交互式智能路书</li>
+                  <li>✅ 支持导入两步路 <code>.kml / .kmz / .gpx</code> 轨迹与海拔曲线</li>
+                  <li>✅ 冠名您的旅行社/俱乐部名称、定制师微信与获客按钮</li>
+                  <li>✅ 永久免费托管 HTTPS 链接，可直接发给询单客人体验</li>
+                </ul>
+              </div>
+              <button type="button" class="bp-btn bp-btn-amber" style="width:100%;" onclick="window.switchBpSubView('lead', document.getElementById('subnav-btn-lead'))">
+                🎁 立即申领免费首单定制名额
+              </button>
+            </div>
+
+            <div class="bp-price-card">
+              <div>
+                <div style="font-size:0.78rem;font-weight:900;color:var(--accent);">🚀 定制师 / 俱乐部专业版</div>
+                <div class="bp-price-val">¥99 <span>/ 团次（或 ¥1,999 / 年不限团）</span></div>
+                <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:12px;">适合：成熟定制师工作室、精品包车车队、周末/长线户外徒步俱乐部</p>
+                <ul class="bp-check-list">
+                  <li>✅ 无限量生成出团专属链接（每团独立口令防误触）</li>
+                  <li>✅ 开启 <strong>✨ 行中 AI 随心改 (Vibe Loop)</strong> 10秒改版特权</li>
+                  <li>✅ 完整高反/天气 Plan A/B 动态切换开关</li>
+                  <li>✅ 国内外双网络栈（高德 GCJ-02 / 全球 Google+OSM）自适应</li>
+                </ul>
+              </div>
+              <button type="button" class="bp-btn bp-btn-ghost" style="width:100%;" onclick="window.switchBpSubView('lead', document.getElementById('subnav-btn-lead'))">
+                🤝 预约专业版合作对接
+              </button>
+            </div>
+
+            <div class="bp-price-card">
+              <div>
+                <div style="font-size:0.78rem;font-weight:900;color:var(--emerald);">💎 旅行社旗舰联名版</div>
+                <div class="bp-price-val">¥9,800 <span>/ 年 + 小红书客资分成</span></div>
+                <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:12px;">适合：区域头部私家团地接社（云南/新疆/川西/南美/冰岛等专线大社）</p>
+                <ul class="bp-check-list">
+                  <li>✅ 全社 20+ 条核心路线库批量数字化升级</li>
+                  <li>✅ 100% 品牌白标定制（独立域名 + 专属视觉主题）</li>
+                  <li>✅ 小红书矩阵号联合种草投流，精准询单线索直接派发</li>
+                  <li>✅ 专属团后旅拍相册归档与老客转介绍裂变系统</li>
+                </ul>
+              </div>
+              <button type="button" class="bp-btn bp-btn-ghost" style="width:100%;" onclick="window.switchBpSubView('lead', document.getElementById('subnav-btn-lead'))">
+                💎 洽谈年度战略联名
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLIDE 05: 3-Step Fast Onboarding Workflow -->
+        <div class="bp-slide">
+          <div class="bp-slide-header">
+            <div>
+              <span class="bp-slide-num">SLIDE 05 · 3-STEP ONBOARDING WORKFLOW</span>
+              <h3 class="bp-slide-title">五、 三步极速合作流程：无需懂技术，发份旧行程单当天拿样板</h3>
+              <p class="bp-slide-sub">不改变定制师原有工作习惯，把脏活累活全部交给 Travel Studio 预编译器</p>
+            </div>
+          </div>
+
+          <div class="bp-step-grid">
+            <div class="bp-step-card">
+              <div class="bp-slide-num" style="background:rgba(245,158,11,0.18);color:#fde68a;border-color:rgba(245,158,11,0.4);">STEP 01 · 1分钟提交</div>
+              <h4 style="font-size:0.95rem;font-weight:900;margin:4px 0 6px;">📥 发送现有行程单或轨迹</h4>
+              <p style="font-size:0.8rem;color:#cbd5e1;">直接把您现有的 Word/PDF 行程单、微信排期文字，或两步路导出的 <code>.kml / .kmz / .gpx</code> 轨迹发给我们。</p>
+            </div>
+            <div class="bp-step-card">
+              <div class="bp-slide-num" style="background:rgba(16,185,129,0.18);color:#6ee7b7;border-color:rgba(16,185,129,0.4);">STEP 02 · 当天编译交付</div>
+              <h4 style="font-size:0.95rem;font-weight:900;margin:4px 0 6px;">⚡ AI 预编译 + 贵社品牌冠名</h4>
+              <p style="font-size:0.8rem;color:#cbd5e1;">自动补全沿途坐标、海拔曲线、高反 B 计划与摄影机位，冠名贵社品牌 Logo 与定制师微信名片。</p>
+            </div>
+            <div class="bp-step-card">
+              <div class="bp-slide-num" style="background:rgba(255,36,66,0.18);color:#fda4af;border-color:rgba(255,36,66,0.4);">STEP 03 · 逼单与裂变</div>
+              <h4 style="font-size:0.95rem;font-weight:900;margin:4px 0 6px;">🚀 一键发客逼单 &amp; 晒单获客</h4>
+              <p style="font-size:0.8rem;color:#cbd5e1;">生成永久在线/离线 PWA 链接，发给询单客户秒杀传统 PDF 竞品，行中随时一句话 Vibe 改行程。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== PART 2: XIAOHONGSHU 3:4 POSTER & COPY KIT ==================== -->
+      <div id="bp-view-xhs">
+        <div class="bp-slide" style="background:linear-gradient(135deg,rgba(131,24,67,0.22) 0%,rgba(15,23,42,0.95) 100%);border-color:rgba(251,113,133,0.4);">
+          <div class="bp-slide-header" style="margin-bottom:8px;border-bottom:none;padding-bottom:0;">
+            <div>
+              <span class="bp-slide-num" style="background:rgba(255,36,66,0.2);color:#fda4af;border-color:rgba(255,36,66,0.45);">SLIDE 06 · XIAOHONGSHU COLD-START KIT</span>
+              <h3 class="bp-slide-title">📕 小红书自运营冷启动弹药库（3 篇即发爆款笔记 + 3:4 黄金比例封面海报）</h3>
+              <p class="bp-slide-sub">
+                <strong>左图</strong>严格按小红书 <code>3:4</code> 黄金比例排版，手机或电脑直接截图即可作为笔记首图；<strong>右栏</strong>配备双引擎一键复制（支持「复制整篇全文」、「仅复制标题」、「仅复制正文+标签」、「复制置顶评论话术」），兼容微信/Google Chat/Safari/Chrome 全部内置浏览器！
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- XHS POST 1 -->
+        <article class="bp-xhs-card">
+          <div class="bp-xhs-cover c1">
+            <div>
+              <div class="bp-cover-pill">🗺️ 2026 旅行黑科技 · 实测</div>
+              <div class="bp-cover-title">
+                扔掉死板 PDF！<br/>
+                这才是 <span style="color:#fde047;">神仙私家团路书</span> 该有的样子✨
+              </div>
+            </div>
+            <div class="bp-cover-chips">
+              <div class="bp-cover-chip">✈️ 点哪天飞哪天 · 3D 路线沙盘</div>
+              <div class="bp-cover-chip">⛰️ 实时海拔剖面 · 高反一键 B 计划</div>
+              <div class="bp-cover-chip">✨ 输入一句话 · 10秒 AI 自动改行程</div>
+              <div class="bp-cover-chip">🥾 两步路 GPX/KML/KMZ 无缝互通</div>
+            </div>
+            <div class="bp-cover-foot">
+              <span>🏔️ 云南15天 / 🗿 南美16天</span>
+              <span>🤝 欢迎同行合作</span>
+            </div>
+          </div>
+
+          <div class="bp-copy-workstation">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+              <span class="pill" style="background:linear-gradient(135deg,#ff2442,#e11d48);color:#fff;border:none;">📌 笔记 1 · C端爆款种草 + 顺带吸B端同行</span>
+              <span style="font-size:0.75rem;color:var(--text-muted);">💡 封面建议：直接截取左侧 3:4 卡片作为首图</span>
+            </div>
+
+            <div class="bp-copy-action-bar">
+              <button type="button" class="bp-btn bp-btn-xhs" onclick="window.copyBpText('post1_full', this)">
+                📋 一键复制整篇全文
+              </button>
+              <button type="button" class="bp-btn bp-btn-ghost" onclick="window.copyBpText('post1_title', this)">
+                📌 仅复制标题
+              </button>
+              <button type="button" class="bp-btn bp-btn-ghost" onclick="window.copyBpText('post1_body', this)">
+                📝 仅复制正文+标签
+              </button>
+              <button type="button" class="bp-btn bp-btn-amber" onclick="window.copyBpText('post1_comment', this)">
+                💬 复制置顶评论话术
+              </button>
+            </div>
+
+            <div class="bp-title-box">
+              <span id="bp-text-post1_title">告别死板PDF！我把云南和南美徒步做成了3D交互路书🗺️</span>
+              <span style="font-size:0.7rem;color:#fda4af;font-weight:700;">小红书标题 (24字)</span>
+            </div>
+
+            <div class="bp-copy-preview" id="bp-text-post1_body" onclick="window.selectElementText(this)" title="点击可全选文字">每次和家人朋友出去玩，最崩溃的就是看群里发的那几十页 PDF 行程单！😩
 字又小、地图是死的，到了高原想临时换个轻松的景点，还得全网重查攻略……
 
-这次准备【2026云南深度游（丽江-虎跳峡-哈巴黑海湖-香格里拉-梅里雪山-南极洛）】和【南美15天冰川雨林远征】，我干脆自己动手，用 AI 搓了一套「会动的交互式智能路书」！🔥
+这次准备【2026云南15天深度游（昆明-大理-丽江-虎跳峡-香格里拉-梅里雪山）】和【南美16天印加古道徒步】，我干脆自己动手，用 AI 搓了一套「会动的交互式智能路书」！🔥
 
 ✨ 用起来到底有多爽？
-1️⃣ 点哪天飞哪天：手指点 D1~D15，地图自动飞跃到当天路线，连飞机弧线、包车公路、徒步小径都分得清清楚楚！
-2️⃣ 高原防坑救命舱：内置实时海拔阶梯图！虎跳峡、哈巴黑海湖、梅里雪山、南极洛每一段爬升多少米一目了然，还自带「高反/下雨一键切换低海拔 B 计划」🛡️
+1️⃣ 点哪天飞哪天：手指点 Day 1~Day 16，地图自动飞跃到当天路线，连飞机弧线、包车公路、徒步小径都分得清清楚楚！
+2️⃣ 高原防坑救命舱：内置实时海拔剖面图！虎跳峡、梅里雪山、彩虹山每一段爬升多少米一目了然，还自带「高反/下雨一键切换低海拔 B 计划」🛡️
 3️⃣ 一句话随心改（Vibe Change）：路上突然不想早起？直接在页面里输一句「把明天上午改成古镇喝咖啡」，10秒钟全团地图和时间表自动更新！
 4️⃣ 两步路轨迹无缝互通：支持 GPX / KML / KMZ 四大格式一键导入导出，户外党和家人休闲游终于不用看两套攻略了！
 
 💡 真实体验链接我已经放出来了（零App下载，手机浏览器点开丝滑体验）！
-👉 想要云南 / 南美同款路书的朋友，或者想把自己的旅行计划生成同款交互地图的，欢迎在评论区扣【同款】！
+👉 想要云南15天 / 南美16天同款路书的朋友，或者想把自己的旅行计划生成同款交互地图的，欢迎在评论区扣【同款】！
 🤝 特别呼叫：如果你是做【携程私家团、高端定制游、户外俱乐部、独立领队】的同行伙伴，想把你们发给客人的 PDF 行程单升级成这套高转化、零差评的专属品牌交互路书，欢迎直接私信或点击路书右上角【🤝 合作/定制】登记，前 20 家免费帮你们定制首条王牌线路！
 
-#云南旅游攻略 #携程私家团 #定制游 #户外徒步 #两步路 #虎跳峡徒步 #梅里雪山 #南美旅行 #南极洛 #AI旅行路书 #旅游从业者</textarea>
-          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-            <button type="button" onclick="copyHubXhsPost('hub-xhs-post-1', this)" style="background:linear-gradient(135deg,#ff2442,#e11d48);color:#fff;border:none;padding:9px 16px;border-radius:10px;font-size:0.84rem;font-weight:900;cursor:pointer;">📋 一键复制笔记 1（标题+正文+标签）</button>
-          </div>
-        </div>
-      </div>
+#云南旅游攻略 #携程私家团 #定制游 #户外徒步 #两步路 #虎跳峡徒步 #梅里雪山 #南美旅行 #印加古道 #AI旅行路书 #旅游从业者</div>
 
-      <!-- XHS POST 2 -->
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:20px;background:var(--bg-card);border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:20px;align-items:start;">
-        <div style="max-width:300px;width:100%;aspect-ratio:3/4;border-radius:16px;padding:20px;background:linear-gradient(155deg,#022c22 0%,#064e3b 50%,#0f172a 100%);border:2px solid rgba(52,211,153,0.45);display:flex;flex-direction:column;justify-content:space-between;margin:0 auto;box-shadow:0 14px 32px rgba(0,0,0,0.55);">
-          <div>
-            <span style="display:inline-block;padding:4px 10px;border-radius:999px;font-size:0.72rem;font-weight:900;background:rgba(255,255,255,0.15);color:#fff;">🥾 硬核户外 × 两步路互通</span>
-            <div style="font-size:1.45rem;font-weight:950;line-height:1.25;color:#fff;margin-top:12px;">
-              两步路 GPX/KML<br/>秒变 <span style="color:#6ee7b7;">高颜值海拔交互路书</span> ⛰️
+            <div class="bp-comment-box" id="bp-text-post1_comment">
+              💬 <strong>发布后立即自评置顶话术：</strong>「🏔️ 云南15天 &amp; 🗿 南美16天实装交互路书已经上线啦！想体验的宝子在评论区扣【同款】我发你体验链接～ 如果你是做携程私家团、包车定制或户外俱乐部的同行，扣【合作】免费帮你升级 1 条王牌赚钱线路！🤝」
             </div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:6px;">
-            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">🔄 支持 KML(轨迹/路径) · KMZ · GPX</div>
-            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">📈 海拔阶梯图 × 地图实时联动</div>
-            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">🛡️ 红黄绿海拔预警 + 高反一键 B 计划</div>
-            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">📶 离线缓存瓦片 · 雪山垭口不断联</div>
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:0.7rem;font-weight:800;color:rgba(255,255,255,0.8);padding-top:8px;border-top:1px solid rgba(255,255,255,0.16);">
-            <span>🧭 Travel Studio 户外引擎</span>
-            <span>🤝 俱乐部/领队内测中</span>
-          </div>
-        </div>
+        </article>
 
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          <div style="font-weight:900;font-size:1rem;color:#6ee7b7;">📌 笔记 2（户外硬核 + 领队俱乐部向）：两步路GPX秒变交互大片！这套带高反B计划的路书太顶了🥾</div>
-          <textarea id="hub-xhs-post-2" class="agenda-input" style="min-height:250px;font-family:var(--font);" readonly>两步路GPX秒变交互大片！这套带高反B计划的路书太顶了🥾
+        <!-- XHS POST 2 -->
+        <article class="bp-xhs-card">
+          <div class="bp-xhs-cover c2">
+            <div>
+              <div class="bp-cover-pill">🥾 硬核户外 × 两步路互通</div>
+              <div class="bp-cover-title">
+                两步路 GPX/KML<br/>
+                秒变 <span style="color:#6ee7b7;">高颜值海拔交互路书</span> ⛰️
+              </div>
+            </div>
+            <div class="bp-cover-chips">
+              <div class="bp-cover-chip">🔄 支持 KML(轨迹/路径) · KMZ · GPX</div>
+              <div class="bp-cover-chip">📈 手指滑海拔曲线 · 地图同步推进</div>
+              <div class="bp-cover-chip">🛡️ 红黄绿海拔预警 + 高反一键 B 计划</div>
+              <div class="bp-cover-chip">📶 离线缓存瓦片 · 雪山垭口不断联</div>
+            </div>
+            <div class="bp-cover-foot">
+              <span>🧭 Travel Studio 户外引擎</span>
+              <span>🤝 俱乐部/领队内测中</span>
+            </div>
+          </div>
 
-带队去高海拔徒步（虎跳峡、哈巴黑海湖、雨崩、南极洛、川西、南美巴塔哥尼亚），领队和定制师最头疼两件事：
+          <div class="bp-copy-workstation">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+              <span class="pill ok">📌 笔记 2 · 户外硬核 + 精准吸徒步领队/俱乐部</span>
+              <span style="font-size:0.75rem;color:var(--text-muted);">💡 封面建议：截取左侧 3:4 绿金卡片作为首图</span>
+            </div>
+
+            <div class="bp-copy-action-bar">
+              <button type="button" class="bp-btn bp-btn-emerald" onclick="window.copyBpText('post2_full', this)">
+                📋 一键复制整篇全文
+              </button>
+              <button type="button" class="bp-btn bp-btn-ghost" onclick="window.copyBpText('post2_title', this)">
+                📌 仅复制标题
+              </button>
+              <button type="button" class="bp-btn bp-btn-ghost" onclick="window.copyBpText('post2_body', this)">
+                📝 仅复制正文+标签
+              </button>
+              <button type="button" class="bp-btn bp-btn-amber" onclick="window.copyBpText('post2_comment', this)">
+                💬 复制置顶评论话术
+              </button>
+            </div>
+
+            <div class="bp-title-box" style="border-color:rgba(16,185,129,0.4);">
+              <span id="bp-text-post2_title">两步路GPX秒变交互大片！这套带高反B计划的路书太顶了🥾</span>
+              <span style="font-size:0.7rem;color:#6ee7b7;font-weight:700;">小红书标题 (25字)</span>
+            </div>
+
+            <div class="bp-copy-preview" id="bp-text-post2_body" onclick="window.selectElementText(this)" title="点击可全选文字">带队去高海拔徒步（虎跳峡、雨崩、南极洛、川西、南美印加古道），领队和定制师最头疼两件事：
 一是发给团友的 GPX 轨迹，小白根本不会用；发 PDF 文字吧，大家又天天在群里问「今天爬升多少？几点到营地？会高反吗？」
 二是遇到团友高反或突变天气，临时改线手忙脚乱！
 
 我们在 Travel Studio 里专门为高海拔私家团和户外小团打磨了这套「硬核轨迹 + 傻瓜式交互」二合一引擎：
 
-⛰️ 1. 海拔阶梯图 × 地图实时联动
-点选任意徒步赛段，地图自动高亮轨迹并展示起点/终点海拔、累计爬升与耗时。
+⛰️ 1. 海拔剖面图 × 地图实时联动
+手指在底部海拔曲线上滑动，地图上的光标同步沿着山脊推进，精确显示每个垭口的海拔、累计爬升和下撤点。
 🔄 2. 两步路（2bulu）4 格式全打通
-不管是 .gpx、.kml（轨迹/路径）还是带路标照片的 .kmz 压缩包，拖进 Vibe 舱 10 秒生成带海拔色带的交互式网页路书；团友也能随时一键导出标准轨迹包进两步路离线导航！
+不管是 .gpx、.kml（轨迹/路径）还是带照片的 .kmz 压缩包，拖进去 10 秒生成带海拔色带的交互式网页路书；团友也能随时一键导出标准轨迹包进两步路离线导航！
 🛡️ 3. 独创「高反 / 天气 B 计划」一键切换
-提前在路书里埋好高反预案与 A/B 分支。万一团友出现高反或遇雨雪，点一下即可切换低海拔富氧美宿与轻徒步方案，专业度直接拉满！
+提前在路书里埋好红/黄/绿三级海拔预警。万一团友在香格里拉或库斯科出现高反，点一下「切换 B 计划」，自动替换成低海拔供氧美宿与轻徒步路线，专业度直接拉满！
 
-🔥 目前【云南滇西北环线】&【南美巴塔哥尼亚+亚马逊】两个完整样板已经上线！
+🔥 目前【云南滇西北环线】&amp;【秘鲁印加古道+玻利维亚天空之镜】两个完整样板已经上线！
 💬 评论区留【轨迹】看在线实测效果！
 🤝 欢迎全国户外俱乐部主理人、携程半托管私家团地接社、独立领队合作内测 —— 点击路书里的【🤝 合作/定制】即可一键对接，一起把户外小团的行前转化和行中体验卷出新高度！
 
-#两步路 #户外俱乐部 #徒步领队 #GPX轨迹 #高原反应 #云南徒步 #雨崩徒步 #虎跳峡 #私家团定制 #户外路书</textarea>
-          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-            <button type="button" onclick="copyHubXhsPost('hub-xhs-post-2', this)" style="background:linear-gradient(135deg,#10b981,#059669);color:#020617;border:none;padding:9px 16px;border-radius:10px;font-size:0.84rem;font-weight:900;cursor:pointer;">📋 一键复制笔记 2（标题+正文+标签）</button>
-          </div>
-        </div>
-      </div>
+#两步路 #户外俱乐部 #徒步领队 #GPX轨迹 #高原反应 #云南徒步 #雨崩徒步 #虎跳峡 #私家团定制 #户外路书</div>
 
-      <!-- XHS POST 3 -->
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:20px;background:var(--bg-card);border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:20px;align-items:start;">
-        <div style="max-width:300px;width:100%;aspect-ratio:3/4;border-radius:16px;padding:20px;background:linear-gradient(155deg,#1e1b4b 0%,#451a03 52%,#0f172a 100%);border:2px solid rgba(251,191,36,0.55);display:flex;flex-direction:column;justify-content:space-between;margin:0 auto;box-shadow:0 14px 32px rgba(0,0,0,0.55);">
-          <div>
-            <span style="display:inline-block;padding:4px 10px;border-radius:999px;font-size:0.72rem;font-weight:900;background:rgba(255,255,255,0.15);color:#fff;">💎 致 携程私家团 / 定制游同行</span>
-            <div style="font-size:1.45rem;font-weight:950;line-height:1.25;color:#fff;margin-top:12px;">
-              一单收客人三万<br/>别再用 <span style="color:#fda4af;">死板 PDF</span> 丢单了！🔥
+            <div class="bp-comment-box" id="bp-text-post2_comment">
+              💬 <strong>发布后立即自评置顶话术：</strong>「🥾 支持两步路 KML(轨迹/路径)、KMZ、GPX 四大格式直接拖入生成海拔交互路书！户外领队和俱乐部主理人欢迎评论区扣【轨迹】或私信我，前 20 家免费帮你们把当家徒步线做成 3D 离线交互路书！」
             </div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:6px;">
-            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">📈 售前 3D 交互路书 · 询单转化 +30%</div>
-            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">⚡ 10秒 AI 随心改行程 · 定制师提效 5 倍</div>
-            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">🧲 客人晒小红书自动带新客留资</div>
-            <div style="background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:9px;padding:6px 10px;font-size:0.75rem;font-weight:800;">🎁 前 20 家同行免费定制王牌线路</div>
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:0.7rem;font-weight:800;color:rgba(255,255,255,0.8);padding-top:8px;border-top:1px solid rgba(255,255,255,0.16);">
-            <span>🤝 寻找 20 位种子合伙人</span>
-            <span>Travel Studio B2B</span>
-          </div>
-        </div>
+        </article>
 
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          <div style="font-weight:900;font-size:1rem;color:#fde047;">📌 笔记 3（B端直招 · 携程私家团/定制师专场）：做携程私家团/定制游的同行看过来！别让死板PDF拖垮转化率🔥</div>
-          <textarea id="hub-xhs-post-3" class="agenda-input" style="min-height:250px;font-family:var(--font);" readonly>做携程私家团/定制游的同行看过来！别让死板PDF拖垮转化率🔥
+        <!-- XHS POST 3 -->
+        <article class="bp-xhs-card">
+          <div class="bp-xhs-cover c3">
+            <div>
+              <div class="bp-cover-pill">💎 致 携程私家团 / 定制游同行</div>
+              <div class="bp-cover-title">
+                一单收客人三万<br/>
+                别再用 <span style="color:#fda4af;">死板 PDF</span> 丢单了！🔥
+              </div>
+            </div>
+            <div class="bp-cover-chips">
+              <div class="bp-cover-chip">📈 售前 3D 交互路书 · 询单转化 +30%</div>
+              <div class="bp-cover-chip">⚡ 10秒 AI 随心改行程 · 定制师提效 5 倍</div>
+              <div class="bp-cover-chip">🧲 客人晒小红书自动带新客留资</div>
+              <div class="bp-cover-chip">🎁 前 20 家同行免费定制王牌线路</div>
+            </div>
+            <div class="bp-cover-foot">
+              <span>🤝 寻找 20 位种子合伙人</span>
+              <span>Travel Studio B2B</span>
+            </div>
+          </div>
 
-跟几位做云南、新疆、南美携程半托管私家团的老板聊，大家都有一个共同的痛点：
+          <div class="bp-copy-workstation">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+              <span class="pill warn">📌 笔记 3 · B端精准招商（携程私家团老板/定制师专场）</span>
+              <span style="font-size:0.75rem;color:var(--text-muted);">💡 封面建议：截取左侧 3:4 黑金卡片作为首图</span>
+            </div>
+
+            <div class="bp-copy-action-bar">
+              <button type="button" class="bp-btn bp-btn-amber" onclick="window.copyBpText('post3_full', this)">
+                📋 一键复制整篇全文
+              </button>
+              <button type="button" class="bp-btn bp-btn-ghost" onclick="window.copyBpText('post3_title', this)">
+                📌 仅复制标题
+              </button>
+              <button type="button" class="bp-btn bp-btn-ghost" onclick="window.copyBpText('post3_body', this)">
+                📝 仅复制正文+标签
+              </button>
+              <button type="button" class="bp-btn bp-btn-xhs" onclick="window.copyBpText('post3_comment', this)">
+                💬 复制置顶评论话术
+              </button>
+            </div>
+
+            <div class="bp-title-box" style="border-color:rgba(245,158,11,0.45);">
+              <span id="bp-text-post3_title">做携程私家团/定制游的同行看过来！别让死板PDF拖垮转化率🔥</span>
+              <span style="font-size:0.7rem;color:#fcd34d;font-weight:700;">小红书标题 (26字)</span>
+            </div>
+
+            <div class="bp-copy-preview" id="bp-text-post3_body" onclick="window.selectElementText(this)" title="点击可全选文字">跟几位做云南、新疆、南美携程半托管私家团的老板聊，大家都有一个共同的痛点：
 「我们的车队、司导和酒店明明选得比同行好得多，一单收客人两三万，但发过去的行程单还是老掉牙的 PDF 或文字表格，客人根本感知不到高价值，比完价就跑了！」
 
 更别提客人成团后：
@@ -1240,15 +2138,72 @@ python3 generator.py publish \
 无论你是携程/飞猪半托管私家团供应商、独立定制师工作室、精品包车司导团队，还是户外俱乐部：
 现在点击我们路书右上角的【🤝 合作/定制】登记，前 20 家我们免费帮你把 1 条王牌赚钱线路升级成专属 AI 交互式智能路书！欢迎评论区扣【合作】或直接私信交流～
 
-#携程私家团 #定制游 #旅行社转型 #旅游定制师 #地接社 #云南包车定制 #高端旅游 #旅游创业 #私家团运营 #AI赋能旅游</textarea>
-          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-            <button type="button" onclick="copyHubXhsPost('hub-xhs-post-3', this)" style="background:linear-gradient(135deg,#f59e0b,#ea580c);color:#020617;border:none;padding:9px 16px;border-radius:10px;font-size:0.84rem;font-weight:900;cursor:pointer;">📋 一键复制笔记 3（标题+正文+标签）</button>
-            <button type="button" onclick="window.openPartnerModal()" style="background:rgba(30,41,59,0.9);color:#fde68a;border:1px solid rgba(245,158,11,0.5);padding:9px 16px;border-radius:10px;font-size:0.84rem;font-weight:800;cursor:pointer;">🤝 立即打开合作留资舱</button>
+#携程私家团 #定制游 #旅行社转型 #旅游定制师 #地接社 #云南包车定制 #高端旅游 #旅游创业 #私家团运营 #AI赋能旅游</div>
+
+            <div class="bp-comment-box" id="bp-text-post3_comment">
+              💬 <strong>发布后立即自评置顶话术：</strong>「🤝 寻找 20 位携程/飞猪私家团、高端定制游与户外俱乐部种子合伙人！前 20 家免费帮贵社把最畅销的 1 条王牌线路升级成冠名贵社品牌的 AI 交互式路书，评论区扣【合作】或直接私信发微信号，当天出样板！」
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- ==================== PART 3: PARTNER LEAD CAPTURE FORM ==================== -->
+      <div id="bp-view-lead">
+        <div class="bp-lead-box" id="partner-form-section">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+            <div>
+              <span class="pill warn" style="margin-bottom:8px;font-weight:900;">🤝 欢迎合作 · 秒级直连主理人 Google Chat 工作台</span>
+              <h3 style="font-size:clamp(1.15rem,2vw,1.38rem);font-weight:900;">立即登记合作意向 / 申请免费升级 1 条王牌私家团线路</h3>
+              <p style="font-size:0.83rem;color:#cbd5e1;margin-top:4px;">
+                提交后无需漫长等待，系统将通过 <code>Vibe Bridge</code> 秒级推送至我们的 Google Chat 团队工作台，我们将在第一时间添加您的微信对接！
+              </p>
+            </div>
+          </div>
+
+          <div class="bp-form-grid">
+            <div>
+              <label style="display:block;font-size:0.78rem;font-weight:800;margin-bottom:6px;color:#fde68a;">🏷️ 您的身份 / 合作类型 *</label>
+              <select id="partnerRole" class="bp-input">
+                <option value="携程/飞猪半托管私家团供应商">💼 携程/飞猪半托管私家团供应商 (申领免费首条线路)</option>
+                <option value="独立定制师 / 高端定制游工作室">✨ 独立定制师 / 高端定制游工作室</option>
+                <option value="户外徒步俱乐部 / 独立领队">🥾 户外徒步俱乐部 / 独立领队 (两步路轨迹互通)</option>
+                <option value="精品包车车队 / 司导团队">🚐 精品包车车队 / 司导团队</option>
+                <option value="小红书旅行博主 / 流量联名合作">📕 小红书旅行博主 / 流量联名合作</option>
+                <option value="C端游客：求同款路书 / 咨询包车定制">✈️ C端游客：求云南/南美同款路书或私家团定制</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="display:block;font-size:0.78rem;font-weight:800;margin-bottom:6px;color:#fde68a;">👤 您的称呼 / 机构或俱乐部名称 *</label>
+              <input id="partnerName" type="text" class="bp-input" placeholder="如：丽江雪山私家团老张 / 山野户外俱乐部" />
+            </div>
+
+            <div>
+              <label style="display:block;font-size:0.78rem;font-weight:800;margin-bottom:6px;color:#fde68a;">📱 微信号 / 手机号 / 联系方式 *</label>
+              <input id="partnerContact" type="text" class="bp-input" placeholder="请输入微信号或手机号，方便发您定制样板" />
+            </div>
+          </div>
+
+          <div style="margin-top:12px;">
+            <label style="display:block;font-size:0.78rem;font-weight:800;margin-bottom:6px;color:#fde68a;">💬 主营目的地 / 想升级的王牌线路或合作需求（选填）</label>
+            <textarea id="partnerNote" rows="3" class="bp-input" placeholder="例如：我们主做携程云南滇西北6-8人私家团 / 新疆阿勒泰包车 / 南美定制，希望能把我们最畅销的7天环线做成交互式路书..."></textarea>
+          </div>
+
+          <div style="margin-top:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <button type="button" id="partnerSubmitBtn" class="bp-btn bp-btn-amber" onclick="window.submitPartnerLead()">
+              🚀 立即提交合作意向（秒级直达主理人工作台）
+            </button>
+            <span id="partnerSubmitStatus" style="font-size:0.84rem;font-weight:800;color:#6ee7b7;"></span>
           </div>
         </div>
       </div>
     </section>
   </main>
+
+  <!-- Floating Copy Toast Banner -->
+  <div id="bpCopyToast" class="bp-copy-toast hidden" role="status" aria-live="polite">
+    <span id="bpCopyToastText">✅ 已成功复制到剪贴板！</span>
+  </div>
 
   <script src="https://cdn.staticfile.net/leaflet/1.9.4/leaflet.min.js"></script>
   <script>
@@ -1798,21 +2753,233 @@ python3 generator.py publish \
       a.click();
     }
 
-    function copyHubXhsPost(textareaId, btnEl) {
-      const el = document.getElementById(textareaId);
-      if (!el) return;
-      navigator.clipboard.writeText(el.value).then(() => {
-        const old = btnEl.innerHTML;
-        btnEl.innerHTML = "✅ 已复制全文！可直接打开小红书粘贴发布";
-        setTimeout(() => { btnEl.innerHTML = old; }, 2600);
-      });
+    // =========================================================================
+    // 3. Canonical BP & Xiaohongshu Copy Store + Bulletproof Dual-Engine Copy
+    // =========================================================================
+    window.BP_COPY_STORE = {
+      elevator_pitch: [
+        "🤝 您好！向您推荐我们专为【携程半托管私家团 / 高端定制游 / 户外俱乐部】研发的 Travel Studio 智能交互路书系统：",
+        "1️⃣ 售前逼单利器：把传统死板的 PDF 行程单升级为冠名贵社品牌的 3D 动态交互路书，询单转化率提升 30%+；",
+        "2️⃣ 硬核户外互通：原生支持两步路 (.kml/.kmz/.gpx) 4大格式轨迹导入导出 + 海拔剖面联动 + 高反一键切换低海拔 B 计划；",
+        "3️⃣ 行中 10 秒 AI 改行程：输入一句大白话自动重算路线与时间表，全团手机同步更新，晒小红书自带『求同款』获客入口！",
+        "",
+        "🏔️ 云南15天私家团实装样板：https://youngapple.github.io/yunnan-2026/",
+        "🗿 南美16天远征实装样板：https://youngapple.github.io/south-america-2026/",
+        "📊 完整商业合作方案 (BP)：https://youngapple.github.io/travel-studio/#bp",
+        "🎁 目前前 20 家种子同行免费为您定制升级首条王牌赚钱线路，欢迎随时发一条现有行程单测试效果！"
+      ].join("\n"),
+      yunnan_share: [
+        "🏔️【2026 云南滇西北 15 天高定私家团 · AI 交互式随行路书样板】",
+        "涵盖丽江、虎跳峡、哈巴黑海湖、香格里拉、梅里飞来寺、雨崩/南极洛 Plan A/B 一键切换与两步路轨迹下载：",
+        "👉 在线体验（零App下载，手机点开即用）：https://youngapple.github.io/yunnan-2026/ （Vibe口令：applefriend）"
+      ].join("\n"),
+      sa_share: [
+        "🗿【2026 南美 16 天印加古道·天空之镜·巴塔哥尼亚 AI 交互路书样板】",
+        "涵盖 39 个精准预标点位、海拔剖面滑块联动、红黄绿高反预警、高反一键切换 B 计划与两步路 GPX/KML 导出：",
+        "👉 在线体验（零App下载，手机点开即用）：https://youngapple.github.io/south-america-2026/ （Vibe口令：sa26）"
+      ].join("\n")
+    };
+
+    function resolveBpCopyText(keyOrId) {
+      if (window.BP_COPY_STORE && window.BP_COPY_STORE[keyOrId]) {
+        return window.BP_COPY_STORE[keyOrId];
+      }
+      const m = String(keyOrId).match(/^post([123])_(full|title|body|comment)$/);
+      if (m) {
+        const idx = m[1];
+        const part = m[2];
+        const titleEl = document.getElementById("bp-text-post" + idx + "_title");
+        const bodyEl = document.getElementById("bp-text-post" + idx + "_body");
+        const commentEl = document.getElementById("bp-text-post" + idx + "_comment");
+        const titleTxt = (titleEl ? titleEl.innerText : "").trim();
+        const bodyTxt = (bodyEl ? bodyEl.innerText : "").trim();
+        const commentTxt = (commentEl ? commentEl.innerText : "")
+          .replace(/^💬\s*发布后立即自评置顶话术：\s*[「"]?/, "")
+          .replace(/[」"]?\s*$/, "")
+          .trim();
+        if (part === "title") return titleTxt;
+        if (part === "body") return bodyTxt;
+        if (part === "comment") return commentTxt;
+        return titleTxt + "\n\n" + bodyTxt;
+      }
+      const el = document.getElementById(keyOrId);
+      if (el) {
+        return (typeof el.value === "string" ? el.value : el.innerText || el.textContent || "").trim();
+      }
+      return "";
     }
+
+    window.selectElementText = function(el) {
+      if (!el) return;
+      try {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      } catch (e) {}
+    };
+
+    let bpToastTimer = null;
+    window.showBpCopyToast = function(msg) {
+      const toast = document.getElementById("bpCopyToast");
+      const textEl = document.getElementById("bpCopyToastText");
+      if (!toast || !textEl) return;
+      textEl.textContent = msg;
+      toast.classList.remove("hidden");
+      if (bpToastTimer) clearTimeout(bpToastTimer);
+      bpToastTimer = setTimeout(() => {
+        toast.classList.add("hidden");
+      }, 3200);
+    };
+
+    window.copyBpText = function(keyOrId, btnEl) {
+      const text = resolveBpCopyText(keyOrId);
+      if (!text) return false;
+
+      // Engine 1: Synchronous offscreen textarea + document.execCommand('copy')
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "fixed";
+        ta.style.top = "0";
+        ta.style.left = "0";
+        ta.style.width = "2em";
+        ta.style.height = "2em";
+        ta.style.padding = "0";
+        ta.style.border = "none";
+        ta.style.outline = "none";
+        ta.style.boxShadow = "none";
+        ta.style.background = "transparent";
+        ta.style.opacity = "0.01";
+        ta.style.zIndex = "-1";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        ta.setSelectionRange(0, text.length);
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      } catch (e) {}
+
+      // Engine 2: Async Clipboard API
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+        try {
+          navigator.clipboard.writeText(text).catch(() => {});
+        } catch (e) {}
+      }
+
+      // Engine 3: Highlight matching preview box
+      const m = String(keyOrId).match(/^post([123])_(full|title|body|comment)$/);
+      if (m) {
+        const targetId = m[2] === "title"
+          ? "bp-text-post" + m[1] + "_title"
+          : (m[2] === "comment" ? "bp-text-post" + m[1] + "_comment" : "bp-text-post" + m[1] + "_body");
+        window.selectElementText(document.getElementById(targetId));
+      }
+
+      if (btnEl) {
+        if (!btnEl.dataset.origHtml) {
+          btnEl.dataset.origHtml = btnEl.innerHTML;
+        }
+        btnEl.innerHTML = `✅ 已复制成功！(${text.length}字)`;
+        if (btnEl._restoreTimer) clearTimeout(btnEl._restoreTimer);
+        btnEl._restoreTimer = setTimeout(() => {
+          btnEl.innerHTML = btnEl.dataset.origHtml;
+        }, 2800);
+      }
+      window.showBpCopyToast(`✅ 已成功复制到剪贴板（共 ${text.length} 字）· 可直接去小红书或微信粘贴！`);
+      return true;
+    };
+
+    window.copyHubXhsPost = window.copyBpText;
+    window.copyPostText = window.copyBpText;
+
+    window.switchBpSubView = function(mode, btnEl) {
+      const deckEl = document.getElementById("bp-view-deck");
+      const xhsEl = document.getElementById("bp-view-xhs");
+      const leadEl = document.getElementById("bp-view-lead");
+      if (deckEl) deckEl.classList.toggle("hidden", mode !== "all" && mode !== "deck");
+      if (xhsEl) xhsEl.classList.toggle("hidden", mode !== "all" && mode !== "xhs");
+      if (leadEl) leadEl.classList.toggle("hidden", mode !== "all" && mode !== "lead");
+
+      document.querySelectorAll(".bp-subnav-btn").forEach(b => b.classList.remove("active"));
+      if (btnEl) {
+        btnEl.classList.add("active");
+      } else {
+        const targetBtn = document.getElementById("subnav-btn-" + mode);
+        if (targetBtn) targetBtn.classList.add("active");
+      }
+    };
+
+    window.submitPartnerLead = async function() {
+      const role = document.getElementById("partnerRole")?.value || "携程/飞猪半托管私家团供应商";
+      const name = (document.getElementById("partnerName")?.value || "").trim();
+      const contact = (document.getElementById("partnerContact")?.value || "").trim();
+      const note = (document.getElementById("partnerNote")?.value || "").trim();
+      const statusEl = document.getElementById("partnerSubmitStatus");
+      const btn = document.getElementById("partnerSubmitBtn");
+
+      if (!name || !contact) {
+        if (statusEl) {
+          statusEl.style.color = "#fda4af";
+          statusEl.textContent = "⚠️ 请填写您的称呼/机构名称与微信号/手机号，方便我们联系您！";
+        }
+        return;
+      }
+
+      if (btn) btn.disabled = true;
+      if (statusEl) {
+        statusEl.style.color = "#fde68a";
+        statusEl.textContent = "📡 正在加密投递至 Travel Studio 合作工作台...";
+      }
+
+      const payload = {
+        app: "travel-studio",
+        event_type: "PARTNER_INQUIRY",
+        id: "lead-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6),
+        source_page: "index.html#bp (携程私家团BP & 小红书运营页)",
+        partner_role: role,
+        author: name,
+        contact: contact,
+        scope: "🤝 商务合作 / 小红书同款定制",
+        message: note || "申请免费定制首条王牌私家团交互路书 / 洽谈合作",
+        timestamp: new Date().toISOString()
+      };
+
+      try {
+        await fetch("https://ntfy.sh/yungapple_travel_studio_vibe_9f8a7b6c", {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+        if (statusEl) {
+          statusEl.style.color = "#6ee7b7";
+          statusEl.textContent = "🎉 提交成功！主理人已在 Google Chat 收到您的合作线索，将尽快添加微信与您对接！";
+        }
+        const noteEl = document.getElementById("partnerNote");
+        if (noteEl) noteEl.value = "";
+      } catch (e) {
+        if (statusEl) {
+          statusEl.style.color = "#fda4af";
+          statusEl.textContent = "⚠️ 网络波动，请稍后重试或直接在小红书私信我们。";
+        }
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    };
 
     function switchTab(tabId, btnEl) {
       for (const id of ["studio", "bp", "cases", "ceo", "arch"]) {
         const el = document.getElementById("tab-" + id);
         if (el) el.classList.toggle("hidden", id !== tabId);
       }
+      // Collapse the generic platform hero & welcome strip when viewing the Executive BP tab
+      // so the BP Pitch Deck starts immediately at the top of the screen on mobile & desktop!
+      const heroBanner = document.getElementById("platform-hero-banner");
+      const welcomeStrip = document.getElementById("platform-welcome-strip");
+      if (heroBanner) heroBanner.classList.toggle("hidden", tabId === "bp");
+      if (welcomeStrip) welcomeStrip.classList.toggle("hidden", tabId === "bp");
+
       document.querySelectorAll(".nav-tab").forEach(b => b.classList.remove("active"));
       if (btnEl) {
         btnEl.classList.add("active");
@@ -1857,8 +3024,8 @@ python3 generator.py publish \
     position: fixed;
     inset: 0;
     z-index: 9990;
-    background: rgba(2, 6, 23, 0.78);
-    backdrop-filter: blur(8px);
+    background: rgba(2, 6, 23, 0.82);
+    backdrop-filter: blur(10px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1871,12 +3038,52 @@ python3 generator.py publish \
     max-height: 88vh;
     background: var(--card, #0f172a);
     color: var(--foreground, #f8fafc);
-    border: 1px solid rgba(245, 158, 11, 0.4);
+    border: 1px solid rgba(245, 158, 11, 0.45);
     border-radius: 20px;
-    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.55);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.65);
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  /* Self-contained fallback rules when Tailwind CDN is not present */
+  .ts-vibe-sheet > div:first-child {
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: linear-gradient(90deg, rgba(245, 158, 11, 0.18), rgba(14, 165, 233, 0.12));
+  }
+  .ts-vibe-sheet > div:nth-child(2) {
+    padding: 16px 18px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 0.82rem;
+  }
+  .ts-vibe-sheet input[type="text"],
+  .ts-vibe-sheet input[type="password"],
+  .ts-vibe-sheet input[type="url"],
+  .ts-vibe-sheet select,
+  .ts-vibe-sheet textarea {
+    width: 100%;
+    background: rgba(2, 6, 23, 0.85);
+    color: #f8fafc;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-size: 0.82rem;
+    margin-top: 4px;
+  }
+  .ts-vibe-sheet button {
+    border: none;
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-weight: 800;
+    cursor: pointer;
   }
   @media (max-width: 640px) {
     .ts-vibe-backdrop {
@@ -1886,7 +3093,7 @@ python3 generator.py publish \
     .ts-vibe-sheet {
       max-width: 100vw;
       width: 100vw;
-      max-height: 86dvh;
+      max-height: 88dvh;
       border-radius: 20px 20px 0 0;
       border-bottom: none;
     }
@@ -2673,6 +3880,38 @@ ${trkptsXml}
       body: JSON.stringify(payload)
     });
     if (statusEl) statusEl.textContent = "✅ 已通过口令核验并送达 Cloudtop！正在自动编译新版本...";
+  };
+
+  window.tsForceReloadFreshVersion = function() {
+    window.location.reload();
+  };
+
+  window.copyTsVibeBackup = function() {
+    const scope = document.getElementById("tsVibeScopeSelect")?.value || "全行程";
+    const msg = (document.getElementById("tsVibeMessageInput")?.value || "调整行程细节").trim();
+    const text = `【Vibe反馈 · ${TS_APP_ID}】赛段：${scope} | 需求：${msg}`;
+    const statusEl = document.getElementById("tsVibeSubmitStatusText");
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.top = "0";
+      ta.style.left = "0";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      ta.setSelectionRange(0, text.length);
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+    } catch (e) {}
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).catch(() => {});
+    }
+    if (statusEl) {
+      statusEl.textContent = "✅ 已复制 Vibe 口令到剪贴板！";
+    }
   };
 
   window.openPartnerModal = function() {
