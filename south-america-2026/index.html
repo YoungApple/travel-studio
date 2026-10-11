@@ -208,6 +208,10 @@
             <span>📅 今日</span>
             <span id="todayBadgeLabel" class="font-mono-code text-[11px]">D3</span>
           </button>
+          <button type="button" onclick="window.openVlogModal('nature')" class="shrink-0 px-2.5 py-1.5 rounded-xl text-xs font-extrabold bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-xs transition cursor-pointer flex items-center gap-1" title="播放莫雷诺冰川实拍 Travel Vlog (3大主题切换 + MP4成片)">
+            <span>🎬 冰川Vlog</span>
+            <span class="px-1 py-0.2 rounded text-[10px] bg-white/20 font-mono-code">3主题</span>
+          </button>
           <button data-layer="all" class="layer-btn shrink-0 px-2.5 py-1.5 rounded-xl text-xs font-extrabold bg-[var(--primary)] text-[var(--primary-foreground)] transition cursor-pointer">
             🌎 全程 (39)
           </button>
@@ -452,7 +456,7 @@
             </button>
             <button id="tabBtnPhotos" onclick="switchRightTab('photos')" class="flex-1 py-1.5 px-2 rounded-lg text-xs font-bold text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition cursor-pointer flex items-center justify-center gap-1 shrink-0">
               <span>📸 实拍</span>
-              <span id="photoCountBadge" class="px-1.5 py-0.2 rounded-full text-[10px] bg-amber-500/20 text-amber-600 dark:text-amber-400 font-extrabold font-mono-code">1</span>
+              <span id="photoCountBadge" class="px-1.5 py-0.2 rounded-full text-[10px] bg-amber-500/20 text-amber-600 dark:text-amber-400 font-extrabold font-mono-code">20</span>
             </button>
             <button id="tabBtnAi" onclick="switchRightTab('ai')" class="flex-1 py-1.5 px-2 rounded-lg text-xs font-bold text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition cursor-pointer flex items-center justify-center gap-1 shrink-0">
               <span>🤖 导游</span>
@@ -522,16 +526,44 @@
 
         <!-- PANE C: LIVE TRAVEL PHOTOS GALLERY (实拍集锦) -->
         <div id="photosSubPane" class="hidden flex-1 flex flex-col min-h-[520px] lg:min-h-0 bg-[var(--background)]/40">
-          <div class="px-3 py-2.5 border-b border-[var(--border)] bg-[var(--card)] flex items-center justify-between gap-2">
-            <div>
-              <div class="text-xs font-extrabold text-[var(--foreground)] flex items-center gap-1.5">
-                <span>📸 2026 南美旅途实拍集锦 (Live Moments)</span>
+          <div class="px-3 py-2.5 border-b border-[var(--border)] bg-[var(--card)] space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <div class="text-xs font-extrabold text-[var(--foreground)] flex items-center gap-1.5">
+                  <span id="photosGalleryMainTitle">📸 2026 南美旅途实拍集锦 (30张精选 · 双特辑)</span>
+                </div>
+                <div id="photosGallerySubTitle" class="text-[11px] text-[var(--muted-foreground)]">
+                  已连接 Google Photos 相册 · 支持莫雷诺冰川 &amp; 亚马逊雨林 Vlog 播放与极简图文博客
+                </div>
               </div>
-              <div class="text-[11px] text-[var(--muted-foreground)]">
-                支持从 Google Photos 共享相册或 Google Chat 自动同步上墙
+              <div class="flex items-center gap-1.5 shrink-0">
+                <button type="button" id="btnPlayVlogAction" onclick="window.openDestinationVlog()" class="px-2.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-emerald-500 via-sky-500 to-indigo-600 text-white shadow-xs cursor-pointer shrink-0 hover:opacity-95 transition">
+                  🎬 播放 Vlog
+                </button>
               </div>
             </div>
-            <span class="px-2 py-0.5 rounded-lg text-[10px] font-extrabold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30">实时更新</span>
+            <!-- Destination & Mode Switcher Pills -->
+            <div class="flex items-center justify-between gap-1.5 flex-wrap pt-0.5">
+              <div class="flex items-center gap-1 overflow-x-auto no-scrollbar" id="photoDestFilterGroup">
+                <button type="button" onclick="setPhotoDestination('all')" id="destBtn_all" class="shrink-0 px-2.5 py-1 rounded-lg text-xs font-extrabold bg-[var(--primary)] text-white cursor-pointer shadow-2xs">
+                  🌎 全部 (30)
+                </button>
+                <button type="button" onclick="setPhotoDestination('calafate')" id="destBtn_calafate" class="shrink-0 px-2.5 py-1 rounded-lg text-xs font-bold bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] cursor-pointer">
+                  🏔️ 莫雷诺冰川 (20)
+                </button>
+                <button type="button" onclick="setPhotoDestination('amazon')" id="destBtn_amazon" class="shrink-0 px-2.5 py-1 rounded-lg text-xs font-bold bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] cursor-pointer">
+                  🌿 亚马逊雨林 (10)
+                </button>
+              </div>
+              <div class="flex items-center gap-1 shrink-0">
+                <button type="button" onclick="setGalleryViewMode('cards')" id="viewModeBtn_cards" class="px-2.5 py-1 rounded-lg text-xs font-extrabold bg-[var(--primary)] text-white cursor-pointer shadow-2xs" title="实拍图卡流模式">
+                  📸 卡片
+                </button>
+                <button type="button" onclick="setGalleryViewMode('blog')" id="viewModeBtn_blog" class="px-2.5 py-1 rounded-lg text-xs font-bold text-[var(--muted-foreground)] hover:text-[var(--foreground)] cursor-pointer" title="极简杂志风图文博客模式">
+                  📖 博客模式
+                </button>
+              </div>
+            </div>
           </div>
           <div id="photosGalleryContainer" class="flex-1 overflow-y-auto p-3 space-y-3.5">
             <!-- Populated dynamically by renderPhotosGallery() -->
@@ -1353,7 +1385,8 @@
         cat: "hotel",
         catZh: "雨林度假村",
         catEn: "Amazon Jungle Lodge",
-        nameZh: "亚马逊生态公园丛林木屋度假村",
+        nameZh: "亚马逊马卡里科丛林木屋 (Amazon Macarico Lodge)",
+        namePt: "Pousada Recanto do Maçarico (Amazon Macarico Lodge)",
         nameEn: "Amazon Ecopark Jungle Lodge",
         nameEs: "Amazon Ecopark Jungle Lodge",
         namePt: "Amazon Ecopark Jungle Lodge",
@@ -4577,34 +4610,704 @@ ${trkpts}
     // ==================== LIVE TRAVEL PHOTOS GALLERY & GOOGLE PHOTOS AUTO-SYNC ====================
     let LIVE_PHOTOS = [
       {
-        id: "calafate-20261003-nimez-goose",
-        placeId: 13,
-        relatedPlaceIds: [10, 11, 12, 13, 14],
-        layer: "calafate",
-        day: "D3 · 10/03",
-        date: "2026-10-03",
-        city: "El Calafate, Patagonia",
-        country: "AR",
-        titleZh: "巴塔哥尼亚破云晚霞与野生麦哲伦雁",
-        titleEn: "Upland Goose & Andean Sunset in El Calafate",
-        locationZh: "#13 埃尔卡拉法特 · 尼梅兹泻湖湿地 & 安第斯雪山",
-        locationLocal: "Reserva Laguna Nimez & Cordillera de los Andes",
-        captionZh: "黄昏时分的 El Calafate 湖畔草甸，一只巴塔哥尼亚野生雌性麦哲伦雁（Upland Goose / 西语 Cauquén común）在静谧水湾前侧首回望；中景是依坡散落的小镇屋舍与苍茫的巴塔哥尼亚高原阶地，远处皑皑白雪的安第斯山脉在厚云间裂开一道暖金色晚霞。",
-        url: "https://youngapple.github.io/south-america-2026/photos/el_calafate_nimez_sunset.jpg",
-        fullUrl: "https://youngapple.github.io/south-america-2026/photos/el_calafate_nimez_sunset_orig.jpg",
-        tags: ["El Calafate", "Patagonia", "野生动物", "安第斯雪山", "晚霞"]
+            "id": "calafate-20261004-glacier_01_steppe_road",
+            "seq": 1,
+            "time": "08:27",
+            "isNature": true,
+            "placeId": 13,
+            "relatedPlaceIds": [
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+            ],
+            "layer": "calafate",
+            "day": "D4 · 10/04",
+            "date": "2026-10-04",
+            "city": "Glaciar Perito Moreno, El Calafate",
+            "country": "AR",
+            "titleZh": "雨雾启程 · 巴塔哥尼亚11号公路与荒原孤骑",
+            "titleEn": "Dawn Rain on Ruta 11 & The Lone Rider",
+            "locationZh": "Ruta Provincial 11 · 巴塔哥尼亚荒原",
+            "captionZh": "清晨 08:27，大巴驶出埃尔卡拉法特，细雨打湿挡风玻璃。苍茫无际的巴塔哥尼亚荒原笔直通向天际，前方一位孤独的摩托骑士正迎着寒风驶向雪山深处。",
+            "captionNature": "清晨 08:27，大巴驶出埃尔卡拉法特，细雨打湿挡风玻璃。苍茫无际的巴塔哥尼亚荒原笔直通向天际，前方一位孤独的摩托骑士正迎着寒风驶向雪山深处。",
+            "captionFunny": "早八人的巴塔哥尼亚版早高峰：外面下着冰雨刮着妖风，前面那位骑摩托的大哥，敬你是条真正的南美硬汉（我们在大巴里抱紧了暖气）。",
+            "captionCinema": "08:27 AM · 南纬50° · 雨刷器把世界切成两半。在抵达世界尽头的冰川之前，所有人都在这片荒原上赶路。",
+            "url": "https://youngapple.github.io/south-america-2026/photos/glacier_01_steppe_road.jpg",
+            "fullUrl": "https://youngapple.github.io/south-america-2026/photos/glacier_01_steppe_road.jpg",
+            "tags": [
+                  "自然风光",
+                  "公路大片",
+                  "08:27",
+                  "巴塔哥尼亚荒原"
+            ]
+      },
+      {
+            "id": "calafate-20261004-glacier_02_first_iceberg",
+            "seq": 2,
+            "time": "09:09",
+            "isNature": true,
+            "placeId": 14,
+            "relatedPlaceIds": [
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+            ],
+            "layer": "calafate",
+            "day": "D4 · 10/04",
+            "date": "2026-10-04",
+            "city": "Glaciar Perito Moreno, El Calafate",
+            "country": "AR",
+            "titleZh": "初见幽蓝 · 云雾雪山下的第一座浮冰",
+            "titleEn": "First Floating Iceberg Under Andean Mist",
+            "locationZh": "Lago Argentino · 阿根廷湖畔",
+            "captionZh": "09:09，云带如白色轻纱缠绕在安第斯层状雪山腰际。平静如绸的乳灰色冰川湖面上，第一块从母体崩落、闪烁着天青色光芒的千年浮冰静静漂流而过。",
+            "captionNature": "09:09，云带如白色轻纱缠绕在安第斯层状雪山腰际。平静如绸的乳灰色冰川湖面上，第一块从母体崩落、闪烁着天青色光芒的千年浮冰静静漂流而过。",
+            "captionFunny": "前方发现野生老冰块一枚！全车人瞬间掏出手机「哇——」，殊不知半小时后我们将看到它的十万个祖宗。",
+            "captionCinema": "09:09 AM · Lago Argentino · 它从两万年前的雪山深处漂流至此，只为在晨雾里与你打个照面。",
+            "url": "https://youngapple.github.io/south-america-2026/photos/glacier_02_first_iceberg.jpg",
+            "fullUrl": "https://youngapple.github.io/south-america-2026/photos/glacier_02_first_iceberg.jpg",
+            "tags": [
+                  "纯自然奇观",
+                  "初见浮冰",
+                  "09:09",
+                  "安第斯云海"
+            ]
+      },
+      {
+            "id": "calafate-20261004-glacier_03_glacier_distant",
+            "seq": 3,
+            "time": "09:32",
+            "isNature": true,
+            "placeId": 14,
+            "relatedPlaceIds": [
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+            ],
+            "layer": "calafate",
+            "day": "D4 · 10/04",
+            "date": "2026-10-04",
+            "city": "Glaciar Perito Moreno, El Calafate",
+            "country": "AR",
+            "titleZh": "冰原倾泻 · 群山裂谷间的五公里白色巨龙",
+            "titleEn": "First Panorama of Perito Moreno Glacier Tongue",
+            "locationZh": "Mirador de los Suspiros · 叹息观景台",
+            "captionZh": "09:32，穿过山毛榉林的瞬间，宽达5公里的佩里托莫雷诺冰川主舌豁然跃入眼帘——南巴塔哥尼亚冰原从两侧雪山峡谷间奔涌而下，直抵阿根廷湖。",
+            "captionNature": "09:32，穿过山毛榉林的瞬间，宽达5公里的佩里托莫雷诺冰川主舌豁然跃入眼帘——南巴塔哥尼亚冰原从两侧雪山峡谷间奔涌而下，直抵阿根廷湖。",
+            "captionFunny": "终于明白为什么这地方叫「叹息观景台」了——美是一方面，主要是看了一眼对面的冰山，发现我们等会儿居然要靠两条腿爬上去！",
+            "captionCinema": "09:32 AM · 距离冰壁 4.2 公里。雾气还没有散尽，但那道横亘天地的白色伤痕已经让人屏住呼吸。",
+            "url": "https://youngapple.github.io/south-america-2026/photos/glacier_03_glacier_distant.jpg",
+            "fullUrl": "https://youngapple.github.io/south-america-2026/photos/glacier_03_glacier_distant.jpg",
+            "tags": [
+                  "纯自然奇观",
+                  "冰川全景",
+                  "09:32",
+                  "莫雷诺冰川"
+            ]
+      },
+      {
+            "id": "calafate-20261004-glacier_04_bajo_sombras",
+            "seq": 4,
+            "time": "09:43",
+            "isNature": true,
+            "placeId": 14,
+            "relatedPlaceIds": [
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+            ],
+            "layer": "calafate",
+            "day": "D4 · 10/04",
+            "date": "2026-10-04",
+            "city": "Glaciar Perito Moreno, El Calafate",
+            "country": "AR",
+            "titleZh": "暗影港码头 · 破雾启航的冰川木屋",
+            "titleEn": "Misty Cabin at Puerto Bajo de las Sombras",
+            "locationZh": "Puerto Bajo de las Sombras · 暗影港",
+            "captionZh": "09:43，抵达暗影港（Bajo de las Sombras）。深棕色的原木小屋依偎在翻涌的云雾雪山之下，远方双体破冰游船已在冰湖栈桥边静候启航。",
+            "captionNature": "09:43，抵达暗影港（Bajo de las Sombras）。深棕色的原木小屋依偎在翻涌的云雾雪山之下，远方双体破冰游船已在冰湖栈桥边静候启航。",
+            "captionFunny": "这小木屋配上这身后的云雾雪山，不知道的还以为我们误入了《荒野猎人》或者《死亡搁浅》的片场。",
+            "captionCinema": "09:43 AM · Puerto Bajo de las Sombras · 陆地的尽头是一座木屋，木屋的后面是未知的冰海。",
+            "url": "https://youngapple.github.io/south-america-2026/photos/glacier_04_bajo_sombras.jpg",
+            "fullUrl": "https://youngapple.github.io/south-america-2026/photos/glacier_04_bajo_sombras.jpg",
+            "tags": [
+                  "纯自然奇观",
+                  "暗影港码头",
+                  "09:43",
+                  "雪山云雾"
+            ]
+      },
+      {
+            "id": "calafate-20261004-glacier_05_neon_iceberg",
+            "seq": 5,
+            "time": "10:13",
+            "isNature": true,
+            "placeId": 14,
+            "relatedPlaceIds": [
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+            ],
+            "layer": "calafate",
+            "day": "D4 · 10/04",
+            "date": "2026-10-04",
+            "city": "Glaciar Perito Moreno, El Calafate",
+            "country": "AR",
+            "titleZh": "湖心荧光蓝 · 千年浮冰雕塑擦肩而过",
+            "titleEn": "Sculpted Electric-Blue Iceberg in Brazo Rico",
+            "locationZh": "Brazo Rico · 莫雷诺南翼水道",
+            "captionZh": "10:13，游船劈开碧灰色的富饶水道（Brazo Rico），一座经受湖水雕琢的巨型冰山擦船而过。致密无气泡的冰体吞噬了红光，在阴云下折射出令人心醉的荧光冰川蓝。",
+            "captionNature": "10:13，游船劈开碧灰色的富饶水道（Brazo Rico），一座经受湖水雕琢的巨型冰山擦船而过。致密无气泡的冰体吞噬了红光，在阴云下折射出令人心醉的荧光冰川蓝。",
+            "captionFunny": "原图直出零P图！这冰块蓝得像偷偷喝了十瓶蓝月亮洗衣液，大自然的审美真的把潘通色卡按在地上摩擦。",
+            "captionCinema": "10:13 AM · Brazo Rico · 只有被时间挤压了上万年的冰，才能把所有的气泡排空，只留下一抹纯粹的蓝。",
+            "url": "https://youngapple.github.io/south-america-2026/photos/glacier_05_neon_iceberg.jpg",
+            "fullUrl": "https://youngapple.github.io/south-america-2026/photos/glacier_05_neon_iceberg.jpg",
+            "tags": [
+                  "纯自然奇观",
+                  "蒂芙尼蓝浮冰",
+                  "10:13",
+                  "游船航拍"
+            ]
+      },
+      {
+            "id": "calafate-20261004-glacier_06_ice_wall_boat",
+            "seq": 6,
+            "time": "10:19",
+            "isNature": true,
+            "placeId": 14,
+            "relatedPlaceIds": [
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+            ],
+            "layer": "calafate",
+            "day": "D4 · 10/04",
+            "date": "2026-10-04",
+            "city": "Glaciar Perito Moreno, El Calafate",
+            "country": "AR",
+            "titleZh": "70米冰墙压顶 · 巨舰亦如沧海一粟",
+            "titleEn": "70-Meter Glacier Wall Dwarfing the Excursion Boat",
+            "locationZh": "Frente Sur del Glaciar Perito Moreno",
+            "captionZh": "10:19，游船抵近莫雷诺冰川南壁。高达70米（相当于20层楼）的垂直锯齿状冰墙如远古长城般拔水而起，远处的双层观光船在磅礴冰壁与云雾雪山面前渺小如一叶扁舟。",
+            "captionNature": "10:19，游船抵近莫雷诺冰川南壁。高达70米（相当于20层楼）的垂直锯齿状冰墙如远古长城般拔水而起，远处的双层观光船在磅礴冰壁与云雾雪山面前渺小如一叶扁舟。",
+            "captionFunny": "看右下角那艘载满人的双层大游船！在70米高的冰墙面前小得像澡盆里的塑料小黄鸭，人类在大自然面前真的只是背景板。",
+            "captionCinema": "10:19 AM · 冰壁高度 70m · 当你凝视这堵三万年的高墙，时间不再以秒计算，而是以纪元为单位。",
+            "url": "https://youngapple.github.io/south-america-2026/photos/glacier_06_ice_wall_boat.jpg",
+            "fullUrl": "https://youngapple.github.io/south-america-2026/photos/glacier_06_ice_wall_boat.jpg",
+            "tags": [
+                  "纯自然奇观",
+                  "70米冰墙",
+                  "10:19",
+                  "震撼比例尺"
+            ]
+      },
+      {
+            "id": "calafate-20261004-glacier_07_ice_beach",
+            "seq": 7,
+            "time": "11:04",
+            "isNature": true,
+            "placeId": 14,
+            "relatedPlaceIds": [
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+            ],
+            "layer": "calafate",
+            "day": "D4 · 10/04",
+            "date": "2026-10-04",
+            "city": "Glaciar Perito Moreno, El Calafate",
+            "country": "AR",
+            "titleZh": "搁浅碎冰滩 · 黑色冰碛与漫天浮冰矩阵",
+            "titleEn": "Stranded Ice Floes Along the Moraine Beach",
+            "locationZh": "Playa de Témpanos · 冰川南岸碎冰滩",
+            "captionZh": "11:04，登陆冰川南侧冰碛滩。成千上万块崩落的晶莹浮冰搁浅在黝黑的冰川泥砾之上，层层叠叠一直延伸向远处高耸入云的蓝色冰壁，宛如外星极地荒原。",
+            "captionNature": "11:04，登陆冰川南侧冰碛滩。成千上万块崩落的晶莹浮冰搁浅在黝黑的冰川泥砾之上，层层叠叠一直延伸向远处高耸入云的蓝色冰壁，宛如外星极地荒原。",
+            "captionFunny": "大型天然碎冰机现场！满地都是3万年前的「老冰块」，随便捡一块都能直接实现冰美式自由。",
+            "captionCinema": "11:04 AM · Playa de Témpanos · 崩落不是终结，而是冰川写给湖岸的万封书信。",
+            "url": "https://youngapple.github.io/south-america-2026/photos/glacier_07_ice_beach.jpg",
+            "fullUrl": "https://youngapple.github.io/south-america-2026/photos/glacier_07_ice_beach.jpg",
+            "tags": [
+                  "纯自然奇观",
+                  "搁浅碎冰滩",
+                  "11:04",
+                  "极地地貌"
+            ]
+      },
+      {
+            "id": "calafate-20261004-glacier_08_shore_portrait",
+            "seq": 8,
+            "time": "11:09",
+            "isNature": false,
+            "placeId": 14,
+            "relatedPlaceIds": [
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+            ],
+            "layer": "calafate",
+            "day": "D4 · 10/04",
+            "date": "2026-10-04",
+            "city": "Glaciar Perito Moreno, El Calafate",
+            "country": "AR",
+            "titleZh": "浮冰荒野 · 姜黄冲锋衣与万年冰墙对望",
+            "titleEn": "Standing Amidst the Ice Floe Field",
+            "locationZh": "Costa Sur · 莫雷诺碎冰滩",
+            "captionZh": "11:09，身着姜黄色冲锋衣、胸挂运动相机伫立在无边无际的搁浅浮冰阵中，身后是绵延数公里、闪烁着冷冽蓝光的佩里托莫雷诺冰墙。",
+            "captionNature": "11:09，身着姜黄色冲锋衣、胸挂运动相机伫立在无边无际的搁浅浮冰阵中，身后是绵延数公里、闪烁着冷冽蓝光的佩里托莫雷诺冰墙。",
+            "captionFunny": "表面上：国家地理极地科考队长冷酷定妆照；实际上：冷风往脖子里灌，手已经冻得快按不动快门了，但架势绝不能输！",
+            "captionCinema": "11:09 AM · 闯入一片只有黑白与冰蓝的世界，身上那一抹姜黄色成了荒野里唯一的暖色坐标。",
+            "url": "https://youngapple.github.io/south-america-2026/photos/glacier_08_shore_portrait.jpg",
+            "fullUrl": "https://youngapple.github.io/south-america-2026/photos/glacier_08_shore_portrait.jpg",
+            "tags": [
+                  "人物实拍",
+                  "碎冰滩打卡",
+                  "11:09",
+                  "户外穿搭"
+            ]
+      },
+      {
+            "id": "calafate-20261004-glacier_09_subglacial_cave",
+            "seq": 9,
+            "time": "11:37",
+            "isNature": true,
+            "placeId": 14,
+            "relatedPlaceIds": [
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+            ],
+            "layer": "calafate",
+            "day": "D4 · 10/04",
+            "date": "2026-10-04",
+            "city": "Glaciar Perito Moreno, El Calafate",
+            "country": "AR",
+            "titleZh": "幽暗水线冰洞 · 锯齿冰峰刺破风暴云",
+            "titleEn": "Subglacial Arch Cave & Jagged Blue Seracs",
+            "locationZh": "Muralla de Hielo · 冰川前缘冰洞",
+            "captionZh": "11:37，沿着冰碛步道逼近冰川根部。水线处一座由冰下暗河冲刷出的深邃拱形冰洞清晰可见，上方刀劈斧凿般的幽蓝冰塔直刺翻滚的铅灰色云团。",
+            "captionNature": "11:37，沿着冰碛步道逼近冰川根部。水线处一座由冰下暗河冲刷出的深邃拱形冰洞清晰可见，上方刀劈斧凿般的幽蓝冰塔直刺翻滚的铅灰色云团。",
+            "captionFunny": "冰墙底下那个黑漆漆的神秘冰洞，像极了《权力的游戏》里夜王随时要骑着冰龙飞出来的入口！",
+            "captionCinema": "11:37 AM · 在冰与水的交界处，暗流凿开了时间的洞口，每一次冰裂的轰鸣都是大地的心跳。",
+            "url": "https://youngapple.github.io/south-america-2026/photos/glacier_09_subglacial_cave.jpg",
+            "fullUrl": "https://youngapple.github.io/south-america-2026/photos/glacier_09_subglacial_cave.jpg",
+            "tags": [
+                  "纯自然奇观",
+                  "冰下暗洞",
+                  "11:37",
+                  "锯齿冰峰"
+            ]
+      },
+      {
+            "id": "calafate-20261004-glacier_10_ice_steps",
+            "seq": 10,
+            "time": "12:05",
+            "isNature": true,
+            "placeId": 14,
+            "relatedPlaceIds": [
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+            ],
+            "layer": "calafate",
+            "day": "D4 · 10/04",
+            "date": "2026-10-04",
+            "city": "Glaciar Perito Moreno, El Calafate",
+            "country": "AR",
+            "titleZh": "冰阶蜿蜒 · 深入莫雷诺冰川腹地",
+            "titleEn": "Carved Ice Steps Winding Into the Glacier",
+            "locationZh": "Glaciar Perito Moreno · 冰川腹地步道",
+            "captionZh": "12:05，正式踏上莫雷诺冰川表面。向导用冰镐在起伏的白色冰脊上开凿出蜿蜒的冰阶，远方巨大的蓝色冰鳍如远古巨兽的背脊般耸立。",
+            "captionNature": "12:05，正式踏上莫雷诺冰川表面。向导用冰镐在起伏的白色冰脊上开凿出蜿蜒的冰阶，远方巨大的蓝色冰鳍如远古巨兽的背脊般耸立。",
+            "captionFunny": "以前爬山爬的是石阶，今天爬的是纯手工现凿的「三万年老冰楼梯」——踩上去咔嚓咔嚓响，每一步都走出了六亲不认的步伐。",
+            "captionCinema": "12:05 PM · 脚下是深达数百米的移动冰河。走上这段冰阶，便踏入了地球上一个冰河期的记忆。",
+            "url": "https://youngapple.github.io/south-america-2026/photos/glacier_10_ice_steps.jpg",
+            "fullUrl": "https://youngapple.github.io/south-america-2026/photos/glacier_10_ice_steps.jpg",
+            "tags": [
+                  "纯自然奇观",
+                  "冰川徒步",
+                  "12:05",
+                  "冰脊步道"
+            ]
+      },
+      {
+            "id": "calafate-20261004-glacier_11_ice_axe_hero",
+            "seq": 11,
+            "time": "12:16",
+            "isNature": false,
+            "placeId": 14,
+            "relatedPlaceIds": [
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+            ],
+            "layer": "calafate",
+            "day": "D4 · 10/04",
+            "date": "2026-10-04",
+            "city": "Glaciar Perito Moreno, El Calafate",
+            "country": "AR",
+            "titleZh": "手执冰镐 · 12齿冰爪征服深蓝冰裂缝",
+            "titleEn": "Crampons & Ice Axe Before the Blue Crevasse",
+            "locationZh": "Minitrekking · 莫雷诺蓝冰裂缝区",
+            "captionZh": "12:16，头戴 EDELRID 专业攀登头盔、脚踏 12 齿钢制冰爪，手执冰镐站立在如蓝宝石般幽邃的巨型冰川裂缝之前，定格巴塔哥尼亚冰原徒步高光时刻。",
+            "captionNature": "12:16，头戴 EDELRID 专业攀登头盔、脚踏 12 齿钢制冰爪，手执冰镐站立在如蓝宝石般幽邃的巨型冰川裂缝之前，定格巴塔哥尼亚冰原徒步高光时刻。",
+            "captionFunny": "头盔一戴、墨镜一架、冰镐一举！先别管我平时敲代码还是抡冰镐，就问这身装备发朋友圈像不像刚从珠峰北坡凯旋？",
+            "captionCinema": "12:16 PM · 钢爪咬进万年蓝冰的清脆声响，是人类与巴塔哥尼亚荒野最直接的握手。",
+            "url": "https://youngapple.github.io/south-america-2026/photos/glacier_11_ice_axe_hero.jpg",
+            "fullUrl": "https://youngapple.github.io/south-america-2026/photos/glacier_11_ice_axe_hero.jpg",
+            "tags": [
+                  "高光大片",
+                  "冰镐英雄照",
+                  "12:16",
+                  "Minitrekking"
+            ]
+      },
+      {
+            "id": "calafate-20261004-glacier_12_sapphire_pool",
+            "seq": 12,
+            "time": "12:32",
+            "isNature": true,
+            "placeId": 14,
+            "relatedPlaceIds": [
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+            ],
+            "layer": "calafate",
+            "day": "D4 · 10/04",
+            "date": "2026-10-04",
+            "city": "Glaciar Perito Moreno, El Calafate",
+            "country": "AR",
+            "titleZh": "冰原蓝眼 · 凝结冰尘的宝石蓝融水暗池",
+            "titleEn": "Sapphire Glacial Meltwater Pool & Cryoconite",
+            "locationZh": "Sumidero Glaciar · 冰面融水蓝池",
+            "captionZh": "12:32，低头俯瞰冰原腹地的一汪天然融水蓝池（Sumidero）。薄如蝉翼的冰晶之下，纯净的融水呈现出深邃的矢车菊蓝，池底沉积着被风吹来的暗色火山冰尘（Cryoconite）。",
+            "captionNature": "12:32，低头俯瞰冰原腹地的一汪天然融水蓝池（Sumidero）。薄如蝉翼的冰晶之下，纯净的融水呈现出深邃的矢车菊蓝，池底沉积着被风吹来的暗色火山冰尘（Cryoconite）。",
+            "captionFunny": "大自然的星空琥珀！这水蓝得让人忍不住想趴下去喝一口，向导表示：别急，再走十分钟有更好的喝法（指威士忌）！",
+            "captionCinema": "12:32 PM · 冰原的眼睛。火山灰与万年冰晶在碧蓝的融水里凝固成一幅宇宙星云。",
+            "url": "https://youngapple.github.io/south-america-2026/photos/glacier_12_sapphire_pool.jpg",
+            "fullUrl": "https://youngapple.github.io/south-america-2026/photos/glacier_12_sapphire_pool.jpg",
+            "tags": [
+                  "纯自然奇观",
+                  "冰原蓝眼",
+                  "12:32",
+                  "微距自然"
+            ]
+      },
+      {
+            "id": "calafate-20261004-glacier_13_cobalt_crevasse",
+            "seq": 13,
+            "time": "12:36",
+            "isNature": true,
+            "placeId": 14,
+            "relatedPlaceIds": [
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+            ],
+            "layer": "calafate",
+            "day": "D4 · 10/04",
+            "date": "2026-10-04",
+            "city": "Glaciar Perito Moreno, El Calafate",
+            "country": "AR",
+            "titleZh": "万年高密度的光学奇迹 · 深渊钴蓝冰隙",
+            "titleEn": "Deep Cobalt-Blue Glacial Crevasses & Seracs",
+            "locationZh": "Grietas Azules · 核心蓝冰裂谷",
+            "captionZh": "12:36，深入冰川折皱最剧烈的蓝冰裂谷。刀锋般交错的冰壁内部没有一丝空气气泡，自然光穿透数米厚的冰层后只剩下高饱和度的钴蓝与松石蓝。",
+            "captionNature": "12:36，深入冰川折皱最剧烈的蓝冰裂谷。刀锋般交错的冰壁内部没有一丝空气气泡，自然光穿透数米厚的冰层后只剩下高饱和度的钴蓝与松石蓝。",
+            "captionFunny": "不需要任何滤镜的「冰川原生蓝」！站在裂缝边往里看了一眼，瞬间理解了什么叫「深渊也在凝视你」。",
+            "captionCinema": "12:36 PM · 光线潜入冰层深处，被囚禁了三万年的蓝色终于重见天日。",
+            "url": "https://youngapple.github.io/south-america-2026/photos/glacier_13_cobalt_crevasse.jpg",
+            "fullUrl": "https://youngapple.github.io/south-america-2026/photos/glacier_13_cobalt_crevasse.jpg",
+            "tags": [
+                  "纯自然奇观",
+                  "深渊蓝冰",
+                  "12:36",
+                  "光学奇迹"
+            ]
+      },
+      {
+            "id": "calafate-20261004-glacier_14_whisky_ice",
+            "seq": 14,
+            "time": "12:45",
+            "isNature": false,
+            "placeId": 14,
+            "relatedPlaceIds": [
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+            ],
+            "layer": "calafate",
+            "day": "D4 · 10/04",
+            "date": "2026-10-04",
+            "city": "Glaciar Perito Moreno, El Calafate",
+            "country": "AR",
+            "titleZh": "敬三万年时光 · 冰川之巅威士忌加万年老冰",
+            "titleEn": "Scotch Whisky on 30,000-Year-Old Glacial Ice",
+            "locationZh": "Cumbre del Glaciar · 冰川微醺驿站",
+            "captionZh": "12:45，冰川徒步压轴仪式——向导现场从莫雷诺冰壁凿下晶莹剔透的万年纯冰，注入琥珀色的苏格兰威士忌。举杯敬向眼前连绵起伏的蓝色冰峰。",
+            "captionNature": "12:45，冰川徒步压轴仪式——向导现场从莫雷诺冰壁凿下晶莹剔透的万年纯冰，注入琥珀色的苏格兰威士忌。举杯敬向眼前连绵起伏的蓝色冰峰。",
+            "captionFunny": "为了喝这一口正宗的「冰镇威士忌」，我们专门飞了30个小时、坐船又爬冰山，亲自来三万年前的老冰川上凿了块冰！这杯酒的含金量（和含冰量）拉满了🥃",
+            "captionCinema": "12:45 PM · 杯中琥珀色的酒液包裹着三万年前的雪。喝下这一口，把巴塔哥尼亚的凛冽咽进胃里。",
+            "url": "https://youngapple.github.io/south-america-2026/photos/glacier_14_whisky_ice.jpg",
+            "fullUrl": "https://youngapple.github.io/south-america-2026/photos/glacier_14_whisky_ice.jpg",
+            "tags": [
+                  "仪式感拉满",
+                  "冰川威士忌",
+                  "12:45",
+                  "万年老冰"
+            ]
+      },
+      {
+            "id": "calafate-20261004-glacier_15_lone_figure_wall",
+            "seq": 15,
+            "time": "13:13",
+            "isNature": true,
+            "placeId": 14,
+            "relatedPlaceIds": [
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+            ],
+            "layer": "calafate",
+            "day": "D4 · 10/04",
+            "date": "2026-10-04",
+            "city": "Glaciar Perito Moreno, El Calafate",
+            "country": "AR",
+            "titleZh": "天地一沙鸥 · 水洼倒影与五公里冰墙史诗同框",
+            "titleEn": "Lone Explorer & Mirror Reflection Before the Ice Wall",
+            "locationZh": "Mirador de la Costa · 莫雷诺南岸高地",
+            "captionZh": "13:13，告别冰面回到岸边高地。前景的融水水洼清晰倒映出孤独伫立的身影，背后是横贯整个视野的五公里蓝色冰川巨墙与覆雪的安第斯山脉（本相册封神代表作）。",
+            "captionNature": "13:13，告别冰面回到岸边高地。前景的融水水洼清晰倒映出孤独伫立的身影，背后是横贯整个视野的五公里蓝色冰川巨墙与覆雪的安第斯山脉（本相册封神代表作）。",
+            "captionFunny": "本相册无可争议的封面神图！左边一个小小的我，面前一整排5公里宽的冰川巨墙——建议直接打印成两米宽挂在家里客厅镇宅！",
+            "captionCinema": "13:13 PM · 人在天地间不过一粒微尘，但微尘也有跨越半个地球去仰望冰川的自由。",
+            "url": "https://youngapple.github.io/south-america-2026/photos/glacier_15_lone_figure_wall.jpg",
+            "fullUrl": "https://youngapple.github.io/south-america-2026/photos/glacier_15_lone_figure_wall.jpg",
+            "tags": [
+                  "纯自然奇观",
+                  "封面级神图",
+                  "13:13",
+                  "倒影史诗"
+            ]
+      },
+      {
+            "id": "calafate-20261004-glacier_16_icefield_peaks",
+            "seq": 16,
+            "time": "14:40",
+            "isNature": true,
+            "placeId": 14,
+            "relatedPlaceIds": [
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+            ],
+            "layer": "calafate",
+            "day": "D4 · 10/04",
+            "date": "2026-10-04",
+            "city": "Glaciar Perito Moreno, El Calafate",
+            "country": "AR",
+            "titleZh": "南巴塔哥尼亚冰原母体 · 云海之上的雪峰王座",
+            "titleEn": "Southern Patagonian Ice Field & Andean Peaks",
+            "locationZh": "Campo de Hielo Patagónico Sur · 冰原主峰",
+            "captionZh": "14:40，长焦镜头越过前缘锯齿状的密集冰塔林，直抵莫雷诺冰川的源头——南巴塔哥尼亚冰原。险峻的黑白花岗岩雪峰刺破厚重云带，源源不断地孕育着万年寒冰。",
+            "captionNature": "14:40，长焦镜头越过前缘锯齿状的密集冰塔林，直抵莫雷诺冰川的源头——南巴塔哥尼亚冰原。险峻的黑白花岗岩雪峰刺破厚重云带，源源不断地孕育着万年寒冰。",
+            "captionFunny": "长焦拉到底才看清冰川的「老家」：上面全是厚得看不见底的雪原，难怪莫雷诺冰川每天都在往前推进2米！",
+            "captionCinema": "14:40 PM · 云层之上是安第斯的王座，所有的冰河都从那片寂静的白色荒原出发。",
+            "url": "https://youngapple.github.io/south-america-2026/photos/glacier_16_icefield_peaks.jpg",
+            "fullUrl": "https://youngapple.github.io/south-america-2026/photos/glacier_16_icefield_peaks.jpg",
+            "tags": [
+                  "纯自然奇观",
+                  "南巴塔哥尼亚冰原",
+                  "14:40",
+                  "雪峰云海"
+            ]
+      },
+      {
+            "id": "calafate-20261004-glacier_17_boardwalk_panorama",
+            "seq": 17,
+            "time": "15:38",
+            "isNature": true,
+            "placeId": 14,
+            "relatedPlaceIds": [
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+            ],
+            "layer": "calafate",
+            "day": "D4 · 10/04",
+            "date": "2026-10-04",
+            "city": "Glaciar Perito Moreno, El Calafate",
+            "country": "AR",
+            "titleZh": "正面栈道上帝视角 · 俯瞰冰川主舌全貌",
+            "titleEn": "Aerial-Like Panorama from the Perito Moreno Boardwalks",
+            "locationZh": "Pasarelas del Glaciar · 冰川正面观景栈道",
+            "captionZh": "15:38，登上莫雷诺正对面的半岛观景栈道。从高处俯瞰，翠绿的富饶水道（Brazo Rico）、层层叠叠的赤褐色沉积岩岸与远方壮阔的冰川主舌尽收眼底。",
+            "captionNature": "15:38，登上莫雷诺正对面的半岛观景栈道。从高处俯瞰，翠绿的富饶水道（Brazo Rico）、层层叠叠的赤褐色沉积岩岸与远方壮阔的冰川主舌尽收眼底。",
+            "captionFunny": "早上还在那片冰山上面拿冰镐凿冰，下午站到对面看台上一看：哇，我们中午居然在那么大一坨巨物上面散过步！",
+            "captionCinema": "15:38 PM · 换一个维度回望刚刚走过的冰原，整座冰川像一条静止在山谷里的蓝色银河。",
+            "url": "https://youngapple.github.io/south-america-2026/photos/glacier_17_boardwalk_panorama.jpg",
+            "fullUrl": "https://youngapple.github.io/south-america-2026/photos/glacier_17_boardwalk_panorama.jpg",
+            "tags": [
+                  "纯自然奇观",
+                  "观景栈道全景",
+                  "15:38",
+                  "上帝视角"
+            ]
+      },
+      {
+            "id": "calafate-20261004-glacier_18_mirror_lake",
+            "seq": 18,
+            "time": "16:59",
+            "isNature": true,
+            "placeId": 13,
+            "relatedPlaceIds": [
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+            ],
+            "layer": "calafate",
+            "day": "D4 · 10/04",
+            "date": "2026-10-04",
+            "city": "Glaciar Perito Moreno, El Calafate",
+            "country": "AR",
+            "titleZh": "云开雾散 · 傍晚放晴的阿根廷湖天空之镜",
+            "titleEn": "Blue Sky Clearing & Mirror Reflection on Lago Argentino",
+            "locationZh": "Lago Argentino · 阿根廷湖返程湖湾",
+            "captionZh": "16:59，返程途中迎来巴塔哥尼亚最慷慨的馈赠——漫天阴云骤然散开，湛蓝天空与雪山完璧倒映在毫无波澜的阿根廷湖面上，化作一面巨型天空之镜。",
+            "captionNature": "16:59，返程途中迎来巴塔哥尼亚最慷慨的馈赠——漫天阴云骤然散开，湛蓝天空与雪山完璧倒映在毫无波澜的阿根廷湖面上，化作一面巨型天空之镜。",
+            "captionFunny": "巴塔哥尼亚天气预报诚不欺我：早上淋雨、中午吹风、傍晚走的时候突然给你放个大晴天「天空之镜」，主打一个欲扬先抑！",
+            "captionCinema": "16:59 PM · 风停了，湖水成了天空的替身。巴塔哥尼亚把最温柔的蓝留在了告别时刻。",
+            "url": "https://youngapple.github.io/south-america-2026/photos/glacier_18_mirror_lake.jpg",
+            "fullUrl": "https://youngapple.github.io/south-america-2026/photos/glacier_18_mirror_lake.jpg",
+            "tags": [
+                  "纯自然奇观",
+                  "天空之镜",
+                  "16:59",
+                  "放晴倒影"
+            ]
+      },
+      {
+            "id": "calafate-20261004-glacier_19_calafate_feast",
+            "seq": 19,
+            "time": "19:46",
+            "isNature": false,
+            "placeId": 13,
+            "relatedPlaceIds": [
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+            ],
+            "layer": "calafate",
+            "day": "D4 · 10/04",
+            "date": "2026-10-04",
+            "city": "Glaciar Perito Moreno, El Calafate",
+            "country": "AR",
+            "titleZh": "微醺庆功 · 巴塔哥尼亚精酿、厚切牛排与暮色单车",
+            "titleEn": "Patagonia Lager, Argentine Lomo Steak & Gelato",
+            "locationZh": "El Calafate · 卡拉法特小镇晚宴",
+            "captionZh": "19:46，回到埃尔卡拉法特小镇庆功：冰镇 Patagonia Lager del Sur 精酿啤酒、外焦里嫩的双份阿根廷厚切菲力牛排（Lomo）、四蛋橄榄火腿披萨与卡拉法特莓冰淇淋，随后在 20:35 的紫粉暮色中骑单车漫游小镇。",
+            "captionNature": "19:46，回到埃尔卡拉法特小镇庆功：冰镇 Patagonia Lager del Sur 精酿啤酒、外焦里嫩的双份阿根廷厚切菲力牛排（Lomo）、四蛋橄榄火腿披萨与卡拉法特莓冰淇淋，随后在 20:35 的紫粉暮色中骑单车漫游小镇。",
+            "captionFunny": "暴走冰川一万步后的最强回血套餐：左手两块拳头厚的阿根廷牛排+四颗太阳蛋披萨，右手冰镇巴塔哥尼亚啤酒，对面队友还死死攥着一根Calafate莓冰淇淋甜筒🍦！吃完再骑个共享单车消食，完美！",
+            "captionCinema": "19:46 PM · El Calafate · 白天属于三万年的冰川，夜晚属于热气腾腾的牛排、麦芽酒香和暮色里的单车剪影。",
+            "url": "https://youngapple.github.io/south-america-2026/photos/glacier_19_calafate_feast.jpg",
+            "fullUrl": "https://youngapple.github.io/south-america-2026/photos/glacier_19_calafate_feast.jpg",
+            "tags": [
+                  "美食庆功",
+                  "巴塔哥尼亚啤酒",
+                  "19:46",
+                  "厚切牛排"
+            ]
+      },
+      {
+            "id": "calafate-20261003-nimez-goose",
+            "placeId": 13,
+            "relatedPlaceIds": [
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+            ],
+            "layer": "calafate",
+            "day": "D3 · 10/03",
+            "date": "2026-10-03",
+            "city": "El Calafate, Patagonia",
+            "country": "AR",
+            "titleZh": "巴塔哥尼亚破云晚霞与野生麦哲伦雁",
+            "titleEn": "Upland Goose & Andean Sunset in El Calafate",
+            "locationZh": "#13 埃尔卡拉法特 · 尼梅兹泻湖湿地 & 安第斯雪山",
+            "locationLocal": "Reserva Laguna Nimez & Cordillera de los Andes",
+            "captionZh": "黄昏时分的 El Calafate 湖畔草甸，一只巴塔哥尼亚野生雌性麦哲伦雁（Upland Goose / 西语 Cauquén común）在静谧水湾前侧首回望；中景是依坡散落的小镇屋舍与苍茫的巴塔哥尼亚高原阶地，远处皑皑白雪的安第斯山脉在厚云间裂开一道暖金色晚霞。",
+            "url": "https://youngapple.github.io/south-america-2026/photos/el_calafate_nimez_sunset.jpg",
+            "fullUrl": "https://youngapple.github.io/south-america-2026/photos/el_calafate_nimez_sunset_orig.jpg",
+            "tags": [
+                  "El Calafate",
+                  "Patagonia",
+                  "野生动物",
+                  "安第斯雪山",
+                  "晚霞"
+            ]
       }
-    ];
+];
+    let galleryFilterMode = "all"; // 'all' | 'nature'
+
+    window.setGalleryFilter = function(mode) {
+      galleryFilterMode = mode;
+      renderPhotosGallery();
+    };
 
     window.openPhotoLightbox = function(photoId) {
       const ph = LIVE_PHOTOS.find(x => x.id === photoId) || LIVE_PHOTOS[0];
       if (!ph) return;
-      document.getElementById("lightboxDayBadge").textContent = ph.day;
+      document.getElementById("lightboxDayBadge").textContent = (ph.time ? `${ph.day} · ${ph.time}` : ph.day);
       document.getElementById("lightboxTitle").textContent = ph.titleZh;
       document.getElementById("lightboxImg").src = ph.url;
       document.getElementById("lightboxLocation").textContent = `📍 ${ph.locationZh}`;
       document.getElementById("lightboxFullLink").href = ph.fullUrl || ph.url;
-      document.getElementById("lightboxCaption").textContent = ph.captionZh;
+      document.getElementById("lightboxCaption").innerHTML = `
+        <div class="space-y-1.5">
+          <div><span class="px-1.5 py-0.5 rounded text-[10px] font-black bg-sky-500/20 text-sky-300 mr-1.5">🏔️ 自然纪实</span>${ph.captionNature || ph.captionZh}</div>
+          ${ph.captionFunny ? `<div class="text-amber-300/95"><span class="px-1.5 py-0.5 rounded text-[10px] font-black bg-amber-500/20 text-amber-300 mr-1.5">😂 整活吐槽</span>${ph.captionFunny}</div>` : ""}
+          ${ph.captionCinema ? `<div class="text-purple-300/95 italic"><span class="px-1.5 py-0.5 rounded text-[10px] font-black bg-purple-500/20 text-purple-300 mr-1.5 not-italic">🎬 电影旁白</span>${ph.captionCinema}</div>` : ""}
+        </div>
+      `;
       document.getElementById("photoLightboxModal").classList.remove("hidden");
     };
 
@@ -4616,17 +5319,21 @@ ${trkpts}
       const exact = LIVE_PHOTOS.filter(ph => ph.placeId === p.id || (ph.relatedPlaceIds && ph.relatedPlaceIds.includes(p.id)));
       if (exact.length === 0) return "";
       const ph = exact[0];
-      const isDirect = ph.placeId === p.id;
       return `
-        <div class="rounded-2xl border-2 border-amber-500/40 bg-amber-500/10 overflow-hidden shadow-xs">
-          <div class="px-3 py-2 flex items-center justify-between gap-2 border-b border-amber-500/20">
+        <div class="rounded-2xl border-2 border-sky-500/40 bg-sky-500/10 overflow-hidden shadow-xs">
+          <div class="px-3 py-2 flex items-center justify-between gap-2 border-b border-sky-500/20 flex-wrap">
             <div class="flex items-center gap-1.5 min-w-0">
-              <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-amber-500 text-white">📸 旅途实拍</span>
+              <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-sky-600 text-white">📸 冰川实拍 (${exact.length}张)</span>
               <span class="text-xs font-extrabold text-[var(--foreground)] truncate">${ph.titleZh}</span>
             </div>
-            <button onclick="switchRightTab('photos')" class="text-[11px] font-bold text-[var(--primary)] hover:underline shrink-0 cursor-pointer">
-              实拍集锦 (${LIVE_PHOTOS.length}) ›
-            </button>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button onclick="window.openVlogModal('nature')" class="px-2 py-0.5 rounded-lg text-[11px] font-black bg-gradient-to-r from-sky-500 to-indigo-600 text-white cursor-pointer">
+                🎬 播放冰川Vlog
+              </button>
+              <button onclick="switchRightTab('photos')" class="text-[11px] font-bold text-[var(--primary)] hover:underline cursor-pointer">
+                全部实拍 (${LIVE_PHOTOS.length}) ›
+              </button>
+            </div>
           </div>
           <div class="p-2.5 flex flex-col sm:flex-row gap-3 items-center">
             <div onclick="openPhotoLightbox('${ph.id}')" class="w-full sm:w-40 h-44 sm:h-28 rounded-xl overflow-hidden bg-black shrink-0 cursor-pointer relative group">
@@ -4634,7 +5341,7 @@ ${trkpts}
               <span class="absolute bottom-1.5 right-1.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-black/70 text-white">🔍 点击放大</span>
             </div>
             <div class="space-y-1.5 text-xs flex-1 min-w-0">
-              <div class="font-bold text-[var(--primary)]">${ph.day} · ${ph.locationZh}</div>
+              <div class="font-bold text-[var(--primary)]">${ph.day} ${ph.time ? '· ' + ph.time : ''} · ${ph.locationZh}</div>
               <p class="text-[var(--foreground)] leading-relaxed line-clamp-3">${ph.captionZh}</p>
             </div>
           </div>
@@ -4642,48 +5349,246 @@ ${trkpts}
       `;
     };
 
+    
+    let photoDestination = "all"; // 'all' | 'calafate' | 'amazon'
+    let galleryViewMode = "cards"; // 'cards' | 'blog'
+    let blogNarrativeTheme = "nature"; // 'nature' | 'funny' | 'cinema'
+
+    window.setPhotoDestination = function(dest) {
+      photoDestination = dest;
+      const titleEl = document.getElementById("photosGalleryMainTitle");
+      const subEl = document.getElementById("photosGallerySubTitle");
+      const vlogBtn = document.getElementById("btnPlayVlogAction");
+      ["all", "calafate", "amazon"].forEach(k => {
+        const btn = document.getElementById("destBtn_" + k);
+        if (!btn) return;
+        if (k === dest) {
+          btn.className = "shrink-0 px-2.5 py-1 rounded-lg text-xs font-extrabold bg-[var(--primary)] text-white cursor-pointer shadow-2xs";
+        } else {
+          btn.className = "shrink-0 px-2.5 py-1 rounded-lg text-xs font-bold bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] cursor-pointer";
+        }
+      });
+      if (dest === "amazon") {
+        if (titleEl) titleEl.textContent = "🌿 亚马逊雨林探险手记 (10篇实拍 · 马卡里科水上木屋)";
+        if (subEl) subEl.textContent = "已连接 D8–D10 雨林相册 · 支持极简图文博客与 4K 雨林 Vlog 播放";
+        if (vlogBtn) {
+          vlogBtn.innerHTML = "🎬 播放雨林 Vlog";
+          vlogBtn.className = "px-2.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-xs cursor-pointer shrink-0 hover:opacity-95 transition";
+        }
+      } else if (dest === "calafate") {
+        if (titleEl) titleEl.textContent = "🏔️ 莫雷诺冰川实拍特辑 (20张时间轴全景)";
+        if (subEl) subEl.textContent = "已连接 D4 冰川相册 (08:27–20:35) · 支持 3 大主题 Vlog 播放与 MP4 成片";
+        if (vlogBtn) {
+          vlogBtn.innerHTML = "🎬 播放冰川 Vlog";
+          vlogBtn.className = "px-2.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-xs cursor-pointer shrink-0 hover:opacity-95 transition";
+        }
+      } else {
+        if (titleEl) titleEl.textContent = "📸 2026 南美旅途实拍集锦 (30张精选 · 双特辑)";
+        if (subEl) subEl.textContent = "已连接 Google Photos 相册 · 支持莫雷诺冰川 & 亚马逊雨林 Vlog 播放与极简图文博客";
+        if (vlogBtn) {
+          vlogBtn.innerHTML = "🎬 播放 Vlog";
+          vlogBtn.className = "px-2.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-emerald-500 via-sky-500 to-indigo-600 text-white shadow-xs cursor-pointer shrink-0 hover:opacity-95 transition";
+        }
+      }
+      renderPhotosGallery();
+    };
+
+    window.setGalleryViewMode = function(mode) {
+      galleryViewMode = mode;
+      const btnCards = document.getElementById("viewModeBtn_cards");
+      const btnBlog = document.getElementById("viewModeBtn_blog");
+      if (btnCards && btnBlog) {
+        if (mode === "blog") {
+          btnBlog.className = "px-2.5 py-1 rounded-lg text-xs font-extrabold bg-[var(--primary)] text-white cursor-pointer shadow-2xs";
+          btnCards.className = "px-2.5 py-1 rounded-lg text-xs font-bold text-[var(--muted-foreground)] hover:text-[var(--foreground)] cursor-pointer";
+        } else {
+          btnCards.className = "px-2.5 py-1 rounded-lg text-xs font-extrabold bg-[var(--primary)] text-white cursor-pointer shadow-2xs";
+          btnBlog.className = "px-2.5 py-1 rounded-lg text-xs font-bold text-[var(--muted-foreground)] hover:text-[var(--foreground)] cursor-pointer";
+        }
+      }
+      renderPhotosGallery();
+    };
+
+    window.openDestinationVlog = function() {
+      const dest = (photoDestination === "amazon") ? "amazon" : "calafate";
+      window.openVlogModal("nature", dest);
+    };
+
+    window.setBlogNarrativeTheme = function(theme) {
+      blogNarrativeTheme = theme;
+      renderPhotosGallery();
+    };
+
     window.renderPhotosGallery = function() {
       const badge = document.getElementById("photoCountBadge");
       if (badge) badge.textContent = LIVE_PHOTOS.length;
       const box = document.getElementById("photosGalleryContainer");
       if (!box) return;
-      box.innerHTML = LIVE_PHOTOS.map(ph => `
+
+      // Filter by destination
+      let list = LIVE_PHOTOS;
+      if (photoDestination === "amazon") {
+        list = LIVE_PHOTOS.filter(p => p.layer === "amazon");
+      } else if (photoDestination === "calafate") {
+        list = LIVE_PHOTOS.filter(p => p.layer === "calafate");
+      }
+
+      // Filter by nature vs all
+      const filtered = galleryFilterMode === "nature"
+        ? list.filter(p => p.isNature !== false)
+        : list;
+
+      // ==================== VIEW MODE 1: CLEAN BLOG STYLE ====================
+      if (galleryViewMode === "blog") {
+        const isAmazon = (photoDestination === "amazon" || (photoDestination === "all" && filtered.some(p => p.layer === "amazon")));
+        const heroBanner = isAmazon ? `
+          <div class="rounded-3xl border border-emerald-500/30 bg-gradient-to-br from-emerald-950/60 via-slate-900/80 to-slate-950 p-5 text-white space-y-3.5 shadow-lg">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <span class="px-3 py-1 rounded-full text-xs font-black bg-emerald-400 text-slate-950 font-mono-code tracking-wide">🌿 AMAZON EXPEDITION FIELD NOTES</span>
+              <span class="text-xs text-emerald-300/80 font-mono-code">03°08'S 60°01'W · D8–D10 全程实录</span>
+            </div>
+            <h2 class="text-lg sm:text-xl font-black tracking-tight leading-snug">深入地球之肺：从黑白两河汇流到马卡里科水上木屋</h2>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
+              告别文明信号，沿内格罗河与索利芒斯河水路向南深入热带雨林腹地。在水上木屋枕涛入眠，手执竹竿静钓食人鱼，乘独木舟穿行伊加波水淹森林，夜巡暗流寻觅凯门鳄。这是一段完全融入自然脉动的原始科考手记。
+            </p>
+            <div class="flex items-center justify-between gap-2 pt-1 flex-wrap border-t border-emerald-500/20">
+              <div class="flex items-center gap-1.5">
+                <span class="text-[11px] text-slate-400 font-bold">解说视角：</span>
+                <button onclick="setBlogNarrativeTheme('nature')" class="px-2.5 py-1 rounded-lg text-xs font-extrabold cursor-pointer ${blogNarrativeTheme === 'nature' ? 'bg-emerald-400 text-slate-950' : 'bg-slate-800 text-slate-300'}">🌿 自然科考</button>
+                <button onclick="setBlogNarrativeTheme('cinema')" class="px-2.5 py-1 rounded-lg text-xs font-extrabold cursor-pointer ${blogNarrativeTheme === 'cinema' ? 'bg-purple-400 text-slate-950' : 'bg-slate-800 text-slate-300'}">🎬 电影慢门</button>
+                <button onclick="setBlogNarrativeTheme('funny')" class="px-2.5 py-1 rounded-lg text-xs font-extrabold cursor-pointer ${blogNarrativeTheme === 'funny' ? 'bg-amber-400 text-slate-950' : 'bg-slate-800 text-slate-300'}">😂 真实整活</button>
+              </div>
+              <button onclick="window.openVlogModal('nature', 'amazon')" class="px-3 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-950 hover:opacity-95 cursor-pointer flex items-center gap-1 shadow-xs">
+                🎬 播放雨林动态 Vlog ↗
+              </button>
+            </div>
+          </div>
+        ` : `
+          <div class="rounded-3xl border border-sky-500/30 bg-gradient-to-br from-slate-900 via-sky-950/50 to-slate-950 p-5 text-white space-y-3.5 shadow-lg">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <span class="px-3 py-1 rounded-full text-xs font-black bg-sky-400 text-slate-950 font-mono-code tracking-wide">🏔️ PATAGONIA EXPEDITION LOG</span>
+              <span class="text-xs text-sky-300/80 font-mono-code">50°28'S 73°02'W · D4 莫雷诺冰川全记录</span>
+            </div>
+            <h2 class="text-lg sm:text-xl font-black tracking-tight leading-snug">巴塔哥尼亚的蓝色史诗：莫雷诺冰川 12 小时时间轴</h2>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
+              从晨曦雨雾中的巴塔哥尼亚11号公路，到70米冰墙压顶下的航渡；从手执冰镐踏足幽蓝冰裂隙，到在三万年老冰中斟入威士忌。纯净与壮阔在世界尽头交织。
+            </p>
+            <div class="flex items-center justify-between gap-2 pt-1 flex-wrap border-t border-sky-500/20">
+              <div class="flex items-center gap-1.5">
+                <span class="text-[11px] text-slate-400 font-bold">解说视角：</span>
+                <button onclick="setBlogNarrativeTheme('nature')" class="px-2.5 py-1 rounded-lg text-xs font-extrabold cursor-pointer ${blogNarrativeTheme === 'nature' ? 'bg-sky-400 text-slate-950' : 'bg-slate-800 text-slate-300'}">🏔️ 自然纪实</button>
+                <button onclick="setBlogNarrativeTheme('cinema')" class="px-2.5 py-1 rounded-lg text-xs font-extrabold cursor-pointer ${blogNarrativeTheme === 'cinema' ? 'bg-purple-400 text-slate-950' : 'bg-slate-800 text-slate-300'}">🎬 电影慢门</button>
+                <button onclick="setBlogNarrativeTheme('funny')" class="px-2.5 py-1 rounded-lg text-xs font-extrabold cursor-pointer ${blogNarrativeTheme === 'funny' ? 'bg-amber-400 text-slate-950' : 'bg-slate-800 text-slate-300'}">😂 真实整活</button>
+              </div>
+              <button onclick="window.openVlogModal('nature', 'calafate')" class="px-3 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-sky-400 to-indigo-400 text-slate-950 hover:opacity-95 cursor-pointer flex items-center gap-1 shadow-xs">
+                🎬 播放冰川动态 Vlog ↗
+              </button>
+            </div>
+          </div>
+        `;
+
+        box.innerHTML = heroBanner + filtered.map((ph, idx) => {
+          let chosenCaption = ph.captionNature || ph.captionZh;
+          if (blogNarrativeTheme === "funny" && ph.captionFunny) chosenCaption = ph.captionFunny;
+          if (blogNarrativeTheme === "cinema" && ph.captionCinema) chosenCaption = ph.captionCinema;
+
+          const layerBadge = ph.layer === "amazon" 
+            ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">🌿 亚马逊</span>`
+            : `<span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-sky-500/20 text-sky-600 dark:text-sky-400">🏔️ 冰川</span>`;
+
+          return `
+            <article class="rounded-3xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-xs space-y-3 transition hover:shadow-md">
+              <div onclick="openPhotoLightbox('${ph.id}')" class="relative w-full h-64 sm:h-80 bg-black cursor-pointer overflow-hidden group">
+                <img src="${ph.url}" alt="${ph.titleZh}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 ease-out" />
+                <div class="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap">
+                  <span class="px-2.5 py-1 rounded-lg text-xs font-extrabold bg-black/80 text-white backdrop-blur-md font-mono-code">${ph.time ? ph.day + ' · ' + ph.time : ph.day}</span>
+                  ${layerBadge}
+                </div>
+                <span class="absolute bottom-3 right-3 px-3 py-1 rounded-xl text-xs font-bold bg-black/75 text-white backdrop-blur-md">🔍 点击看原图 & 3大视角</span>
+              </div>
+              <div class="p-4 sm:p-5 space-y-3">
+                <div class="flex items-start justify-between gap-3">
+                  <div>
+                    <h3 class="text-base sm:text-lg font-black text-[var(--foreground)] tracking-tight leading-snug">${ph.seq ? '#' + String(ph.seq).padStart(2, '0') + ' ' : ''}${ph.titleZh}</h3>
+                    <div class="text-xs font-bold text-[var(--primary)] mt-1 flex items-center gap-1">
+                      <span>📍 ${ph.locationZh}</span>
+                    </div>
+                  </div>
+                  <button onclick="selectPlace(${ph.placeId || 14}, true, true)" class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold bg-[var(--secondary)] text-[var(--secondary-foreground)] hover:bg-[var(--primary)] hover:text-white transition cursor-pointer">
+                    🗺️ 定位站点
+                  </button>
+                </div>
+                
+                <p class="text-xs sm:text-sm text-[var(--foreground)] leading-relaxed font-sans">
+                  ${chosenCaption}
+                </p>
+
+                ${ph.captionBlog ? `
+                  <div class="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/25 text-xs text-[var(--foreground)] leading-relaxed">
+                    <strong class="text-emerald-600 dark:text-emerald-400 font-extrabold">💡 科考与生存贴士：</strong>${ph.captionBlog}
+                  </div>
+                ` : ''}
+
+                <div class="flex items-center justify-between gap-2 pt-1 border-t border-[var(--border)]/60 flex-wrap">
+                  <div class="flex flex-wrap gap-1">
+                    ${(ph.tags || []).map(t => `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-[var(--content)] text-[var(--muted-foreground)]">#${t}</span>`).join("")}
+                  </div>
+                  <span class="text-[10px] text-[var(--muted-foreground)] font-mono-code">${ph.city || ''}</span>
+                </div>
+              </div>
+            </article>
+          `;
+        }).join("");
+        return;
+      }
+
+      // ==================== VIEW MODE 2: CARDS GRID STYLE ====================
+      const filterBar = `
+        <div class="p-2.5 rounded-2xl border border-[var(--border)] bg-[var(--card)] flex items-center justify-between gap-2 flex-wrap">
+          <div class="flex items-center gap-1.5">
+            <button onclick="setGalleryFilter('all')" class="px-2.5 py-1 rounded-lg text-xs font-extrabold cursor-pointer ${galleryFilterMode === 'all' ? 'bg-[var(--primary)] text-white' : 'bg-[var(--content)] text-[var(--foreground)]'}">
+              ⏱️ 全部时间轴 (${list.length})
+            </button>
+            <button onclick="setGalleryFilter('nature')" class="px-2.5 py-1 rounded-lg text-xs font-extrabold cursor-pointer ${galleryFilterMode === 'nature' ? 'bg-sky-600 text-white' : 'bg-[var(--content)] text-[var(--foreground)]'}">
+              🏔️ 纯自然生境 (${list.filter(x => x.isNature !== false).length})
+            </button>
+          </div>
+          <button onclick="setGalleryViewMode('blog')" class="text-[11px] font-bold text-[var(--primary)] hover:underline cursor-pointer flex items-center gap-1">
+            <span>📖 切换极简图文博客模式</span> ›
+          </button>
+        </div>
+      `;
+
+      box.innerHTML = filterBar + filtered.map((ph, idx) => `
         <div class="rounded-2xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-xs space-y-2.5">
           <div onclick="openPhotoLightbox('${ph.id}')" class="relative w-full h-64 sm:h-72 bg-black cursor-pointer overflow-hidden group">
             <img src="${ph.url}" alt="${ph.titleZh}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-            <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5">
-              <span class="px-2.5 py-1 rounded-lg text-xs font-extrabold bg-black/75 text-white backdrop-blur-xs">${ph.day}</span>
-              <span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500/90 text-white backdrop-blur-xs">${ph.city}</span>
+            <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5 flex-wrap">
+              <span class="px-2.5 py-1 rounded-lg text-xs font-extrabold bg-black/80 text-white backdrop-blur-xs font-mono-code">${ph.time ? ph.day + ' · ' + ph.time : ph.day}</span>
+              <span class="px-2 py-0.5 rounded-lg text-xs font-bold ${ph.layer === 'amazon' ? 'bg-emerald-600/90' : 'bg-sky-600/90'} text-white backdrop-blur-xs">${ph.layer === 'amazon' ? '🌿 亚马逊' : '🏔️ 冰川'}</span>
             </div>
-            <span class="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-black/75 text-white">🔍 查看高清大图</span>
+            <span class="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-black/75 text-white">🔍 查看3主题解说 & 原图</span>
           </div>
           <div class="px-3.5 pb-3.5 space-y-2">
             <div class="flex items-start justify-between gap-2">
               <div>
-                <div class="text-sm font-extrabold text-[var(--foreground)]">${ph.titleZh}</div>
+                <div class="text-sm font-extrabold text-[var(--foreground)]">${ph.seq ? '#' + String(ph.seq).padStart(2, '0') + ' ' : ''}${ph.titleZh}</div>
                 <div class="text-xs font-bold text-[var(--primary)] mt-0.5">📍 ${ph.locationZh}</div>
               </div>
-              <button onclick="selectPlace(${ph.placeId || 13}, true, true)" class="shrink-0 px-2.5 py-1 rounded-lg text-xs font-extrabold bg-[var(--secondary)] text-[var(--secondary-foreground)] cursor-pointer">
+              <button onclick="selectPlace(${ph.placeId || 14}, true, true)" class="shrink-0 px-2.5 py-1 rounded-lg text-xs font-extrabold bg-[var(--secondary)] text-[var(--secondary-foreground)] cursor-pointer">
                 🗺️ 定位站点
               </button>
             </div>
-            <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">${ph.captionZh}</p>
+            <p class="text-xs text-[var(--foreground)] leading-relaxed">${ph.captionNature || ph.captionZh}</p>
+            ${ph.captionFunny ? `<div class="p-2 rounded-xl bg-amber-500/10 border border-amber-500/25 text-[11px] text-[var(--foreground)] leading-relaxed"><strong class="text-amber-600 dark:text-amber-400">😂 整活版：</strong>${ph.captionFunny}</div>` : ""}
             <div class="flex flex-wrap gap-1 pt-0.5">
               ${(ph.tags || []).map(t => `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-[var(--content)] text-[var(--muted-foreground)]">#${t}</span>`).join("")}
             </div>
           </div>
         </div>
-      `).join("") + `
-        <div class="p-3.5 rounded-2xl border border-dashed border-[var(--border)] bg-[var(--content)]/40 space-y-1.5 text-xs">
-          <div class="font-extrabold text-[var(--foreground)]">☁️ Google Photos 自动同步通道已就绪</div>
-          <p class="text-[var(--muted-foreground)] leading-relaxed">
-            回酒店连上 Wi-Fi 后，你只需在手机 Google Photos 把照片加入共享相册（或发在 Google Chat），后台脚本会自动抓取高清图、智能匹配当天站点并发布到这里！
-          </p>
-        </div>
-      `;
+      `).join("");
     };
 
-    // Fetch latest photos/manifest.json dynamically so new synced photos appear without touching HTML
     fetch("photos/manifest.json?t=" + Date.now())
       .then(r => r.ok ? r.json() : null)
       .then(data => {
@@ -6069,6 +6974,457 @@ ${trkpts}
         if (btn) btn.disabled = false;
       }
     };
+  </script>
+
+  <!-- ==================== INTERACTIVE 3-THEME GLACIER TRAVEL VLOG MODAL ==================== -->
+  <style>
+    @keyframes kenburnsZoom {
+      0% { transform: scale(1.0) translate(0, 0); }
+      100% { transform: scale(1.11) translate(-1.5%, -1%); }
+    }
+    .vlog-kenburns {
+      animation: kenburnsZoom 5.5s ease-out forwards;
+    }
+  </style>
+  <audio id="saVlogBgmAudio" preload="auto" loop src="photos/bgm_spanish_1.mp3"></audio>
+  <div id="saVlogModal" class="hidden fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex flex-col justify-between p-2 sm:p-4 select-none">
+    <!-- Top Control Header -->
+    <div class="max-w-5xl w-full mx-auto space-y-1.5 z-20">
+      <!-- Story Progress Bars -->
+      <div id="vlogProgressBars" class="flex items-center gap-1 w-full pt-1"></div>
+
+      <div class="flex items-center justify-between gap-2 flex-wrap bg-slate-900/90 border border-slate-700/80 rounded-2xl px-3 py-2">
+        <div class="flex items-center gap-2 min-w-0">
+          <div class="flex items-center gap-1 shrink-0">
+            <button type="button" id="vlogDestBtn_calafate" onclick="window.setVlogDestination('calafate')" class="px-2.5 py-1 rounded-xl text-[11px] font-black bg-sky-500 text-slate-950 cursor-pointer shadow-xs">
+              🏔️ 冰川 Vlog
+            </button>
+            <button type="button" id="vlogDestBtn_amazon" onclick="window.setVlogDestination('amazon')" class="px-2.5 py-1 rounded-xl text-[11px] font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 cursor-pointer">
+              🌿 亚马逊 Vlog
+            </button>
+          </div>
+          <div class="min-w-0">
+            <div id="vlogHeaderTitle" class="text-xs sm:text-sm font-extrabold text-white truncate">佩里托莫雷诺冰川 · 12小时时间轴纪实 (08:27 – 20:35)</div>
+            <div id="vlogNowPlayingText" class="text-[10px] text-amber-300 font-bold truncate">🎸 当前西语户外配乐：Jorge Drexler《Movimiento》(拉丁格莱美年度歌曲 · 远征民谣摇滚)</div>
+          </div>
+        </div>
+
+        <!-- Theme Switcher Pills -->
+        <div class="flex items-center gap-1 overflow-x-auto no-scrollbar">
+          <button type="button" id="vlogThemeBtn_nature" onclick="window.setVlogTheme('nature')" class="px-2.5 py-1 rounded-xl text-[11px] font-black cursor-pointer transition bg-sky-500 text-slate-950">
+            🏔️ 自然奇观版 (主推)
+          </button>
+          <button type="button" id="vlogThemeBtn_pure_nature" onclick="window.setVlogTheme('pure_nature')" class="px-2.5 py-1 rounded-xl text-[11px] font-bold cursor-pointer transition bg-slate-800 text-slate-200 hover:bg-slate-700">
+            🌿 纯风光(无人物)
+          </button>
+          <button type="button" id="vlogThemeBtn_funny" onclick="window.setVlogTheme('funny')" class="px-2.5 py-1 rounded-xl text-[11px] font-bold cursor-pointer transition bg-slate-800 text-slate-200 hover:bg-slate-700">
+            😂 搞笑整活版
+          </button>
+          <button type="button" id="vlogThemeBtn_cinema" onclick="window.setVlogTheme('cinema')" class="px-2.5 py-1 rounded-xl text-[11px] font-bold cursor-pointer transition bg-slate-800 text-slate-200 hover:bg-slate-700">
+            🎬 王家卫电影版
+          </button>
+          <button type="button" id="vlogThemeBtn_mp4" onclick="window.setVlogTheme('mp4')" class="px-2.5 py-1 rounded-xl text-[11px] font-bold cursor-pointer transition bg-emerald-600/90 text-white hover:bg-emerald-500">
+            📹 MP4成片
+          </button>
+        </div>
+
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button type="button" id="btnVlogAudio" onclick="window.toggleVlogAudio()" class="px-2.5 py-1 rounded-xl text-[11px] font-extrabold bg-amber-500 text-slate-950 cursor-pointer shadow-xs">
+            🔊 西语BGM: 开
+          </button>
+          <button type="button" id="btnVlogPlayPause" onclick="window.toggleVlogPlay()" class="px-2.5 py-1 rounded-xl text-[11px] font-bold bg-slate-800 text-white border border-slate-700 cursor-pointer">
+            ⏸ 暂停
+          </button>
+          <button type="button" onclick="window.closeVlogModal()" class="w-7 h-7 rounded-full bg-slate-800 text-white font-bold cursor-pointer">✕</button>
+        </div>
+      </div>
+
+      <!-- Spanish Outdoor BGM Track Selector Bar -->
+      <div class="flex items-center justify-between gap-1.5 bg-slate-900/80 border border-slate-800 rounded-xl px-2.5 py-1.5 overflow-x-auto no-scrollbar text-[11px]">
+        <span class="text-slate-400 font-bold shrink-0">🎸 切换西语户外配乐：</span>
+        <div class="flex items-center gap-1 overflow-x-auto no-scrollbar">
+          <button type="button" id="bgmTrackBtn_1" onclick="window.selectVlogBgm(1)" class="px-2 py-0.5 rounded-lg font-extrabold cursor-pointer bg-amber-500 text-slate-950 shrink-0">
+            ① Drexler《Movimiento》(西语远征民谣摇滚 · 主推)
+          </button>
+          <button type="button" id="bgmTrackBtn_2" onclick="window.selectVlogBgm(2)" class="px-2 py-0.5 rounded-lg font-bold cursor-pointer bg-slate-800 text-slate-300 hover:bg-slate-700 shrink-0">
+            ② Drexler《Despedir a los glaciares》(西语冰川摇滚)
+          </button>
+          <button type="button" id="bgmTrackBtn_3" onclick="window.selectVlogBgm(3)" class="px-2 py-0.5 rounded-lg font-bold cursor-pointer bg-slate-800 text-slate-300 hover:bg-slate-700 shrink-0">
+            ③ Macaco《Moving》(国家地理西语欢快公路歌)
+          </button>
+          <button type="button" id="bgmTrackBtn_4" onclick="window.selectVlogBgm(4)" class="px-2 py-0.5 rounded-lg font-bold cursor-pointer bg-slate-800 text-slate-300 hover:bg-slate-700 shrink-0">
+            ④ Drexler & Lafourcade《Salvavidas de hielo》(木吉他对唱)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center Stage: Slideshow OR Native MP4 Video -->
+    <div class="max-w-5xl w-full mx-auto flex-1 my-1.5 relative rounded-3xl overflow-hidden bg-black border border-slate-800 flex items-center justify-center min-h-0">
+      <!-- Slideshow Stage -->
+      <div id="vlogSlideStage" class="w-full h-full relative flex items-center justify-center overflow-hidden">
+        <img id="vlogBgBlur" src="" alt="" class="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-110 pointer-events-none" />
+        <img id="vlogMainImg" src="" alt="" class="relative max-h-full max-w-full object-contain z-10 vlog-kenburns" />
+
+        <!-- Top-left Timestamp & GPS Pill -->
+        <div class="absolute top-3 left-3 z-20 flex items-center gap-1.5 flex-wrap pointer-events-none">
+          <span id="vlogTimeBadge" class="px-3 py-1 rounded-full text-xs font-black bg-slate-950/80 text-sky-300 border border-sky-400/40 font-mono-code backdrop-blur-md">10:19 AM</span>
+          <span id="vlogLocBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-950/75 text-white border border-white/15 backdrop-blur-md">📍 Frente Sur del Glaciar</span>
+          <span id="vlogThemeTag" class="px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-sky-500/90 text-slate-950">🏔️ 自然之诗 · BBC纪录片风</span>
+        </div>
+
+        <!-- Tap Zones for Prev / Next -->
+        <div onclick="window.prevVlogSlide()" class="absolute inset-y-0 left-0 w-1/3 z-20 cursor-pointer flex items-center justify-start pl-3 group" title="上一幕">
+          <span class="w-9 h-9 rounded-full bg-black/50 text-white flex items-center justify-center text-lg opacity-60 group-hover:opacity-100 transition">‹</span>
+        </div>
+        <div onclick="window.nextVlogSlide()" class="absolute inset-y-0 right-0 w-1/3 z-20 cursor-pointer flex items-center justify-end pr-3 group" title="下一幕">
+          <span class="w-9 h-9 rounded-full bg-black/50 text-white flex items-center justify-center text-lg opacity-60 group-hover:opacity-100 transition">›</span>
+        </div>
+
+        <!-- Bottom Subtitle Overlay -->
+        <div class="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-slate-950 via-slate-950/90 to-transparent pt-10 pb-4 px-4 sm:px-8 pointer-events-none">
+          <div class="max-w-3xl mx-auto space-y-1.5">
+            <div class="flex items-center justify-between gap-2">
+              <div id="vlogSlideTitle" class="text-sm sm:text-xl font-black text-white tracking-tight"></div>
+              <span id="vlogSlideCounter" class="text-xs font-mono-code text-sky-400 font-bold shrink-0">01 / 19</span>
+            </div>
+            <p id="vlogSlideCaption" class="text-xs sm:text-base text-sky-100 leading-relaxed font-medium"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Native MP4 Video Stage -->
+      <div id="vlogMp4Stage" class="hidden w-full h-full flex flex-col items-center justify-center p-3 gap-3 bg-slate-950">
+        <video id="vlogMp4Video" controls playsinline class="max-h-[68vh] w-auto rounded-2xl border border-slate-700 shadow-2xl" poster="photos/glacier_15_lone_figure_wall.jpg">
+          <source src="photos/perito_moreno_vlog.mp4?v=2" type="video/mp4" />
+        </video>
+        <div class="flex items-center gap-3 flex-wrap justify-center">
+          <a href="photos/perito_moreno_vlog.mp4?v=2" download="Perito_Moreno_Glacier_Spanish_Vlog_2026.mp4" class="px-4 py-2 rounded-xl bg-emerald-500 text-slate-950 font-black text-xs hover:opacity-95">
+            📥 下载高清 MP4 视频成片 (3.4 MB · 西语户外民谣摇滚《Movimiento》配乐+中文字幕)
+          </a>
+          <a href="https://photos.app.goo.gl/WCvYyE3S3JaTGm7MA" target="_blank" rel="noopener" class="px-4 py-2 rounded-xl bg-slate-800 text-white font-bold text-xs border border-slate-700">
+            ☁️ 打开原 Google Photos 共享相册 (607张) ↗
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Thumbnail Filmstrip -->
+    <div id="vlogFilmstrip" class="max-w-5xl w-full mx-auto flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 z-20"></div>
+  </div>
+
+  <script>
+    (function() {
+      const BGM_TRACKS = {
+        1: {
+          src: "photos/bgm_spanish_1.mp3",
+          label: "🎸 当前西语户外配乐：Jorge Drexler《Movimiento》(拉丁格莱美年度歌曲 · 远征民谣摇滚 — “Somos una especie en viaje…”)"
+        },
+        2: {
+          src: "photos/bgm_spanish_2.mp3",
+          label: "🎸 当前西语户外配乐：Jorge Drexler《Despedir a los glaciares》(西语冰川摇滚 — “Una gota rueda sobre el hielo…”)"
+        },
+        3: {
+          src: "photos/bgm_spanish_3.mp3",
+          label: "🎸 当前西语户外配乐：Macaco《Moving》(国家地理《地球日》西语欢快公路主题曲 — “Tiempos de pequeños movimientos…”)"
+        },
+        4: {
+          src: "photos/bgm_spanish_4.mp3",
+          label: "🎸 当前西语户外配乐：Jorge Drexler & Natalia Lafourcade《Salvavidas de hielo》(温柔木吉他男女声对唱)"
+        }
+      };
+
+      let vlogTheme = "nature"; // 'nature' | 'pure_nature' | 'funny' | 'cinema' | 'mp4'
+      let vlogIdx = 0;
+      let vlogPlaying = true;
+      let vlogTimer = null;
+      let vlogAudioOn = true;
+      let currentBgmId = 1;
+
+      let vlogDestination = "calafate"; // 'calafate' | 'amazon'
+
+      window.setVlogDestination = function(dest) {
+        vlogDestination = dest;
+        vlogIdx = 0;
+        const btnCal = document.getElementById("vlogDestBtn_calafate");
+        const btnAmz = document.getElementById("vlogDestBtn_amazon");
+        if (btnCal && btnAmz) {
+          if (dest === "amazon") {
+            btnAmz.className = "px-2.5 py-1 rounded-xl text-[11px] font-black bg-emerald-500 text-slate-950 cursor-pointer shadow-xs";
+            btnCal.className = "px-2.5 py-1 rounded-xl text-[11px] font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 cursor-pointer";
+          } else {
+            btnCal.className = "px-2.5 py-1 rounded-xl text-[11px] font-black bg-sky-500 text-slate-950 cursor-pointer shadow-xs";
+            btnAmz.className = "px-2.5 py-1 rounded-xl text-[11px] font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 cursor-pointer";
+          }
+        }
+        renderVlogSlide();
+        scheduleVlogTimer();
+      };
+
+      function getVlogList() {
+        let base = [];
+        if (vlogDestination === "amazon") {
+          base = LIVE_PHOTOS.filter(p => p.layer === "amazon");
+        } else {
+          base = LIVE_PHOTOS.filter(p => p.layer === "calafate");
+        }
+        if (vlogTheme === "pure_nature") {
+          return base.filter(p => p.isNature !== false);
+        }
+        return base.length > 0 ? base : LIVE_PHOTOS;
+      }
+
+      function updateBgmUI() {
+        const btn = document.getElementById("btnVlogAudio");
+        if (btn) {
+          btn.textContent = vlogAudioOn ? "🔊 西语BGM: 开" : "🔇 西语BGM: 关";
+          btn.className = vlogAudioOn
+            ? "px-2.5 py-1 rounded-xl text-[11px] font-extrabold bg-amber-500 text-slate-950 cursor-pointer shadow-xs"
+            : "px-2.5 py-1 rounded-xl text-[11px] font-bold bg-slate-800 text-slate-300 border border-slate-700 cursor-pointer";
+        }
+        [1, 2, 3, 4].forEach(id => {
+          const tb = document.getElementById("bgmTrackBtn_" + id);
+          if (!tb) return;
+          if (id === currentBgmId) {
+            tb.className = "px-2 py-0.5 rounded-lg font-extrabold cursor-pointer bg-amber-500 text-slate-950 shrink-0";
+          } else {
+            tb.className = "px-2 py-0.5 rounded-lg font-bold cursor-pointer bg-slate-800 text-slate-300 hover:bg-slate-700 shrink-0";
+          }
+        });
+        const np = document.getElementById("vlogNowPlayingText");
+        if (np && BGM_TRACKS[currentBgmId]) {
+          np.textContent = BGM_TRACKS[currentBgmId].label;
+        }
+      }
+
+      function syncBgmPlayback() {
+        const audioEl = document.getElementById("saVlogBgmAudio");
+        if (!audioEl) return;
+        const modalOpen = !document.getElementById("saVlogModal")?.classList.contains("hidden");
+        if (!modalOpen || vlogTheme === "mp4" || !vlogAudioOn) {
+          audioEl.pause();
+          return;
+        }
+        const targetSrc = BGM_TRACKS[currentBgmId]?.src || BGM_TRACKS[1].src;
+        if (!audioEl.getAttribute("src") || !audioEl.getAttribute("src").includes(targetSrc)) {
+          audioEl.setAttribute("src", targetSrc);
+          audioEl.load();
+        }
+        audioEl.volume = 0.85;
+        audioEl.play().catch(() => {});
+      }
+
+      window.selectVlogBgm = function(trackId) {
+        currentBgmId = trackId;
+        vlogAudioOn = true;
+        updateBgmUI();
+        syncBgmPlayback();
+      };
+
+      window.toggleVlogAudio = function() {
+        vlogAudioOn = !vlogAudioOn;
+        updateBgmUI();
+        syncBgmPlayback();
+      };
+
+      function renderVlogSlide() {
+        const list = getVlogList();
+        if (!list.length) return;
+        if (vlogIdx >= list.length) vlogIdx = 0;
+        if (vlogIdx < 0) vlogIdx = list.length - 1;
+        const item = list[vlogIdx];
+
+        const mainImg = document.getElementById("vlogMainImg");
+        const bgBlur = document.getElementById("vlogBgBlur");
+        if (mainImg) {
+          mainImg.classList.remove("vlog-kenburns");
+          void mainImg.offsetWidth;
+          mainImg.src = item.url;
+          mainImg.classList.add("vlog-kenburns");
+        }
+        if (bgBlur) bgBlur.src = item.url;
+
+        const hTitle = document.getElementById("vlogHeaderTitle");
+        if (hTitle) {
+          if (vlogDestination === "amazon") {
+            hTitle.textContent = "🌿 亚马逊雨林探险 · 玛瑙斯至马卡里科水上木屋纪实 (D8–D10)";
+          } else {
+            hTitle.textContent = "佩里托莫雷诺冰川 · 12小时时间轴纪实 (08:27 – 20:35)";
+          }
+        }
+        document.getElementById("vlogTimeBadge").textContent = `⏱️ ${item.day || ""} ${item.time || ""}`;
+        document.getElementById("vlogLocBadge").textContent = `📍 ${item.locationZh}`;
+        document.getElementById("vlogSlideTitle").textContent = `#${String(vlogIdx + 1).padStart(2, "0")} ${item.titleZh}`;
+        document.getElementById("vlogSlideCounter").textContent = `${String(vlogIdx + 1).padStart(2, "0")} / ${String(list.length).padStart(2, "0")}`;
+
+        const tagEl = document.getElementById("vlogThemeTag");
+        const capEl = document.getElementById("vlogSlideCaption");
+        if (vlogDestination === "amazon") {
+          if (vlogTheme === "funny") {
+            tagEl.textContent = "🦟 亚马逊生存整活 · 30% DEET 与红腹食人鱼";
+            tagEl.className = "px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-amber-400 text-slate-950";
+            capEl.textContent = item.captionFunny || item.captionZh;
+          } else if (vlogTheme === "cinema") {
+            tagEl.textContent = "🎬 03°08'S 60°01'W · 绿光与黑水电影手记";
+            tagEl.className = "px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-purple-400 text-slate-950";
+            capEl.textContent = item.captionCinema || item.captionZh;
+          } else if (vlogTheme === "pure_nature") {
+            tagEl.textContent = "🌿 亚马逊纯享自然 (水淹林与两河汇流)";
+            tagEl.className = "px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-emerald-400 text-slate-950";
+            capEl.textContent = item.captionNature || item.captionZh;
+          } else {
+            tagEl.textContent = "🌿 亚马逊生境 · 原生雨林科考风";
+            tagEl.className = "px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-emerald-400 text-slate-950";
+            capEl.textContent = item.captionNature || item.captionZh;
+          }
+        } else {
+          if (vlogTheme === "funny") {
+            tagEl.textContent = "😂 巴塔哥尼亚精神状态美丽版";
+            tagEl.className = "px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-amber-400 text-slate-950";
+            capEl.textContent = item.captionFunny || item.captionZh;
+          } else if (vlogTheme === "cinema") {
+            tagEl.textContent = "🎬 50°28'S 73°02'W · 王家卫电影手记";
+            tagEl.className = "px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-purple-400 text-slate-950";
+            capEl.textContent = item.captionCinema || item.captionZh;
+          } else if (vlogTheme === "pure_nature") {
+            tagEl.textContent = "🌿 纯享自然奇观 (100% 无人物风光)";
+            tagEl.className = "px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-emerald-400 text-slate-950";
+            capEl.textContent = item.captionNature || item.captionZh;
+          } else {
+            tagEl.textContent = "🏔️ 自然之诗 · 万年蓝冰纪实";
+            tagEl.className = "px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-sky-400 text-slate-950";
+            capEl.textContent = item.captionNature || item.captionZh;
+          }
+        }
+
+        // Progress bars
+        const pBox = document.getElementById("vlogProgressBars");
+        if (pBox) {
+          pBox.innerHTML = list.map((_, i) => `
+            <div onclick="window.jumpVlogSlide(${i})" class="h-1.5 flex-1 rounded-full cursor-pointer overflow-hidden ${i < vlogIdx ? 'bg-sky-400' : i === vlogIdx ? 'bg-white' : 'bg-slate-700'}"></div>
+          `).join("");
+        }
+
+        // Filmstrip
+        const strip = document.getElementById("vlogFilmstrip");
+        if (strip) {
+          strip.innerHTML = list.map((p, i) => `
+            <div onclick="window.jumpVlogSlide(${i})" class="shrink-0 w-16 h-11 rounded-lg overflow-hidden cursor-pointer border-2 transition ${i === vlogIdx ? 'border-sky-400 scale-105' : 'border-transparent opacity-60 hover:opacity-90'} relative">
+              <img src="${p.url}" alt="" class="w-full h-full object-cover" />
+              <span class="absolute bottom-0 inset-x-0 bg-black/70 text-[9px] text-white text-center font-mono-code">${p.time || ''}</span>
+            </div>
+          `).join("");
+        }
+      }
+
+      function scheduleVlogTimer() {
+        if (vlogTimer) clearInterval(vlogTimer);
+        if (!vlogPlaying || vlogTheme === "mp4") return;
+        vlogTimer = setInterval(() => {
+          vlogIdx++;
+          renderVlogSlide();
+        }, 4200);
+      }
+
+      window.openVlogModal = function(theme, dest) {
+        if (dest) vlogDestination = dest;
+        document.getElementById("saVlogModal").classList.remove("hidden");
+        const btnCal = document.getElementById("vlogDestBtn_calafate");
+        const btnAmz = document.getElementById("vlogDestBtn_amazon");
+        if (btnCal && btnAmz) {
+          if (vlogDestination === "amazon") {
+            btnAmz.className = "px-2.5 py-1 rounded-xl text-[11px] font-black bg-emerald-500 text-slate-950 cursor-pointer shadow-xs";
+            btnCal.className = "px-2.5 py-1 rounded-xl text-[11px] font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 cursor-pointer";
+          } else {
+            btnCal.className = "px-2.5 py-1 rounded-xl text-[11px] font-black bg-sky-500 text-slate-950 cursor-pointer shadow-xs";
+            btnAmz.className = "px-2.5 py-1 rounded-xl text-[11px] font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 cursor-pointer";
+          }
+        }
+        window.setVlogTheme(theme || "nature");
+      };
+
+      window.closeVlogModal = function() {
+        document.getElementById("saVlogModal").classList.add("hidden");
+        if (vlogTimer) clearInterval(vlogTimer);
+        const audioEl = document.getElementById("saVlogBgmAudio");
+        if (audioEl) audioEl.pause();
+        const vid = document.getElementById("vlogMp4Video");
+        if (vid) vid.pause();
+      };
+
+      window.setVlogTheme = function(theme) {
+        vlogTheme = theme;
+        vlogIdx = 0;
+        // Automatically select matching Spanish outdoor song for each theme!
+        if (theme === "nature") currentBgmId = 1;       // Drexler - Movimiento
+        else if (theme === "pure_nature") currentBgmId = 2; // Drexler - Despedir a los glaciares
+        else if (theme === "funny") currentBgmId = 3;   // Macaco - Moving
+        else if (theme === "cinema") currentBgmId = 4;  // Drexler & Lafourcade - Salvavidas de hielo
+
+        ["nature", "pure_nature", "funny", "cinema", "mp4"].forEach(k => {
+          const b = document.getElementById("vlogThemeBtn_" + k);
+          if (!b) return;
+          if (k === theme) {
+            b.className = "px-2.5 py-1 rounded-xl text-[11px] font-black cursor-pointer transition bg-sky-400 text-slate-950 shadow-xs";
+          } else {
+            b.className = "px-2.5 py-1 rounded-xl text-[11px] font-bold cursor-pointer transition bg-slate-800 text-slate-200 hover:bg-slate-700";
+          }
+        });
+        updateBgmUI();
+        const slideStage = document.getElementById("vlogSlideStage");
+        const mp4Stage = document.getElementById("vlogMp4Stage");
+        const vid = document.getElementById("vlogMp4Video");
+        if (theme === "mp4") {
+          slideStage.classList.add("hidden");
+          mp4Stage.classList.remove("hidden");
+          if (vlogTimer) clearInterval(vlogTimer);
+          syncBgmPlayback();
+          if (vid) { vid.currentTime = 0; vid.play().catch(() => {}); }
+        } else {
+          if (vid) vid.pause();
+          mp4Stage.classList.add("hidden");
+          slideStage.classList.remove("hidden");
+          vlogPlaying = true;
+          document.getElementById("btnVlogPlayPause").textContent = "⏸ 暂停";
+          renderVlogSlide();
+          scheduleVlogTimer();
+          syncBgmPlayback();
+        }
+      };
+
+      window.nextVlogSlide = function() {
+        vlogIdx++;
+        renderVlogSlide();
+        scheduleVlogTimer();
+      };
+
+      window.prevVlogSlide = function() {
+        vlogIdx--;
+        renderVlogSlide();
+        scheduleVlogTimer();
+      };
+
+      window.jumpVlogSlide = function(i) {
+        vlogIdx = i;
+        renderVlogSlide();
+        scheduleVlogTimer();
+      };
+
+      window.toggleVlogPlay = function() {
+        vlogPlaying = !vlogPlaying;
+        document.getElementById("btnVlogPlayPause").textContent = vlogPlaying ? "⏸ 暂停" : "▶️ 播放";
+        scheduleVlogTimer();
+      };
+
+      // Auto-open if URL hash is #vlog or query has vlog=1
+      if (window.location.hash === "#vlog" || window.location.search.includes("vlog=")) {
+        setTimeout(() => {
+          const params = new URLSearchParams(window.location.search);
+          const t = params.get("theme") || "nature";
+          window.openVlogModal(t);
+        }, 350);
+      }
+    })();
   </script>
 </body>
 </html>
