@@ -47,7 +47,8 @@
         "iceFlow": "2.2 m/天 (全球极为罕见的稳定推进冰川)",
         "iceAge": "深层幽蓝老冰沉积龄约 28,000–32,000 年",
         "timestamp": "2026-10-04 08:27 ART (UTC-3)"
-      }
+      },
+      "isAerial": false
     },
     {
       "id": "calafate-20261004-glacier_02_first_iceberg",
@@ -92,7 +93,8 @@
         "iceFlow": "2.2 m/天 (全球极为罕见的稳定推进冰川)",
         "iceAge": "深层幽蓝老冰沉积龄约 28,000–32,000 年",
         "timestamp": "2026-10-04 09:09 ART (UTC-3)"
-      }
+      },
+      "isAerial": false
     },
     {
       "id": "calafate-20261004-glacier_03_glacier_distant",
@@ -137,7 +139,8 @@
         "iceFlow": "2.2 m/天 (全球极为罕见的稳定推进冰川)",
         "iceAge": "深层幽蓝老冰沉积龄约 28,000–32,000 年",
         "timestamp": "2026-10-04 09:32 ART (UTC-3)"
-      }
+      },
+      "isAerial": true
     },
     {
       "id": "calafate-20261004-glacier_04_bajo_sombras",
@@ -182,7 +185,8 @@
         "iceFlow": "2.2 m/天 (全球极为罕见的稳定推进冰川)",
         "iceAge": "深层幽蓝老冰沉积龄约 28,000–32,000 年",
         "timestamp": "2026-10-04 09:43 ART (UTC-3)"
-      }
+      },
+      "isAerial": false
     },
     {
       "id": "calafate-20261004-glacier_05_neon_iceberg",
@@ -227,7 +231,8 @@
         "iceFlow": "2.2 m/天 (全球极为罕见的稳定推进冰川)",
         "iceAge": "深层幽蓝老冰沉积龄约 28,000–32,000 年",
         "timestamp": "2026-10-04 10:13 ART (UTC-3)"
-      }
+      },
+      "isAerial": true
     },
     {
       "id": "calafate-20261004-glacier_06_ice_wall_boat",
@@ -272,7 +277,8 @@
         "iceFlow": "2.2 m/天 (全球极为罕见的稳定推进冰川)",
         "iceAge": "深层幽蓝老冰沉积龄约 28,000–32,000 年",
         "timestamp": "2026-10-04 10:19 ART (UTC-3)"
-      }
+      },
+      "isAerial": false
     },
     {
       "id": "calafate-20261004-glacier_07_ice_beach",
@@ -317,7 +323,8 @@
         "iceFlow": "2.2 m/天 (全球极为罕见的稳定推进冰川)",
         "iceAge": "深层幽蓝老冰沉积龄约 28,000–32,000 年",
         "timestamp": "2026-10-04 11:04 ART (UTC-3)"
-      }
+      },
+      "isAerial": false
     },
     {
       "id": "calafate-20261004-glacier_08_shore_portrait",
@@ -362,7 +369,8 @@
         "iceFlow": "2.2 m/天 (全球极为罕见的稳定推进冰川)",
         "iceAge": "深层幽蓝老冰沉积龄约 28,000–32,000 年",
         "timestamp": "2026-10-04 11:09 ART (UTC-3)"
-      }
+      },
+      "isAerial": false
     },
     {
       "id": "calafate-20261004-glacier_09_subglacial_cave",
@@ -407,7 +415,8 @@
         "iceFlow": "2.2 m/天 (全球极为罕见的稳定推进冰川)",
         "iceAge": "深层幽蓝老冰沉积龄约 28,000–32,000 年",
         "timestamp": "2026-10-04 11:37 ART (UTC-3)"
-      }
+      },
+      "isAerial": false
     },
     {
       "id": "calafate-20261004-glacier_10_ice_steps",
@@ -452,7 +461,8 @@
         "iceFlow": "2.2 m/天 (全球极为罕见的稳定推进冰川)",
         "iceAge": "深层幽蓝老冰沉积龄约 28,000–32,000 年",
         "timestamp": "2026-10-04 12:05 ART (UTC-3)"
-      }
+      },
+      "isAerial": false
     },
     {
       "id": "calafate-20261004-glacier_11_ice_axe_hero",
@@ -497,7 +507,8 @@
         "iceFlow": "2.2 m/天 (全球极为罕见的稳定推进冰川)",
         "iceAge": "深层幽蓝老冰沉积龄约 28,000–32,000 年",
         "timestamp": "2026-10-04 12:16 ART (UTC-3)"
-      }
+      },
+      "isAerial": false
     },
     {
       "id": "calafate-20261004-glacier_12_sapphire_pool",
@@ -542,7 +553,8 @@
         "iceFlow": "2.2 m/天 (全球极为罕见的稳定推进冰川)",
         "iceAge": "深层幽蓝老冰沉积龄约 28,000–32,000 年",
         "timestamp": "2026-10-04 12:32 ART (UTC-3)"
-      }
+      },
+      "isAerial": false
     },
     {
       "id": "calafate-20261004-glacier_13_cobalt_crevasse",
@@ -587,7 +599,8 @@
         "iceFlow": "2.2 m/天 (全球极为罕见的稳定推进冰川)",
         "iceAge": "深层幽蓝老冰沉积龄约 28,000–32,000 年",
         "timestamp": "2026-10-04 12:36 ART (UTC-3)"
-      }
+      },
+      "isAerial": false
     },
     {
       "id": "calafate-20261004-glacier_14_whisky_ice",
@@ -632,7 +645,8 @@
         "iceFlow": "2.2 m/天 (全球极为罕见的稳定推进冰川)",
         "iceAge": "深层幽蓝老冰沉积龄约 28,000–32,000 年",
         "timestamp": "2026-10-04 12:45 ART (UTC-3)"
-      }
+      },
+      "isAerial": false
     },
     {
       "id": "calafate-20261004-glacier_15_lone_figure_wall",
@@ -677,7 +691,8 @@
         "iceFlow": "2.2 m/天 (全球极为罕见的稳定推进冰川)",
         "iceAge": "深层幽蓝老冰沉积龄约 28,000–32,000 年",
         "timestamp": "2026-10-04 13:13 ART (UTC-3)"
-      }
+      },
+      "isAerial": false
     },
     {
       "id": "calafate-20261004-glacier_16_icefield_peaks",
@@ -722,7 +737,8 @@
         "iceFlow": "2.2 m/天 (全球极为罕见的稳定推进冰川)",
         "iceAge": "深层幽蓝老冰沉积龄约 28,000–32,000 年",
         "timestamp": "2026-10-04 14:40 ART (UTC-3)"
-      }
+      },
+      "isAerial": false
     },
     {
       "id": "calafate-20261004-glacier_17_boardwalk_panorama",
@@ -767,7 +783,8 @@
         "iceFlow": "2.2 m/天 (全球极为罕见的稳定推进冰川)",
         "iceAge": "深层幽蓝老冰沉积龄约 28,000–32,000 年",
         "timestamp": "2026-10-04 15:38 ART (UTC-3)"
-      }
+      },
+      "isAerial": true
     },
     {
       "id": "calafate-20261004-glacier_18_mirror_lake",
@@ -812,7 +829,8 @@
         "iceFlow": "2.2 m/天 (全球极为罕见的稳定推进冰川)",
         "iceAge": "深层幽蓝老冰沉积龄约 28,000–32,000 年",
         "timestamp": "2026-10-04 16:59 ART (UTC-3)"
-      }
+      },
+      "isAerial": false
     },
     {
       "id": "calafate-20261004-glacier_19_calafate_feast",
@@ -857,7 +875,8 @@
         "iceFlow": "2.2 m/天 (全球极为罕见的稳定推进冰川)",
         "iceAge": "深层幽蓝老冰沉积龄约 28,000–32,000 年",
         "timestamp": "2026-10-04 19:46 ART (UTC-3)"
-      }
+      },
+      "isAerial": false
     },
     {
       "id": "calafate-20261003-nimez-goose",
@@ -898,7 +917,9 @@
         "iceFlow": "2.2 m/天 (全球极为罕见的稳定推进冰川)",
         "iceAge": "深层幽蓝老冰沉积龄约 28,000–32,000 年",
         "timestamp": "2026-10-04 11:00 ART (UTC-3)"
-      }
+      },
+      "seq": 20,
+      "isAerial": false
     }
   ],
   "totalAlbums": 1
