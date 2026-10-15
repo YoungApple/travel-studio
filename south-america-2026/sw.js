@@ -1,8 +1,8 @@
 // Travel Studio Offline Service Worker Engine
 // Trip: 2026 南美 15 日四语随身伴侣 (south-america-2026)
-// Cache Version: travel-studio-south-america-2026-v6ef9703e
+// Cache Version: travel-studio-south-america-2026-v7fe91a7a
 
-const CACHE_NAME = "travel-studio-south-america-2026-v6ef9703e";
+const CACHE_NAME = "travel-studio-south-america-2026-v7fe91a7a";
 const TILE_CACHE_NAME = "travel-studio-tiles-south-america-2026";
 const PRECACHE_ASSETS = [
   "./",
