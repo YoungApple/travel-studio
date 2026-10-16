@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travel Studio · 成长差距复盘与交互式闯关实验室 — Growth Retrospective Interactive Lab</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-card: #1e293b;
+      --bg-elevated: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.14);
+      --success: #22c55e;
+      --success-soft: rgba(34, 197, 94, 0.16);
+      --danger: #ef4444;
+      --danger-soft: rgba(239, 68, 68, 0.16);
+      --warning: #f59e0b;
+      --warning-soft: rgba(245, 158, 11, 0.16);
+      --purple: #a855f7;
+      --purple-soft: rgba(168, 85, 247, 0.16);
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      padding-bottom: 80px;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 20px;
+    }
+
+    /* Header & Score Bar */
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+    }
+    .top-bar-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .brand-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+    }
+    .score-pill {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-family: var(--font-mono);
+    }
+    .progress-track {
+      width: 100px;
+      height: 6px;
+      background: var(--bg-elevated);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--success));
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Calibration & Context Hero */
+    .hero-card {
+      background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .badge {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge-accent { background: var(--accent-soft); color: var(--accent); border: 1px solid rgba(56,189,248,0.3); }
+    .badge-warning { background: var(--warning-soft); color: var(--warning); border: 1px solid rgba(245,158,11,0.3); }
+    .badge-purple { background: var(--purple-soft); color: var(--purple); border: 1px solid rgba(168,85,247,0.3); }
+    .badge-success { background: var(--success-soft); color: var(--success); border: 1px solid rgba(34,197,94,0.3); }
+
+    .hero-title {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .hero-sub {
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* Calibration Controls inside HTML */
+    .calibration-bar {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cal-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .cal-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+    .cal-select {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-family: var(--font-sans);
+      cursor: pointer;
+    }
+
+    /* Theme Tabs */
+    .theme-tabs {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+    }
+    .theme-tab {
+      background: var(--bg-card);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .theme-tab:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+    .theme-tab.active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    /* Study Mode Switcher (In-Agent Briefing vs External Prompt) */
+    .study-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .study-header {
+      padding: 14px 20px;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .mode-pills {
+      display: flex;
+      gap: 6px;
+    }
+    .mode-pill {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .mode-pill.active {
+      background: var(--accent);
+      color: #0f172a;
+      border-color: var(--accent);
+    }
+    .study-body {
+      padding: 20px;
+    }
+    .briefing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+    }
+    .briefing-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .briefing-card h4 {
+      font-size: 12px;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .briefing-card p {
+      font-size: 13.5px;
+      color: #e2e8f0;
+    }
+    .anchor-box {
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: rgba(15, 23, 42, 0.9);
+      border-left: 3px solid var(--warning);
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: #cbd5e1;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+
+    .prompt-box {
+      background: #090d16;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      color: #cbd5e1;
+      white-space: pre-wrap;
+      position: relative;
+    }
+
+    /* Questions Section */
+    .q-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 20px;
+      transition: border-color 0.2s;
+    }
+    .q-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .q-num {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .q-prompt {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
+    /* Predict-then-reveal gate */
+    .predict-gate {
+      background: var(--purple-soft);
+      border: 1px dashed var(--purple);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+    .predict-gate-title {
+      font-size: 12px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: #d8b4fe;
+      margin-bottom: 6px;
+    }
+    .predict-input {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 8px 12px;
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    /* Options */
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .opt-btn {
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 13px 16px;
+      text-align: left;
+      color: var(--text);
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      transition: all 0.18s ease;
+    }
+    .opt-btn:hover:not(.disabled) {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.06);
+    }
+    .opt-key {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      min-width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background: var(--bg-elevated);
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .opt-btn.correct {
+      border-color: var(--success);
+      background: var(--success-soft);
+    }
+    .opt-btn.correct .opt-key {
+      background: var(--success);
+      color: #052e16;
+    }
+    .opt-btn.wrong {
+      border-color: var(--danger);
+      background: var(--danger-soft);
+    }
+    .opt-btn.wrong .opt-key {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    /* Diagnostic Feedback Box */
+    .feedback-box {
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      display: none;
+    }
+    .feedback-box.visible { display: block; }
+    .feedback-box.ok {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+    }
+    .feedback-box.err {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+    .ground-truth-tag {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--accent);
+    }
+
+    /* Level-up & Graduation Receipt Card */
+    .receipt-card {
+      background: linear-gradient(145deg, #1e293b, #0f172a);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-top: 28px;
+    }
+    .action-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-top: 8px;
+      font-size: 13.5px;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #0f172a;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: opacity 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-secondary {
+      background: var(--bg-elevated);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Sticky Bar -->
+  <header class="top-bar">
+    <div class="top-bar-inner">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <span>Growth Retrospective · Interactive Verification Lab</span>
+      </div>
+      <div class="score-pill">
+        <span id="scoreText">Score: 0 / 0</span>
+        <div class="progress-track">
+          <div id="progressBar" class="progress-fill"></div>
+        </div>
+        <button onclick="resetQuizProgress()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:11px;" title="Reset answers">↺ Reset</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Hero & Quick Calibration Bar -->
+    <section class="hero-card">
+      <div class="badge-row">
+        <span class="badge badge-accent" id="projectBadge">PROJECT</span>
+        <span class="badge badge-purple" id="purposeBadge">PURPOSE: CALIBRATED</span>
+        <span class="badge badge-warning" id="dateBadge">DATE</span>
+      </div>
+      <h1 class="hero-title" id="quizMainTitle">Growth Retrospective Lab</h1>
+      <p class="hero-sub" id="quizSubTitle">Ground truth is anchored strictly to your own codebase files, ADRs, and commits — zero AI-hallucinated answer keys.</p>
+
+      <!-- Interactive Calibration Filter Bar -->
+      <div class="calibration-bar">
+        <div class="cal-group">
+          <span class="cal-label">🎯 Learning Purpose:</span>
+          <select id="purposeSelector" class="cal-select" onchange="updateCalibrationPurpose(this.value)">
+            <option value="unblock">Unblock Immediate Decision (解决当前卡点)</option>
+            <option value="mental-model">Build Deep Mental Model (建立底层心智模型)</option>
+            <option value="guardrail">Prevent Recurring Regressions (防止同类返工/幻觉)</option>
+            <option value="articulate">Tech Sharing / ADR Defense (技术复盘与表达)</option>
+          </select>
+        </div>
+        <div class="cal-group">
+          <span class="cal-label">📚 Default Study Mode:</span>
+          <select id="studyModeSelector" class="cal-select" onchange="setGlobalStudyMode(this.value)">
+            <option value="in-agent">🧠 In-Agent Deep-Dive Briefing (Agent 内直接精讲)</option>
+            <option value="notebooklm">🔬 External NotebookLM / Deep Research Prompt</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Theme Switcher Tabs -->
+    <nav class="theme-tabs" id="themeTabs"></nav>
+
+    <!-- Active Theme Content Container -->
+    <div id="themeContainer"></div>
+
+    <!-- Mastery Receipt & Level-Up Commitment Footer -->
+    <section class="receipt-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:12px;">
+        <div>
+          <span class="badge badge-success" style="margin-bottom:6px;display:inline-block;">CLOSING THE LOOP</span>
+          <h3 style="font-size:18px;font-weight:700;">Mastery Receipt & Level-Up Action Commitment</h3>
+          <p style="font-size:13px;color:var(--text-muted);">Check off or commit to one concrete &le;4h artifact action below, then copy your receipt back to the agent.</p>
+        </div>
+        <button class="btn-primary" onclick="copyMasteryReceipt()">📋 Copy Mastery Receipt for Agent</button>
+      </div>
+      <div id="levelUpList"></div>
+      <pre id="receiptPreview" class="anchor-box hidden" style="margin-top:14px;"></pre>
+    </section>
+  </main>
+
+  <script>
+    // Injected Quiz Payload from render_quiz_html.py
+    const QUIZ_DATA = {
+  "id": "travel-studio-2026-10-16",
+  "project": "Travel Studio",
+  "date": "2026-10-16",
+  "title": "Travel Studio · 成长差距复盘与交互式闯关实验室",
+  "subtitle": "所有精讲内容与 12 道检验题均 100% 锚定于您的真实代码库 (generator.py / debrief / journal / portal) — 零 AI 幻觉题库。",
+  "purpose": "guardrail",
+  "defaultStudyMode": "in-agent",
+  "themes": [
+    {
+      "title": "零虚构数据锚定与真实功能容器 (Zero-Fabrication Grounding)",
+      "tier": "Tier 1",
+      "category": "work habit",
+      "anchor": "generator.py:27-55 & templates/debrief/index.html:200-450",
+      "anchorSnippet": "def calculate_trip_metrics(trip_config: dict) -> dict:\n    places = trip_config.get(\"places\", [])\n    total_dist = 0\n    for i in range(len(places) - 1):\n        p1, p2 = places[i], places[i+1]\n        if p1.get(\"lat\") and p2.get(\"lat\"):\n            total_dist += haversine(p1[\"lat\"], p1[\"lng\"], p2[\"lat\"], p2[\"lng\"])",
+      "briefing": {
+        "whyItMatters": "在工程与高定旅行产品中，用硬编码的假数据（如 29,850 km、¥118,500、Sony A7R5）充当占位符会严重摧毁用户信任，并掩盖真实数据流与交互容器的缺失。",
+        "failureModes": "静态 Mock 文本一旦混入生产模板，不仅在跨行程编译（如将南美模板用于云南）时产生荒谬的张冠李戴，还会让应用沦为不可交互的“死页面”。",
+        "stackPattern": "坚持三层真实性架构：(1) 已知静态拓扑由编译器通过数学公式（如 Haversine）实时测算；(2) 待采集的传感器数据（如 GPX 轨迹）提供浏览器端解析容器；(3) 待录入的业务数据（如开支账本）提供 LocalStorage 交互式 CRUD 与 CSV 导出。",
+        "misconceptions": "误以为“先填上逼真的假数字能让 Demo 更好看”——真正的专业产品力体现在诚实的空状态（Empty State）与即插即用的客户端功能引擎。"
+      },
+      "researchPrompt": "I'm building Travel Studio (an offline-first travel PWA generator in Python/JS). I need to master 'Zero-Fabrication Data Grounding & Functional Containers' in the context of generator.py:27-55 and templates/debrief/index.html.\n1. What architectural patterns prevent AI-generated templates from leaking hardcoded mock statistics into production?\n2. How to design high-utility functional empty states (client-side GPX/KML parsers, localStorage ledgers) that work 100% offline?\n3. What automated presubmit/CI lint checks can verify data provenance?",
+      "explainBackPrompt": "用 3-5 句话向团队或 AI 协作者阐述：为什么当某项数据（如实际徒步轨迹或财务决算）尚未产生时，我们绝不能在 HTML 模板里写死示例数字，而必须构建“功能容器”？",
+      "levelUpActions": [
+        "编写 tests/test_zero_fabrication.py 自动化校验脚本，拦截 dist/ 下任何残留的硬编码假数据",
+        "将客户端 GPX/KML 拖拽解析器与高程 Canvas 抽离为独立可复用的组件模块"
+      ],
+      "questions": [
+        {
+          "form": "STATE",
+          "question": "在重构后的 generator.py:calculate_trip_metrics 中，南美行程的规划理论直线跨度（~10,987 km）与云南行程（~430 km）是如何得出的？",
+          "options": [
+            "从第三方航空里程 API 实时拉取并缓存",
+            "遍历 trip_config['places'] 中所有连续站点的真实 (lat, lng) 坐标，通过 Haversine 球面大圆公式逐段累加测算",
+            "在 JSON 配置文件的頂层手动写入估算值",
+            "根据行程总天数乘以日均固定公里数估算"
+          ],
+          "correctIndex": 1,
+          "optionExplanations": [
+            "离线编译器不依赖外部航空 API。",
+            "正确！直接基于 trip_config['places'] 中已验证的站点经纬度实时运行 Haversine 公式计算，100% 可复现。",
+            "JSON 顶层未硬编码总里程，而是动态计算得出。",
+            "按天数乘固定系数属于估算假数据，已被彻底摒弃。"
+          ],
+          "explanation": "calculate_trip_metrics 通过 Haversine 公式计算所有相邻打卡点的球面距离之和。",
+          "groundTruth": "See generator.py:27-48 (calculate_trip_metrics)"
+        },
+        {
+          "form": "CONSEQUENCE",
+          "question": "在 templates/debrief/index.html:parseGpxOrKml 中，当用户拖入两步路或 Garmin 导出的 .gpx/.kml 文件时，累计高差爬升（Elevation Gain）是如何计算的？",
+          "options": [
+            "最高海拔直接减去最低海拔（maxElevation - minElevation）",
+            "仅当后一个采样点海拔高于前一个采样点（p2.ele > p1.ele）时，累加正向高差（p2.ele - p1.ele）",
+            "将所有点的海拔求平均值",
+            "把上升和下降的绝对值全部相加"
+          ],
+          "correctIndex": 1,
+          "optionExplanations": [
+            "Max - Min 只是净海拔极差，无法反映起伏山路的多次上下爬升。",
+            "正确！户外轨迹标准累计爬升仅累加 p2.ele > p1.ele 的正向爬升段。",
+            "平均海拔不代表累计爬升。",
+            "上升与下降相加会变成总高程变化而非累计爬升。"
+          ],
+          "explanation": "代码中明确判断 if (p2.ele > p1.ele) gainM += (p2.ele - p1.ele)。",
+          "groundTruth": "See templates/debrief/index.html:425-434 (parseGpxOrKml)"
+        },
+        {
+          "form": "PREDICT-THEN-REVEAL",
+          "question": "在揭晓设计动机前请先预测：为什么我们将原本写死 ¥118,500 的静态财务表格，重构为基于 localStorage 的多币种交互式记账本？",
+          "options": [
+            "为了缩减 HTML 首屏体积",
+            "因为仓库中尚无真实的旅途消费账单数据；提供可增删、自动换算汇率（USD/ARS/BRL ⇄ CNY）并支持导出 CSV 的功能容器，才能在不编造假数据的前提下交付真实价值",
+            "因为静态表格在移动端 Safari 上无法正常渲染",
+            "为了强制用户注册云端账号"
+          ],
+          "correctIndex": 1,
+          "explanation": "遵循您提出的“some content doesn't exist at all, don't make fake content... think about the structure and functions”准则，缺数据时交付结构与功能容器，而非编造数字。",
+          "groundTruth": "See templates/debrief/index.html:200-360 (Interactive Expense Ledger)"
+        },
+        {
+          "form": "STATE",
+          "question": "在 templates/debrief/index.html 中，为了防止南美行程与云南行程的开支记录在同一个浏览器下互相污染，localStorage 的存储 Key 是如何设计的？",
+          "options": [
+            "统一使用固定字符串 'expenses'",
+            "使用 'travel_studio_expenses_' + TRIP_ID（按编译注入的 trip_id 命名空间严格隔离）",
+            "每次打开页面随机生成 UUID 作为 Key",
+            "存储在 document.cookie 中"
+          ],
+          "correctIndex": 1,
+          "explanation": "通过 const EXPENSES_KEY = 'travel_studio_expenses_' + TRIP_ID 实现多行程数据隔离。",
+          "groundTruth": "See templates/debrief/index.html:212 (EXPENSES_KEY)"
+        }
+      ]
+    },
+    {
+      "title": "媒体管线权限边界与图床 EXIF 抹除对策 (Media Pipeline & EXIF)",
+      "tier": "Tier 2",
+      "category": "domain knowledge",
+      "anchor": "templates/journal/index.html:470-530",
+      "anchorSnippet": "function updateLightboxImageMeta(img) {\n  if (img.naturalWidth && img.naturalHeight) {\n    // Reads true DOM physical dimensions instead of fake Sony EXIF\n    dimDiv.innerHTML = `<span class=\"text-stone-500 block\">图像尺寸<\/span>${img.naturalWidth} × ${img.naturalHeight} px`;\n  }\n}",
+      "briefing": {
+        "whyItMatters": "区分浏览器带 Cookie 的私密会话链接与公开分享短链，以及理解现代图床自动剥离 EXIF 的机制，能避免在自动化抓取和元数据展示时陷入“为什么我的账号能看、脚本却抓不到”或“用假相机参数填空”的误区。",
+        "failureModes": "直接抓取私密分享链接会返回登录重定向页（导致爬虫解析出空数据或触发 AI 幻觉）；而盲目硬编码相机型号则违背数据真实性。",
+        "stackPattern": "前端明确校验 https://photos.app.goo.gl/ 公开短链格式；原图弹窗通过 img.naturalWidth × img.naturalHeight 动态读取真实物理像素，并结合 manifest.json 中的真实采样读数（fieldReadings）前置展示。",
+        "misconceptions": "误以为浏览器能打开的 Google Photos 链接就能被无状态 CLI 直接读取，或误以为网页下载的 JPG 仍保留完整相机快门/光圈 EXIF。"
+      },
+      "researchPrompt": "I'm building a travel photo journal pipeline integrating Google Photos and drone media. Context: templates/journal/index.html:470-530.\n1. What is the authentication and redirect architecture difference between photos.google.com/share/... and photos.app.goo.gl/...?\n2. Why do web CDNs strip EXIF tags, and how can client-side JS parse TIFF/EXIF headers from local files via ArrayBuffer?",
+      "levelUpActions": [
+        "在 templates/journal/index.html 中嵌入纯前端 ArrayBuffer EXIF 解析器，支持拖入本地原片即时读取真实快门/光圈"
+      ],
+      "questions": [
+        {
+          "form": "STATE",
+          "question": "为什么自动化脚本无法直接抓取形如 https://photos.google.com/share/AF1Qip... 的相册链接，而必须使用「创建链接 (Create Link)」生成的 https://photos.app.goo.gl/... 短链？",
+          "options": [
+            "因为长链接的图片格式是 HEIC，Python 无法解码",
+            "私密会话链接强依赖浏览器当前登录的 Google 账号 Cookie，无状态脚本访问会被拦截重定向；公开分享短链才包含匿名访问签名 Token",
+            "GitHub Pages 屏蔽了长链接域名",
+            "长链接只支持视频不支持照片"
+          ],
+          "correctIndex": 1,
+          "explanation": "未开启公开链接分享的 URL 属于账号会话态视图，必须通过「分享 ➔ 创建链接」生成公开短链后才具备匿名读取权限。",
+          "groundTruth": "See templates/journal/index.html:240-265 & 510-528 (handleSyncAlbum)"
+        },
+        {
+          "form": "CONSEQUENCE",
+          "question": "当我们用 Python Pillow (im.getexif()) 检测从 Google Photos 网页端下载的 20 张莫雷诺冰川实拍 JPG 时，返回的 EXIF 标签数量是多少？",
+          "options": [
+            "完整的 45 个相机与镜头标签",
+            "0 个（Google Photos 网页分发 CDN 在导出网络图片时已自动剥离原始相机 EXIF 标签）",
+            "只有相机型号，没有快门速度",
+            "文件损坏无法打开"
+          ],
+          "correctIndex": 1,
+          "explanation": "实测全部 20 张网页图片的 Exif tags count 均为 0，因此画报彻底移除了虚构的 SONY ILCE-7RM5 参数。",
+          "groundTruth": "See templates/journal/index.html:305-315 & 475-505 (updateLightboxImageMeta)"
+        },
+        {
+          "form": "COMPARE",
+          "question": "在重构后的 templates/journal/index.html 中，为了突出无人机与高空俯瞰大视野素材（如 #3、#5、#17），系统采取了什么结构化设计？",
+          "options": [
+            "将所有照片强制裁剪为 16:9",
+            "在 manifest.json 标记 isAerial: true，并在画报顶栏提供「🚁 航拍全景与上帝视角」独立筛选器、金色高亮环与专属徽标",
+            "删除所有地面拍摄的照片",
+            "仅在 PC 端显示航拍照片"
+          ],
+          "correctIndex": 1,
+          "explanation": "通过 isAerial 标记与 setMediaFilter('aerial') 实现了航拍素材的一键筛选与高优先级视觉呈现。",
+          "groundTruth": "See templates/journal/index.html:190-205 & 380-430"
+        },
+        {
+          "form": "STATE",
+          "question": "在画报的每个徒步点位正文前，前置渲染的「现场微气候与地理环境采样读数 (Field Readings)」数据来源于哪里？",
+          "options": [
+            "在 HTML 模板里写死的固定字符串",
+            "严格读取自 photos/manifest.json 中每张照片对象下的 ph.fieldReadings 字段（仅当字段存在时动态渲染）",
+            "调用浏览器 Geolocation API 获取读者当前位置",
+            "随机生成的温度数据"
+          ],
+          "correctIndex": 1,
+          "explanation": "renderPhotoArticle 检查 if (ph.fieldReadings) 并按实际存在的键值对动态组装读数卡片。",
+          "groundTruth": "See templates/journal/index.html:415-442 (renderPhotoArticle)"
+        }
+      ]
+    },
+    {
+      "title": "生命周期分期解耦与离线存储隔离 (Lifecycle Decoupling & PWA)",
+      "tier": "Tier 2",
+      "category": "human skill",
+      "anchor": "generator.py:90-150 & templates/portal/index.html:20-38",
+      "anchorSnippet": "for sub in [\"journal\", \"debrief\", \"companion\", \"prep\"]:\n    os.makedirs(os.path.join(output_dir, sub), exist_ok=True)",
+      "briefing": {
+        "whyItMatters": "将行前整备、行中战术路书、行后画报与复盘塞进同一个 457KB 的单页 index.html，不仅造成严重的心智模型冲突（行后看画报时被紧急求救电话干扰），还会导致高清媒体撑爆移动端 PWA 离线缓存配额。",
+        "failureModes": "iOS Safari 对单一 PWA 缓存有约 50MB 的硬性上限；若不解耦，行后画报的 4K 视频与大图会触发 LRU 驱逐，把行中救命的离线地图瓦片挤出缓存。",
+        "stackPattern": "通过 generator.py 编译为 4 个独立子目录（/prep/、/companion/、/journal/、/debrief/），由根路径轻量智能网关（<8KB）根据当前日期与 trip.endDate 自动路由。",
+        "misconceptions": "误以为“Single-Page App 塞得越全越方便”——按用户所处的生命周期阶段物理隔离复杂度，才是高可用离线系统的核心。"
+      },
+      "researchPrompt": "I'm architecting a multi-stage Progressive Web App (PWA) suite in generator.py:90-150.\n1. How do Service Worker scope rules work across subdirectories (/companion/ vs /journal/)?\n2. What are iOS Safari's Cache Storage quota limits and eviction policies, and how can architectural decoupling protect critical offline assets?",
+      "levelUpActions": [
+        "编写 tests/test_pwa_isolation.py 验证各子应用体积预算与 Service Worker 作用域隔离"
+      ],
+      "questions": [
+        {
+          "form": "PREDICT-THEN-REVEAL",
+          "question": "在揭晓架构决策前请先预测：为什么我们必须把「行中伴侣 (/companion/)」与「行后画报 (/journal/)」拆分为物理隔离的子目录，而不是仅仅用 CSS 隐藏 Tab？",
+          "options": [
+            "因为 CSS display:none 会消耗过多 CPU",
+            "为了同时实现「心智模型去战术化隔离」与「PWA 离线缓存配额保护」（避免行后百兆级 4K 媒体把行中 <150KB 的救命离线路书挤出缓存）",
+            "因为 GitHub Pages 不支持单文件超过 100KB",
+            "为了让 URL 看起来更长"
+          ],
+          "correctIndex": 1,
+          "explanation": "物理拆分子目录不仅让行后画报彻底摆脱战术控件干扰，还允许按子路径隔离 Service Worker 作用域与资源加载。",
+          "groundTruth": "See TRAVEL_STUDIO_LIFECYCLE_PRD.md Section 1.1 & 5.2"
+        },
+        {
+          "form": "STATE",
+          "question": "在根入口网关 templates/portal/index.html 中，智能时间路由器在什么条件下会自动将访问者引导至行后画报 (journal/index.html)？",
+          "options": [
+            "当检测到用户使用桌面浏览器时",
+            "当 URL 未指定 ?stage= 参数，且当前时间 now > new Date(TRIP_DATES.endDate)（行程已圆满结束）时",
+            "每次打开都随机跳转一个子应用",
+            "仅当用户在周日访问时"
+          ],
+          "correctIndex": 1,
+          "explanation": "网关对比当前时间与 endDate，若行程已结束且未指定手动 stage 参数，则在 1.2 秒后自动跳转至 journal/index.html。",
+          "groundTruth": "See templates/portal/index.html:20-38"
+        },
+        {
+          "form": "CONSEQUENCE",
+          "question": "在 templates/prep/index.html（行前整备套件）中，当 trip_config.networkProfile 为 'cn_domestic'（如云南行程）与 'global'（如南美行程）时，默认推荐清单会发生什么变化？",
+          "options": [
+            "完全相同，都显示亚马逊防蚊喷雾和黄热病黄本",
+            "根据 NETWORK_PROFILE 自动切换：global 载入护照/黄热病黄本/多国转换插头，cn_domestic 载入二代身份证/12306/高原防晒与抗高反常备药",
+            "国内行程不显示任何推荐物品",
+            "需要联网请求后端接口生成清单"
+          ],
+          "correctIndex": 1,
+          "explanation": "prep/index.html 内置 GLOBAL_DEFAULTS 与 DOMESTIC_DEFAULTS，根据编译注入的 {{network_profile}} 自动匹配目的地环境。",
+          "groundTruth": "See templates/prep/index.html:225-275"
+        },
+        {
+          "form": "STATE",
+          "question": "在 templates/prep/index.html 的「行中离线数据包预热」模块中，系统调用了哪两个浏览器原生 Web API 来检测离线存储配额并主动缓存核心页面？",
+          "options": [
+            "WebSocket 与 IndexedDB",
+            "navigator.storage.estimate() 与 window.caches.open().addAll()",
+            "localStorage 与 sessionStorage",
+            "WebRTC 与 BroadcastChannel"
+          ],
+          "correctIndex": 1,
+          "explanation": "通过 navigator.storage.estimate() 读取已用 MB 与总配额，并通过 caches.open() 主动预载各阶段核心 HTML 与 manifest。",
+          "groundTruth": "See templates/prep/index.html:415-455 (checkOfflineStatus & preloadOfflineAssets)"
+        }
+      ]
+    }
+  ]
+};
+    const STORAGE_KEY = "growth_retro_quiz_" + (QUIZ_DATA.id || "default");
+
+    let state = {
+      activeThemeIdx: 0,
+      studyMode: QUIZ_DATA.defaultStudyMode || "in-agent",
+      purpose: QUIZ_DATA.purpose || "guardrail",
+      answers: {},       // { "themeIdx_qIdx": selectedOptIdx }
+      predictions: {},   // { "themeIdx_qIdx": text }
+      committedActions: {},
+      explainBackNotes: {}
+    };
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          state = { ...state, ...parsed };
+        }
+      } catch (e) {}
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    function initApp() {
+      loadState();
+      document.getElementById("projectBadge").textContent = QUIZ_DATA.project || "PROJECT";
+      document.getElementById("dateBadge").textContent = QUIZ_DATA.date || "2026";
+      document.getElementById("quizMainTitle").textContent = QUIZ_DATA.title || "Growth Retrospective Interactive Lab";
+      if (QUIZ_DATA.subtitle) {
+        document.getElementById("quizSubTitle").textContent = QUIZ_DATA.subtitle;
+      }
+      document.getElementById("purposeSelector").value = state.purpose;
+      document.getElementById("studyModeSelector").value = state.studyMode;
+      updatePurposeBadge();
+
+      renderTabs();
+      renderActiveTheme();
+      renderScoreAndReceipt();
+    }
+
+    function updatePurposeBadge() {
+      const labels = {
+        "unblock": "🎯 PURPOSE: UNBLOCK DECISION",
+        "mental-model": "🎯 PURPOSE: DEEP MENTAL MODEL",
+        "guardrail": "🎯 PURPOSE: PREVENT REGRESSIONS",
+        "articulate": "🎯 PURPOSE: TECH ARTICULATION"
+      };
+      document.getElementById("purposeBadge").textContent = labels[state.purpose] || "🎯 CALIBRATED";
+    }
+
+    function updateCalibrationPurpose(val) {
+      state.purpose = val;
+      saveState();
+      updatePurposeBadge();
+      renderActiveTheme();
+      renderScoreAndReceipt();
+    }
+
+    function setGlobalStudyMode(val) {
+      state.studyMode = val;
+      saveState();
+      renderActiveTheme();
+    }
+
+    function selectTheme(idx) {
+      state.activeThemeIdx = idx;
+      saveState();
+      renderTabs();
+      renderActiveTheme();
+    }
+
+    function renderTabs() {
+      const nav = document.getElementById("themeTabs");
+      const themes = QUIZ_DATA.themes || [];
+      nav.innerHTML = themes.map((t, idx) => {
+        const qs = t.questions || [];
+        let answered = 0;
+        let correct = 0;
+        qs.forEach((q, qIdx) => {
+          const k = `${idx}_${qIdx}`;
+          if (state.answers[k] !== undefined) {
+            answered++;
+            if (state.answers[k] === q.correctIndex) correct++;
+          }
+        });
+        const statusIcon = (answered === qs.length && qs.length > 0)
+          ? (correct === qs.length ? "✅" : `${correct}/${qs.length}`)
+          : `${answered}/${qs.length}`;
+        return `
+          <button class="theme-tab ${idx === state.activeThemeIdx ? 'active' : ''}" onclick="selectTheme(${idx})">
+            <span>[${t.tier || 'Tier 1'}] ${t.title}</span>
+            <span class="badge ${correct === qs.length && qs.length > 0 ? 'badge-success' : 'badge-accent'}">${statusIcon}</span>
+          </button>
+        `;
+      }).join("");
+    }
+
+    function renderActiveTheme() {
+      const container = document.getElementById("themeContainer");
+      const themes = QUIZ_DATA.themes || [];
+      const theme = themes[state.activeThemeIdx];
+      if (!theme) {
+        container.innerHTML = `<div class="q-card">No themes found in quiz spec.</div>`;
+        return;
+      }
+
+      const b = theme.briefing || {};
+      const inAgentActive = state.studyMode === "in-agent";
+
+      let studyHtml = `
+        <section class="study-panel">
+          <div class="study-header">
+            <div>
+              <span class="badge badge-warning">${theme.category || 'domain knowledge'}</span>
+              <strong style="margin-left:8px;font-size:15px;">${theme.title}</strong>
+              <span style="color:var(--text-muted);font-size:12px;font-family:var(--font-mono);margin-left:8px;">Anchor: ${theme.anchor || 'repo'}</span>
+            </div>
+            <div class="mode-pills">
+              <button class="mode-pill ${inAgentActive ? 'active' : ''}" onclick="setGlobalStudyMode('in-agent')">🧠 In-Agent Briefing</button>
+              <button class="mode-pill ${!inAgentActive ? 'active' : ''}" onclick="setGlobalStudyMode('notebooklm')">🔬 External Research Prompt</button>
+            </div>
+          </div>
+          <div class="study-body">
+            ${inAgentActive ? `
+              <div class="briefing-grid">
+                <div class="briefing-card">
+                  <h4>1. Why It Matters Here</h4>
+                  <p>${b.whyItMatters || 'Directly impacts decision velocity and reliability in the anchored module.'}</p>
+                </div>
+                <div class="briefing-card">
+                  <h4>2. Production Failure Modes</h4>
+                  <p>${b.failureModes || 'Silent regressions, state corruption, or multi-round review reversals.'}</p>
+                </div>
+                <div class="briefing-card">
+                  <h4>3. Idiomatic Stack Pattern</h4>
+                  <p>${b.stackPattern || 'Ground state in verifiable schemas and deterministic validation.'}</p>
+                </div>
+                <div class="briefing-card">
+                  <h4>4. Misconception vs Reality</h4>
+                  <p>${b.misconceptions || 'Assuming happy-path defaults hold without explicit boundary checks.'}</p>
+                </div>
+              </div>
+              ${theme.anchorSnippet ? `<div class="anchor-box"><strong>📍 Ground-Truth Repo Anchor (${theme.anchor}):</strong>\n${escapeHtml(theme.anchorSnippet)}</div>` : ''}
+            ` : `
+              <div style="margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:13px;color:var(--text-muted);">Copy-paste to Gemini Deep Research, NotebookLM, or ChatGPT when you want an external literature survey:</span>
+                <button class="btn-secondary" style="padding:6px 12px;font-size:12px;" onclick="copyText(${ JSON.stringify(theme.researchPrompt || '') })">📋 Copy Prompt</button>
+              </div>
+              <div class="prompt-box">${escapeHtml(theme.researchPrompt || '')}</div>
+            `}
+          </div>
+        </section>
+      `;
+
+      const questionsHtml = (theme.questions || []).map((q, qIdx) => renderQuestionCard(state.activeThemeIdx, q, qIdx)).join("");
+
+      // Optional Explain-Back Sandbox if purpose === 'articulate' or theme.explainBackPrompt
+      let explainHtml = "";
+      if (state.purpose === "articulate" || theme.explainBackPrompt) {
+        const ebKey = `eb_${state.activeThemeIdx}`;
+        const savedNote = state.explainBackNotes[ebKey] || "";
+        explainHtml = `
+          <div class="q-card">
+            <div class="q-header">
+              <span class="q-num">EXPLAIN-BACK SANDBOX (FEYNMAN TECHNIQUE)</span>
+              <span class="badge badge-purple">SELF-ARTICULATION</span>
+            </div>
+            <div class="q-prompt">${theme.explainBackPrompt || `In 3–5 sentences, explain the core trade-off behind "${theme.title}" and why your codebase's anchor (${theme.anchor}) works the way it does:`}</div>
+            <textarea class="predict-input" rows="4" placeholder="Write your explanation in your own words..." oninput="saveExplainBack('${ebKey}', this.value)">${escapeHtml(savedNote)}</textarea>
+          </div>
+        `;
+      }
+
+      container.innerHTML = studyHtml + questionsHtml + explainHtml;
+    }
+
+    function renderQuestionCard(tIdx, q, qIdx) {
+      const k = `${tIdx}_${qIdx}`;
+      const chosen = state.answers[k];
+      const isAnswered = chosen !== undefined;
+      const isCorrect = chosen === q.correctIndex;
+      const isPredictForm = (q.form || "").toLowerCase().includes("predict");
+      const hasPredicted = Boolean((state.predictions[k] || "").trim()) || isAnswered;
+
+      const letters = ["A", "B", "C", "D", "E"];
+
+      let predictGateHtml = "";
+      if (isPredictForm && !hasPredicted) {
+        predictGateHtml = `
+          <div class="predict-gate">
+            <div class="predict-gate-title">🔮 PREDICT-THEN-REVEAL GATE (Learning Science: Prediction-Error Boost)</div>
+            <p style="font-size:12.5px;color:#e9d5ff;">Before unlocking the options & ADR rationale, type a 5-word hypothesis or click unlock to commit your mental prediction:</p>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <input type="text" id="predInput_${k}" class="predict-input" style="margin-top:0;" placeholder="My prediction: it was chosen because...">
+              <button class="btn-primary" style="white-space:nowrap;" onclick="commitPrediction('${k}')">Unlock Options ➔</button>
+            </div>
+          </div>
+        `;
+      }
+
+      const optionsHtml = (q.options || []).map((optText, oIdx) => {
+        let cls = "opt-btn";
+        if (isAnswered) {
+          if (oIdx === q.correctIndex) cls += " correct";
+          else if (oIdx === chosen) cls += " wrong";
+        }
+        const disabledAttr = (isPredictForm && !hasPredicted) ? "disabled style='opacity:0.4;pointer-events:none;'" : "";
+        return `
+          <button class="${cls}" ${disabledAttr} onclick="selectOption(${tIdx}, ${qIdx}, ${oIdx})">
+            <span class="opt-key">${letters[oIdx] || (oIdx + 1)}</span>
+            <span style="flex:1;">${escapeHtml(optText)}</span>
+          </button>
+        `;
+      }).join("");
+
+      let feedbackHtml = "";
+      if (isAnswered) {
+        const perOptExplain = (q.optionExplanations && q.optionExplanations[chosen])
+          ? q.optionExplanations[chosen]
+          : q.explanation;
+        feedbackHtml = `
+          <div class="feedback-box visible ${isCorrect ? 'ok' : 'err'}">
+            <div style="font-weight:700;margin-bottom:4px;">
+              ${isCorrect ? '✅ Spot on! Ground-truth verified.' : `❌ Not quite. You picked (${letters[chosen]}), but the ground-truth answer is (${letters[q.correctIndex]}).`}
+            </div>
+            <div>${escapeHtml(perOptExplain || q.explanation || '')}</div>
+            <div class="ground-truth-tag">📌 Ground-Truth Artifact: ${escapeHtml(q.groundTruth || 'Verified in repository')}</div>
+          </div>
+        `;
+      }
+
+      return `
+        <article class="q-card" id="qcard_${k}">
+          <div class="q-header">
+            <span class="q-num">QUESTION 0${qIdx + 1}</span>
+            <span class="badge ${isPredictForm ? 'badge-purple' : 'badge-accent'}">${q.form || 'STATE'}</span>
+          </div>
+          <div class="q-prompt">${escapeHtml(q.question)}</div>
+          ${predictGateHtml}
+          <div class="options-list">${optionsHtml}</div>
+          ${feedbackHtml}
+        </article>
+      `;
+    }
+
+    function commitPrediction(k) {
+      const inp = document.getElementById("predInput_" + k);
+      state.predictions[k] = (inp && inp.value.trim()) ? inp.value.trim() : "committed";
+      saveState();
+      renderActiveTheme();
+    }
+
+    function selectOption(tIdx, qIdx, oIdx) {
+      const k = `${tIdx}_${qIdx}`;
+      state.answers[k] = oIdx;
+      saveState();
+      renderTabs();
+      renderActiveTheme();
+      renderScoreAndReceipt();
+    }
+
+    function saveExplainBack(key, val) {
+      state.explainBackNotes[key] = val;
+      saveState();
+    }
+
+    function toggleActionCommit(actionKey) {
+      state.committedActions[actionKey] = !state.committedActions[actionKey];
+      saveState();
+      renderScoreAndReceipt();
+    }
+
+    function renderScoreAndReceipt() {
+      const themes = QUIZ_DATA.themes || [];
+      let totalQ = 0;
+      let answeredQ = 0;
+      let correctQ = 0;
+
+      themes.forEach((t, tIdx) => {
+        (t.questions || []).forEach((q, qIdx) => {
+          totalQ++;
+          const k = `${tIdx}_${qIdx}`;
+          if (state.answers[k] !== undefined) {
+            answeredQ++;
+            if (state.answers[k] === q.correctIndex) correctQ++;
+          }
+        });
+      });
+
+      const pct = totalQ > 0 ? Math.round((correctQ / totalQ) * 100) : 0;
+      document.getElementById("scoreText").textContent = `Mastery: ${correctQ} / ${totalQ} (${pct}%)`;
+      document.getElementById("progressBar").style.width = `${totalQ > 0 ? Math.round((answeredQ / totalQ) * 100) : 0}%`;
+
+      // Render level-up actions across themes
+      const actionsContainer = document.getElementById("levelUpList");
+      let actionsHtml = "";
+      themes.forEach((t, tIdx) => {
+        (t.levelUpActions || []).forEach((act, aIdx) => {
+          const ak = `${tIdx}_${aIdx}`;
+          const checked = Boolean(state.committedActions[ak]);
+          actionsHtml += `
+            <label class="action-item" onclick="toggleActionCommit('${ak}')">
+              <input type="checkbox" ${checked ? 'checked' : ''} onclick="event.stopPropagation(); toggleActionCommit('${ak}');" style="margin-top:4px;">
+              <div>
+                <span class="badge badge-accent" style="margin-right:6px;">${t.title}</span>
+                <span>${escapeHtml(act)}</span>
+              </div>
+            </label>
+          `;
+        });
+      });
+      actionsContainer.innerHTML = actionsHtml || `<p style="font-size:13px;color:var(--text-muted);">No pending level-up actions defined.</p>`;
+    }
+
+    function buildReceiptMarkdown() {
+      const themes = QUIZ_DATA.themes || [];
+      let lines = [
+        `### Growth Retrospective Mastery Receipt (${QUIZ_DATA.date || 'Today'})`,
+        `- **Project**: ${QUIZ_DATA.project || 'Repo'}`,
+        `- **Calibrated Purpose**: ${state.purpose}`,
+        `- **Study Mode**: ${state.studyMode}`,
+        ``
+      ];
+      themes.forEach((t, tIdx) => {
+        const qs = t.questions || [];
+        let corr = 0;
+        qs.forEach((q, qIdx) => {
+          if (state.answers[`${tIdx}_${qIdx}`] === q.correctIndex) corr++;
+        });
+        lines.push(`- **[${t.tier || 'Tier 1'}] ${t.title}** (${t.anchor}): **${corr}/${qs.length}** verified`);
+      });
+
+      const committed = [];
+      themes.forEach((t, tIdx) => {
+        (t.levelUpActions || []).forEach((act, aIdx) => {
+          if (state.committedActions[`${tIdx}_${aIdx}`]) {
+            committed.push(`  - [ ] (${t.title}) ${act}`);
+          }
+        });
+      });
+      if (committed.length > 0) {
+        lines.push(`\n**Committed Level-Up Actions (<=4h):**`);
+        lines.push(...committed);
+      }
+      return lines.join("\n");
+    }
+
+    function copyMasteryReceipt() {
+      const md = buildReceiptMarkdown();
+      const pre = document.getElementById("receiptPreview");
+      pre.textContent = md;
+      pre.classList.remove("hidden");
+      navigator.clipboard.writeText(md).then(() => {
+        alert("Mastery Receipt copied to clipboard! Paste it in your agent chat to record progress.");
+      }).catch(() => {});
+    }
+
+    function copyText(txt) {
+      navigator.clipboard.writeText(txt).then(() => {
+        alert("Research Prompt copied to clipboard!");
+      }).catch(() => {});
+    }
+
+    function resetQuizProgress() {
+      if (!confirm("Reset all quiz answers for this session?")) return;
+      state.answers = {};
+      state.predictions = {};
+      saveState();
+      renderTabs();
+      renderActiveTheme();
+      renderScoreAndReceipt();
+    }
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    window.addEventListener("DOMContentLoaded", initApp);
+  </script>
+</body>
+</html>
